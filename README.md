@@ -2,7 +2,19 @@
 
 **Live:** https://intimate-avocado.github.io/n-toki/
 
-> Time became something they could sell. Time to sell it back.
+> Time became something they could sell. Time to take it back.
+
+## Why
+
+The equal hour made time countable, and anything countable can be bought and sold. Clocks became the meter on our lives: shifts, billable hours, countdowns. Japan kept time by the sun until 1873 and traded it for the industrial clock. N-Toki returns to that point.
+
+N-Toki is built for **time sovereignty**: your right to experience, measure and spend your own time.
+
+- **Nourish the body.** Live in step with the real sun where you are, not a number set by commerce.
+- **Protect the mind.** No streaks, no feeds, no pull notifications. The clock knows when to leave you alone.
+- **Elevate the spirit.** The zodiac toki, the temple bells and the 72 seasons: a heritage of noticing.
+
+The path is cultural first. People **experience** time by the sky, then **speak** it with each other ("coffee during Monkey toki"), and once enough people live this way, they can **reshape how work and value are organized** around it. The clock is step one.
 
 N-Toki is a living clock that follows the real sun where you are. It brings back two ways of keeping time that Japan set aside in its 1872–73 calendar reform:
 
