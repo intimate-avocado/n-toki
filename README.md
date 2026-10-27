@@ -27,7 +27,7 @@ N is pronounced *en*: 円 (circle, and yen), 縁 (the bond between people), 時 
 - **Phone:** open the live link, then *Share → Add to Home Screen* (iPhone) or *Install app* (Android).
 - **Desktop:** in Chrome or Edge, use the install icon in the address bar.
 - **Windows window:** double-click `desktop/Open N-Toki (online).bat` for a clean window with no browser bars.
-- **Live wallpaper (Windows):** install the free, open-source [Lively Wallpaper](https://www.rocksdanister.com/lively/), click *+*, and add `wallpaper.html` (or its live link).
+- **Live wallpaper (Windows):** install the free, open-source [Lively Wallpaper](https://github.com/rocksdanister/lively), click *+*, and add `wallpaper.html` (or its live link).
 
 ## The engine
 
