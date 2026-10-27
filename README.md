@@ -1,6 +1,6 @@
 # N-Toki · time by the sun
 
-**Live:** https://intimateavocado.github.io/n-toki/
+**Live:** https://intimate-avocado.github.io/n-toki/
 
 > Time became something they could sell. Time to sell it back.
 
