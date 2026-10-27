@@ -1,0 +1,16 @@
+{
+  "name": "N-Toki",
+  "short_name": "N-Toki",
+  "description": "A living clock that follows the sun: twelve toki for the day, 72 micro-seasons for the year.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#15233F",
+  "theme_color": "#15233F",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,1421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>N-Toki wallpaper</title>
+<meta name="description" content="A living clock that follows the sun: twelve Japanese toki for the day and 72 micro-seasons for the year, calculated for wherever you are.">
+<meta name="theme-color" content="#15233F">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:title" content="N-Toki · time by the sun">
+<meta property="og:description" content="Twelve toki for the day, 72 micro-seasons for the year. Japan kept time by the sun until 1873. N-Toki brings it back.">
+<meta property="og:image" content="https://intimateavocado.github.io/n-toki/social-card.png">
+<meta property="og:url" content="https://intimateavocado.github.io/n-toki/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://intimateavocado.github.io/n-toki/social-card.png">
+<style>:root{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui}[hidden]{display:none!important}</style>
+<script>window.NTOKI_MODE='wall'</script></head><body>
+<title>N-Toki</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap">
+<style>
+/* Layout: one fixed atmospheric sky drawn from the sun's real position; a two-page swipe pager (Living Clock | Cycle) floats over it; details rise from the bottom as paper slips. Deliberately single-world: the sky is the theme. */
+:root{
+  --ink-dark:#1c1a29;
+  --ink-light:#f7f2e8;
+  --paper:#f5f0e4;
+  --paper-ink:#24212f;
+  --paper-muted:#6c6677;
+  --paper-line:#e1d8c6;
+  --shu:#b8432f;
+  --night-fallback:#15233f;
+  --f-display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",Georgia,serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --gut-l:max(16px, env(safe-area-inset-left, 0px));
+  --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--night-fallback);color:var(--ink-light);font-family:var(--f-body);overflow:hidden;-webkit-font-smoothing:antialiased;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+button{font:inherit;color:inherit}
+
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;filter:blur(18px);transform:scale(1.12);image-rendering:auto}
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.09;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.app{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;color:var(--ink-light);transition:color 1.6s ease}
+.app.ink-dark{color:var(--ink-dark)}
+
+/* top + bottom bars */
+.bar-top,.bar-bottom{display:flex;align-items:center;gap:10px;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.bar-top{padding-top:max(14px, env(safe-area-inset-top, 0px));padding-bottom:6px}
+.bar-bottom{padding-top:6px;padding-bottom:max(14px, env(safe-area-inset-bottom, 0px));justify-content:space-between}
+.mark{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:.22em;margin-right:auto;white-space:nowrap;min-width:0;overflow:hidden}
+.mark small{font-family:var(--f-body);font-weight:400;font-size:10px;letter-spacing:.2em;opacity:.6;margin-left:6px}
+.pill{display:inline-flex;align-items:center;gap:6px;font:500 13px/1 var(--f-body);background:color-mix(in srgb,currentColor 9%,transparent);border:1px solid color-mix(in srgb,currentColor 24%,transparent);border-radius:999px;padding:8px 13px;cursor:pointer;white-space:nowrap;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.pill:hover{background:color-mix(in srgb,currentColor 15%,transparent)}
+.pill svg{width:14px;height:14px;flex:none}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:6px}
+.pill:focus-visible{border-radius:999px}
+.preview{display:none}
+.previewing .preview{display:inline-flex;background:color-mix(in srgb,currentColor 18%,transparent)}
+.dots{display:flex;gap:4px}
+.dots button{width:28px;height:28px;border:0;background:none;cursor:pointer;display:grid;place-items:center;padding:0}
+.dots button::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.3;transition:opacity .3s,transform .3s}
+.dots button[aria-current="true"]::before{opacity:.95;transform:scale(1.15)}
+
+/* pager */
+.pager{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.pager::-webkit-scrollbar{display:none}
+.page{flex:0 0 100%;width:100%;min-width:0;scroll-snap-align:start;scroll-snap-stop:always;position:relative}
+
+/* living clock */
+.clock-page{display:grid;place-items:center;touch-action:pan-x;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:default}
+.companion{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;transition:opacity .35s ease,transform .45s ease;padding-inline:16px}
+.seal{position:relative;width:min(58vw,40vh,236px);aspect-ratio:1;max-width:100%;border:0;background:none;border-radius:50%;cursor:pointer;display:grid;place-items:center;margin-bottom:14px;padding:0}
+.seal svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.seal .k{font-family:var(--f-display);font-weight:700;font-size:min(29vw,20vh,118px);line-height:1;transform:translateY(-2%);transition:opacity .8s}
+.seal:hover .k{opacity:.86}
+.name{font-family:var(--f-display);font-weight:500;font-size:clamp(30px,7.5vw,44px);line-height:1.1;letter-spacing:.01em;text-wrap:balance}
+.reading{font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.72}
+.bell{font-size:15px;opacity:.88;margin-top:4px}
+.bell .jp{font-family:var(--f-display);margin-left:6px}
+.quiet{font-family:var(--f-display);font-size:15px;opacity:.72;max-width:30ch;margin-top:18px;text-wrap:balance}
+.hint{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-size:12px;letter-spacing:.06em;opacity:.55;padding-inline:16px}
+.polar{font-size:12px;letter-spacing:.04em;margin-top:14px;padding:6px 10px;border-radius:8px;background:color-mix(in srgb,currentColor 12%,transparent);max-width:34ch}
+
+.reveal{position:absolute;inset:0;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .3s ease;padding-inline:16px}
+.revealed .reveal{opacity:1}
+.revealed .companion{opacity:0;transform:scale(.965)}
+.revealed .hint{opacity:0}
+.rv{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.rv-time{font-family:var(--f-display);font-weight:500;font-size:clamp(56px,16vw,92px);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.rv-time small{font-size:.32em;letter-spacing:.08em;margin-left:.2em}
+.rv-date{font-size:15px;opacity:.8;margin-bottom:18px}
+.rv dl{display:grid;grid-template-columns:auto auto;gap:9px 22px;margin:0;font-size:14px;text-align:left}
+.rv dt{opacity:.66}
+.rv dd{margin:0;font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums}
+
+/* cycle / timeline */
+.cycle-page{overflow-y:auto;overscroll-behavior-y:contain;touch-action:pan-x pan-y}
+.cycle{max-width:560px;margin:0 auto;padding-block:6px 48px;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.cycle h2{font-family:var(--f-display);font-weight:500;font-size:30px;line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lens{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;margin-bottom:4px}
+.lens b{font-family:var(--f-mono);font-weight:500;font-size:13px}
+.lede{font-size:13px;opacity:.72;margin:0 0 18px;max-width:46ch}
+.track{display:flex;flex-direction:column;min-height:860px}
+.marker{flex:none;display:grid;grid-template-columns:16px 1fr;gap:14px;align-items:center;height:30px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+.marker::before{content:"";height:1px;background:currentColor;opacity:.5;grid-column:1}
+.marker span b{font-family:var(--f-mono);font-weight:500;letter-spacing:0;text-transform:none;margin-left:8px;opacity:.85}
+.seg{display:flex;flex-direction:column;flex-basis:0;flex-shrink:0;min-width:0}
+.seg-btn{flex:1;display:grid;grid-template-columns:16px 40px minmax(0,1fr) auto;gap:0 14px;align-items:center;min-height:54px;padding:0;border:0;background:none;text-align:left;cursor:pointer;position:relative}
+.seg{position:relative}
+.seg > .rail{position:absolute;left:0;top:0;bottom:0;width:16px;overflow:hidden}
+.seg.first .rail{border-radius:8px 8px 0 0}
+.seg.last .rail{border-radius:0 0 8px 8px}
+.rail .tick{position:absolute;left:0;right:0;height:2px;margin-top:-1px;background:rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(8,10,22,.35)}
+.seg .sn .anc{font-style:normal;font-family:var(--f-mono);font-size:11px;letter-spacing:0;text-transform:none;opacity:.9;margin-top:2px}
+.rail .veil{position:absolute;left:0;right:0;top:0;height:0;background:rgba(8,10,22,.5)}
+.rail .now{position:absolute;left:-2px;right:-2px;height:3px;background:var(--ink-light);box-shadow:0 0 0 1px rgba(8,10,22,.45);display:none;border-radius:2px}
+.seg.current .rail .now{display:block}
+.seg .sk{font-family:var(--f-display);font-weight:700;font-size:25px;line-height:1;text-align:center}
+.seg .sn{display:flex;flex-direction:column;gap:2px;min-width:0}
+.seg .sn b{font-weight:500;font-size:16px}
+.seg .sn span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+.seg .ss{font-size:12px;font-family:var(--f-mono);opacity:.85;padding-left:8px;text-align:right}
+.seg.past .seg-btn > :not(.rail){opacity:.45}
+.seg.past .rail .veil{height:100%}
+.seg.current .sn b{font-weight:700}
+.seg .detail{display:none;margin:2px 0 12px 70px;font-size:13px;line-height:1.55}
+.seg.open .detail{display:block}
+.detail .times{font-family:var(--f-mono);font-size:12px;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.detail p{margin:0;opacity:.82;max-width:44ch}
+.why{margin-top:30px;font-size:13px;line-height:1.6;opacity:.8;max-width:50ch}
+.why h3{font-family:var(--f-display);font-weight:500;font-size:17px;margin:0 0 4px;opacity:1}
+.why p{margin:0 0 8px}
+.cycle-page .panel{border-radius:18px;padding-block:14px;padding-inline:14px;margin-inline:-14px;background:color-mix(in srgb,currentColor 4%,transparent)}
+
+/* cycle dial */
+.dial-wrap{position:relative;width:min(100%,440px);aspect-ratio:1;margin:4px auto 0}
+#dial{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.dseg{cursor:pointer;transition:transform .35s ease;outline:none}
+.dseg .fill{transition:filter .2s}
+.dseg:hover .fill{filter:brightness(1.07)}
+.dseg text{font-family:var(--f-display);font-weight:700;font-size:21px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.dseg.past text{opacity:.5}
+.donetrack{fill:none;stroke:currentColor;stroke-width:3;opacity:.14}
+#doneArc{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;opacity:.6}
+.dseg.sel .fill{stroke:currentColor;stroke-width:2.5}
+.dseg:focus-visible .fill{stroke:currentColor;stroke-width:3;stroke-dasharray:5 4}
+.atick{stroke:currentColor;stroke-width:1.6;stroke-linecap:round;opacity:.75}
+#handLine{stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
+#handDot{fill:currentColor}
+.dial-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52%;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;pointer-events:none}
+.dc-k{font-family:var(--f-display);font-weight:700;font-size:clamp(44px,14vw,66px);line-height:1}
+.dc-n{font-family:var(--f-display);font-weight:500;font-size:clamp(19px,5.4vw,24px);line-height:1.1;margin-top:4px}
+.dc-t{font-family:var(--f-mono);font-size:11.5px;opacity:.85;font-variant-numeric:tabular-nums}
+.dc-s{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px;font-size:12px;margin:10px 0 16px;opacity:.85}
+.legend b{font-family:var(--f-mono);font-weight:500;font-size:11.5px;margin-left:6px}
+.dial-info{max-width:44ch;margin:0 auto;text-align:center;font-size:13.5px;line-height:1.55;display:flex;flex-direction:column;align-items:center;gap:2px}
+.di-bell{font-size:15px}
+.di-bell span{font-family:var(--f-display)}
+.di-bell .jp{margin-left:6px}
+.di-meta{font-size:12px;opacity:.75}
+.di-anchor{font-size:12.5px;margin-top:6px;font-weight:500}
+.dial-info p{margin:6px 0 12px;opacity:.85}
+.cycle .why{margin-inline:auto}
+
+/* label switch */
+.seg-ctl{display:flex;width:max-content;max-width:100%;margin:0 auto 6px;padding:3px;gap:2px;border-radius:999px;border:1px solid color-mix(in srgb,currentColor 22%,transparent);background:color-mix(in srgb,currentColor 7%,transparent)}
+.seg-ctl button{border:0;background:none;cursor:pointer;font:500 12.5px/1 var(--f-body);padding:8px 13px;border-radius:999px;white-space:nowrap}
+.seg-ctl button span{font-family:var(--f-display);margin-right:3px}
+.seg-ctl button[aria-checked="true"]{background:color-mix(in srgb,currentColor 18%,transparent)}
+.seg-ctl button:focus-visible{outline-offset:1px;border-radius:999px}
+#dial[data-mode="en"] .dseg text{font-family:var(--f-body);font-weight:500;font-size:12.5px;letter-spacing:.02em}
+#dial[data-mode="bell"] .dseg text{font-size:24px;font-weight:500}
+.dc-k[data-mode="en"]{font-size:clamp(28px,9vw,40px);font-weight:500}
+.seal[data-mode="en"] .k{font-size:min(12vw,8vh,50px);font-weight:500}
+.seal[data-mode="bell"] .k{font-weight:500}
+
+html[lang|="zh"]{--f-display:"Noto Serif SC","Songti SC","SimSun",serif;--f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+.langs{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.langs button{width:100%;text-align:left;padding:12px 14px;border-radius:10px;border:1px solid var(--paper-line);background:#fffaf0;color:var(--paper-ink);cursor:pointer;font:500 15px var(--f-body)}
+.langs button[aria-pressed="true"]{border-color:var(--paper-ink);box-shadow:inset 0 0 0 1px var(--paper-ink)}
+.geo-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+
+/* seasons */
+.koline{margin-top:12px;border:0;background:none;color:inherit;font:400 13.5px/1.4 var(--f-body);opacity:.85;cursor:pointer;padding:4px 8px;border-radius:8px;max-width:34ch;text-wrap:balance}
+.koline span{font-family:var(--f-display);font-weight:500;font-size:15px}
+.koline:hover{background:color-mix(in srgb,currentColor 8%,transparent)}
+.app.wall .koline{font-size:16px;pointer-events:none}
+.app.wall .koline span{font-size:18px}
+#yearDial{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.yseg{cursor:pointer;transition:transform .35s ease}
+.yseg:hover .fill{filter:brightness(1.07)}
+.yseg.sel .fill{stroke:currentColor;stroke-width:2.2}
+.ylab{font-family:var(--f-display);font-weight:700;font-size:11.5px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+#yDone{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;opacity:.6}
+#yHand{stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
+#yDot{fill:currentColor}
+.yc-k{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,9vw,40px);line-height:1.1;letter-spacing:.04em}
+.yc-n{font-size:clamp(13px,3.6vw,15px);line-height:1.3;margin:4px 0 2px;text-wrap:balance}
+.kc-k{float:none;display:block;font-size:44px;letter-spacing:.06em;margin:2px 0 8px}
+
+/* wallpaper mode: sky + companion only, sized for a desktop */
+.app.wall .bar-top,.app.wall .bar-bottom,.app.wall .hint{display:none}
+.app.wall .pager{overflow:hidden}
+.app.wall .seal{width:min(44vh,360px);pointer-events:none}
+.app.wall .seal .k{font-size:min(24vh,190px)}
+.app.wall .name{font-size:clamp(34px,5vh,56px)}
+.app.wall .reading{font-size:13px}
+.app.wall .bell{font-size:17px}
+
+/* sheets */
+.scrim{position:fixed;inset:0;z-index:5;background:rgba(10,10,20,.32)}
+.sheet{position:fixed;z-index:6;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,100%);max-height:84%;overflow-y:auto;background:var(--paper);color:var(--paper-ink);border-radius:20px 20px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);padding-top:10px;padding-bottom:max(22px, env(safe-area-inset-bottom, 0px));padding-left:max(20px, env(safe-area-inset-left, 0px));padding-right:max(20px, env(safe-area-inset-right, 0px));font-size:14px;line-height:1.55}
+.sheet::before{content:"";display:block;width:38px;height:4px;border-radius:2px;background:var(--paper-line);margin:0 auto 14px}
+.sheet h3{font-family:var(--f-display);font-weight:500;font-size:22px;margin:0 0 4px}
+.sheet .sub{color:var(--paper-muted);font-size:13px;margin:0 0 14px}
+.sheet .close{position:absolute;top:12px;right:max(14px, env(safe-area-inset-right, 0px));border:0;background:none;color:var(--paper-muted);font-size:13px;cursor:pointer;padding:6px 8px}
+.btn{font:500 14px/1 var(--f-body);padding:11px 16px;border-radius:10px;border:1px solid var(--paper-line);background:#fffaf0;color:var(--paper-ink);cursor:pointer}
+.btn.primary{background:var(--paper-ink);border-color:var(--paper-ink);color:var(--paper)}
+.btn:hover{filter:brightness(.97)}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.cities{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin:0 0 16px;padding:0;list-style:none}
+.cities button{width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--paper-line);background:#fffaf0;color:var(--paper-ink);cursor:pointer;display:flex;flex-direction:column;gap:1px}
+.cities button small{color:var(--paper-muted);font-size:11px}
+.cities button[aria-pressed="true"]{border-color:var(--paper-ink);box-shadow:inset 0 0 0 1px var(--paper-ink)}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--paper-muted);min-width:0}
+.field input,.field select{font:15px var(--f-body);padding:9px 10px;border-radius:9px;border:1px solid var(--paper-line);background:#fffdf7;color:var(--paper-ink);min-width:0;width:100%}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fields .wide{grid-column:1/-1}
+.tt-out{font-family:var(--f-display);font-size:26px;margin:4px 0 2px}
+.tt-toki{color:var(--paper-muted);font-size:13px;margin-bottom:10px}
+input[type=range]{width:100%;accent-color:var(--paper-ink)}
+.cd-k{font-family:var(--f-display);font-weight:700;font-size:64px;line-height:1;float:right;margin:0 0 6px 16px;color:var(--shu)}
+.cd-meta{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:12px 0;font-size:13px}
+.cd-meta dt{color:var(--paper-muted)}
+.cd-meta dd{margin:0}
+.note{color:var(--paper-muted);font-size:12px;margin-top:10px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (max-width:420px){
+  .pill .lbl-long{display:none}
+  .mark small{display:none}
+  .bar-top{gap:6px}
+  .pill{padding:8px 11px}
+  .seg .detail{margin-left:30px}
+}
+@media (prefers-reduced-motion:reduce){
+  .app,.companion,.reveal,.seal .k{transition:none}
+}
+</style>
+
+<canvas id="sky" width="36" height="64" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="app" id="app">
+  <header class="bar-top">
+    <div class="mark">N-TOKI<small>不定時法</small></div>
+    <button class="pill preview" id="previewPill" type="button" title="Return to the present moment" aria-label="Previewing another time. Return to now" data-i18n-aria="previewAria">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 1 0 1.5-3.6M3 2.5v2.5h2.5"/></svg><span id="previewLbl">Now</span>
+    </button>
+    <button class="pill" id="cityBtn" type="button" aria-haspopup="dialog">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14.5s4.5-4.2 4.5-7.8a4.5 4.5 0 0 0-9 0c0 3.6 4.5 7.8 4.5 7.8z"/><circle cx="8" cy="6.7" r="1.6"/></svg><span id="cityLbl">Austin</span>
+    </button>
+    <button class="pill" id="langBtn" type="button" aria-haspopup="dialog" aria-label="Language" data-i18n-aria="language">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c1.8 1.7 2.6 3.8 2.6 6S9.8 12.3 8 14M8 2C6.2 3.7 5.4 5.8 5.4 8S6.2 12.3 8 14"/></svg><span id="langLbl">EN</span>
+    </button>
+    <button class="pill" id="ttBtn" type="button" aria-haspopup="dialog" aria-label="Time travel" data-i18n-aria="travelAria">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.6"/></svg><span class="lbl-long" data-i18n="travel">Travel</span>
+    </button>
+  </header>
+
+  <main class="pager" id="pager">
+    <section class="page clock-page" id="clockPage" aria-label="Living clock" data-i18n-aria="livingClock">
+      <div class="companion" id="companion">
+        <button class="seal" id="seal" type="button" aria-haspopup="dialog">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="97" fill="none" stroke="currentColor" stroke-opacity=".2" stroke-width="1"/>
+            <circle id="ring" cx="100" cy="100" r="97" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 100 100)" stroke-dasharray="609.47" stroke-dashoffset="609.47"/>
+            <circle id="ringDot" cx="100" cy="3" r="4.5" fill="currentColor"/>
+          </svg>
+          <span class="k" id="kanji" lang="ja">卯</span>
+        </button>
+        <div class="name" id="tokiName">Rabbit</div>
+        <div class="reading" id="tokiReading">U no koku</div>
+        <div class="bell" id="tokiBell">Sixth Bell<span class="jp" lang="ja">明け六つ</span></div>
+        <button class="koline" id="koLine" type="button" aria-haspopup="dialog"></button>
+        <div class="quiet" id="quiet" data-i18n="quiet" hidden>The sun has set. The day asks nothing more of you.</div>
+        <div class="polar" id="polarNote" hidden></div>
+      </div>
+      <div class="reveal" id="reveal" aria-hidden="true">
+        <div class="rv">
+          <div class="rv-time" id="rvTime">7:44<small>AM</small></div>
+          <div class="rv-date" id="rvDate">Monday, October 26</div>
+          <dl id="rvList"></dl>
+        </div>
+      </div>
+      <div class="hint" id="hint" data-i18n="hint">Hold anywhere for clock time · Swipe for the full cycle</div>
+    </section>
+
+    <section class="page cycle-page" id="cyclePage" aria-label="Toki cycle" data-i18n-aria="fullCycle">
+      <div class="cycle">
+        <h2 id="cycleTitle" class="ct">Today's twelve toki</h2>
+        <div class="lens" id="lens"></div>
+        <p class="lede" data-i18n="lede">Read it like the sky facing south: the sun rises on the left, peaks at the top in Horse, and sets on the right. Rat sits at the bottom, around the middle of the night. Tap any toki.</p>
+        <div class="seg-ctl" role="radiogroup" aria-label="Show toki as" data-i18n-aria="showAs">
+          <button type="button" role="radio" data-label="kanji"><span lang="ja">漢字</span> Kanji</button>
+          <button type="button" role="radio" data-label="en">English</button>
+          <button type="button" role="radio" data-label="bell">Bells</button>
+        </div>
+        <div class="dial-wrap">
+          <svg id="dial" viewBox="0 0 400 400" role="group" aria-label="The twelve toki of this cycle" data-i18n-aria="dialAria"></svg>
+          <div class="dial-center" id="dialCenter" aria-live="polite"></div>
+        </div>
+        <div class="legend" id="legend"></div>
+        <div class="dial-info" id="dialInfo"></div>
+        <div class="why">
+          <h3 data-i18n="whyT">Why the bells count down</h3>
+          <p data-i18n="whyP1">Temple bells struck in multiples of nine: 9, 18, 27, 36, 45, 54. Only the last digit was kept, so the strikes run nine, eight, seven, six, five, four, then start again at noon and at midnight.</p>
+          <p data-i18n="whyP2">Each bell marks the middle of its toki, so the ninth bell at the sun's height is the exact middle of Horse. Japan kept time this way until the calendar reform of 1873, when it adopted equal Western hours.</p>
+        </div>
+      </div>
+    </section>
+    <section class="page cycle-page" id="yearPage" aria-label="The 72 seasons" data-i18n-aria="yearAria">
+      <div class="cycle">
+        <h2 id="yTitle" data-i18n="yearTitle">The 72 seasons</h2>
+        <p class="lede" data-i18n="yearLede">The year read by the sun.</p>
+        <p class="lede" id="ySouth" data-i18n="southNote" hidden></p>
+        <div class="dial-wrap">
+          <svg id="yearDial" viewBox="0 0 400 400" role="group" aria-label="The 72 seasons of this year" data-i18n-aria="yearAria"></svg>
+          <div class="dial-center" id="yCenter" aria-live="polite"></div>
+        </div>
+        <div class="legend" id="yLegend"></div>
+        <div class="dial-info" id="yInfo"></div>
+        <div class="why"><p data-i18n="koNote"></p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bar-bottom">
+    <button class="pill" id="revealBtn" type="button" aria-pressed="false">Clock time</button>
+    <nav class="dots" aria-label="Views" data-i18n-aria="views">
+      <button type="button" id="dot0" aria-label="Living clock" data-i18n-aria="livingClock" aria-current="true"></button>
+      <button type="button" id="dot1" aria-label="Full cycle" data-i18n-aria="fullCycle" aria-current="false"></button>
+      <button type="button" id="dot2" aria-label="The 72 seasons" data-i18n-aria="yearAria" aria-current="false"></button>
+    </nav>
+    <button class="pill" id="switchBtn" type="button">Cycle</button>
+  </footer>
+</div>
+
+<div class="sr" aria-live="polite" id="live"></div>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<div class="sheet" id="sheetCompanion" role="dialog" aria-modal="true" aria-labelledby="cdName" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <div class="cd-k" id="cdK" lang="ja">卯</div>
+  <h3 id="cdName">Rabbit</h3>
+  <p class="sub" id="cdSub">U no koku · 卯の刻</p>
+  <p id="cdDesc"></p>
+  <dl class="cd-meta" id="cdMeta"></dl>
+  <p class="note" data-i18n="cdNote">N-Toki is a modern system inspired by Edo-period timekeeping. Like the original, each toki is centered on a moment of the sun, calculated for where you are.</p>
+</div>
+
+<div class="sheet" id="sheetCity" role="dialog" aria-modal="true" aria-labelledby="cityTitle" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <h3 id="cityTitle" data-i18n="cityTitle">Where is your sky?</h3>
+  <p class="sub" data-i18n="citySub">Sunrise and sunset are calculated on this device from the place you choose. Nothing is sent anywhere.</p>
+  <div class="geo-row"><button class="btn" type="button" id="geoBtn" data-i18n="myLoc">Use my location</button><span class="note" id="geoMsg" hidden></span></div>
+  <ul class="cities" id="cityList"></ul>
+  <form id="customForm">
+    <div class="fields">
+      <label class="field"><span data-i18n="lat">Latitude</span><input id="cLat" inputmode="decimal" placeholder="30.27" required></label>
+      <label class="field"><span data-i18n="lng">Longitude</span><input id="cLng" inputmode="decimal" placeholder="-97.74" required></label>
+      <label class="field wide"><span data-i18n="tz">Time zone</span><select id="cTz"></select></label>
+    </div>
+    <div class="row-btns"><button class="btn primary" type="submit" data-i18n="useCoords">Use these coordinates</button></div>
+    <p class="note" id="customErr" hidden></p>
+  </form>
+</div>
+
+<div class="sheet" id="sheetTravel" role="dialog" aria-modal="true" aria-labelledby="ttTitle" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <h3 id="ttTitle" data-i18n="ttTitle">Travel through the day</h3>
+  <p class="sub" data-i18n="ttSub">Pick any date and time to see its toki. Try a day in June and one in December to see the lengths change.</p>
+  <div class="fields">
+    <label class="field wide"><span data-i18n="date">Date</span><input type="date" id="ttDate"></label>
+    <label class="field wide"><span data-i18n="timeOfDay">Time of day</span><input type="range" id="ttTime" min="0" max="1439" step="1"></label>
+  </div>
+  <div class="tt-out" id="ttOut">—</div>
+  <div class="tt-toki" id="ttToki">—</div>
+  <div class="row-btns">
+    <button class="btn primary" type="button" id="playBtn">Play the whole day</button>
+    <button class="btn" type="button" id="playYearBtn">Play the year</button>
+    <button class="btn" type="button" id="nowBtn" data-i18n="backNow">Back to now</button>
+  </div>
+  <p class="note" data-i18n="playNote">Playing runs one full twelve-toki cycle in about 45 seconds.</p>
+</div>
+
+<div class="sheet" id="sheetKo" role="dialog" aria-modal="true" aria-labelledby="kcName" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <div class="cd-k kc-k" id="kcK" lang="ja"></div>
+  <h3 id="kcName"></h3>
+  <p class="sub" id="kcSub"></p>
+  <dl class="cd-meta" id="kcMeta"></dl>
+  <p class="note" id="kcSouth" data-i18n="southNote" hidden></p>
+  <p class="note" data-i18n="koNote"></p>
+</div>
+
+<div class="sheet" id="sheetLang" role="dialog" aria-modal="true" aria-labelledby="langTitle" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <h3 id="langTitle" data-i18n="langTitle">Language</h3>
+  <p class="sub" data-i18n="langSub">N-Toki follows your device language when it can. Choose another here.</p>
+  <ul class="langs" id="langList"></ul>
+</div>
+
+<script>
+// ==ENGINE START==
+const NT = (() => {
+  const PI = Math.PI, rad = PI / 180, dayMs = 864e5, J1970 = 2440588, J2000 = 2451545, OBL = rad * 23.4397, J0 = 0.0009;
+  const toDays = ms => ms / dayMs - 0.5 + J1970 - J2000;
+  const fromJ = j => (j + 0.5 - J1970) * dayMs;
+
+  // Sunrise / sunset for the solar day nearest `ms` (SunCalc algorithm, -0.833° horizon).
+  function sunTimes(ms, lat, lng) {
+    const lw = rad * -lng, phi = rad * lat, d = toDays(ms);
+    const n = Math.round(d - J0 - lw / (2 * PI));
+    const ds = J0 + lw / (2 * PI) + n;
+    const M = rad * (357.5291 + 0.98560028 * ds);
+    const C = rad * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M));
+    const L = M + C + rad * 102.9372 + PI;
+    const dec = Math.asin(Math.sin(OBL) * Math.sin(L));
+    const Jnoon = J2000 + ds + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+    const h0 = -0.833 * rad;
+    const cosw = (Math.sin(h0) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec));
+    if (cosw < -1) return { noon: fromJ(Jnoon), polar: 'day' };
+    if (cosw > 1) return { noon: fromJ(Jnoon), polar: 'night' };
+    const w = Math.acos(cosw);
+    const a = J0 + (w + lw) / (2 * PI) + n;
+    const Jset = J2000 + a + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+    const Jrise = Jnoon - (Jset - Jnoon);
+    return { noon: fromJ(Jnoon), rise: fromJ(Jrise), set: fromJ(Jset) };
+  }
+
+  const dtfCache = {};
+  function partsOf(ms, tz) {
+    const f = dtfCache[tz] || (dtfCache[tz] = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+    const o = {};
+    for (const x of f.formatToParts(ms)) if (x.type !== 'literal') o[x.type] = +x.value;
+    if (o.hour === 24) o.hour = 0;
+    return o;
+  }
+  function tzOffset(ms, tz) {
+    const p = partsOf(ms, tz);
+    return Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second) - Math.floor(ms / 1000) * 1000;
+  }
+  // Absolute ms for a wall-clock time (minutes after midnight) on a date in a time zone.
+  function zoned(y, m, d, mins, tz) {
+    const g = Date.UTC(y, m - 1, d, 0, mins);
+    const o = tzOffset(g, tz);
+    let r = g - o;
+    const o2 = tzOffset(r, tz);
+    if (o2 !== o) r = g - o2;
+    return r;
+  }
+
+  // The original centered system: every toki is centered on a moment of the sun.
+  // Rabbit on sunrise, Horse on the sun's height, Rooster on sunset, Rat on the middle of the night.
+  // Daylight (sunrise -> sunset) and darkness (sunset -> sunrise) are each divided by six,
+  // so Rabbit and Rooster straddle the horizon: half night-length, half day-length.
+  function cycle(t, place) {
+    const ev = [];
+    for (let k = -3; k <= 3; k++) {
+      const s = sunTimes(t + k * dayMs, place.lat, place.lng);
+      if (s.rise != null && isFinite(s.rise)) { ev.push({ t: s.rise, type: 'rise' }); ev.push({ t: s.set, type: 'set' }); }
+    }
+    ev.sort((a, b) => a.t - b.t);
+    const u = [];
+    for (const e of ev) { const last = u[u.length - 1]; if (!last || e.type !== last.type || e.t - last.t > 3 * 3600e3) u.push(e); }
+    for (let j = 1; j + 2 < u.length; j++) {
+      if (u[j].type !== 'rise' || u[j - 1].type !== 'set' || u[j + 1].type !== 'set' || u[j + 2].type !== 'rise') continue;
+      const Sp = u[j - 1].t, R = u[j].t, S = u[j + 1].t, R2 = u[j + 2].t;
+      if (!((R2 - R) > 22 * 3600e3 && (R2 - R) < 26 * 3600e3 && R - Sp > 0 && R - Sp < 24 * 3600e3)) continue;
+      const D = (S - R) / 6, N = (R2 - S) / 6, Np = (R - Sp) / 6;
+      const b0 = R - Np / 2, b12 = R2 - N / 2;
+      if (t < b0 || t >= b12) continue;
+      const b = [b0];
+      for (let k = 1; k <= 6; k++) b.push(R + (k - 0.5) * D);   // ends at sunset - half a day toki
+      for (let k = 1; k <= 6; k++) b.push(S + (k - 0.5) * N);   // ends at next sunrise - half a night toki
+      return finish({ mode: 'solar', rise: R, set: S, nextRise: R2, noon: R + 3 * D, midnight: S + 3 * N, b }, t);
+    }
+    return fixedCycle(t, place, sunTimes(t, place.lat, place.lng).polar || 'unusual');
+  }
+
+  // Polar day / night: no real sunrise to anchor to, so use labeled equal 2-hour toki,
+  // still centered: Rabbit on 6:00, Horse on 12:00, Rat on midnight (local clock).
+  function fixedCycle(t, place, polar) {
+    const p = partsOf(t, place.tz);
+    let start = zoned(p.year, p.month, p.day, 300, place.tz);
+    if (t < start) start = zoned(p.year, p.month, p.day - 1, 300, place.tz);
+    const b = [];
+    for (let k = 0; k <= 12; k++) b.push(start + k * 7200e3);
+    const h = 3600e3;
+    return finish({ mode: 'fixed', polar, rise: b[0] + h, set: b[6] + h, nextRise: b[12] + h, noon: b[3] + h, midnight: b[9] + h, b }, t);
+  }
+
+  function finish(c, t) {
+    let idx = 0;
+    for (let k = 0; k < 12; k++) if (t >= c.b[k]) idx = k;
+    c.idx = idx;
+    c.progress = Math.min(1, Math.max(0, (t - c.b[idx]) / (c.b[idx + 1] - c.b[idx])));
+    c.dayToki = (c.set - c.rise) / 6;
+    c.nightToki = (c.nextRise - c.set) / 6;
+    c.t = t;
+    return c;
+  }
+
+  return { sunTimes, cycle, partsOf, zoned, tzOffset };
+})();
+// ==ENGINE END==
+
+const TOKI = [
+  { k: '卯', en: 'Rabbit', r: 'U', bell: 'Sixth', bj: '明け六つ', br: 'Ake-mutsu', hex: '#B9D4AE', d: "Sunrise falls in the middle of this toki. In Edo, the dawn sixth bell opened the town's ward gates and started the working day." },
+  { k: '辰', en: 'Dragon', r: 'Tatsu', bell: 'Fifth', bj: '朝五つ', br: 'Asa-itsutsu', hex: '#D8E5B2', d: 'Morning light climbs and shadows shorten. Shops and workshops are open.' },
+  { k: '巳', en: 'Snake', r: 'Mi', bell: 'Fourth', bj: '昼四つ', br: 'Hiru-yotsu', hex: '#EDE7AE', d: 'Late morning. The light is close to full strength.' },
+  { k: '午', en: 'Horse', r: 'Uma', bell: 'Ninth', bj: '昼九つ', br: 'Hiru-kokonotsu', hex: '#FFEDA8', d: 'The sun reaches its height in the middle of this toki. Japanese still names noon after it: 正午 (shōgo) means true Horse, and AM and PM are 午前 and 午後, before Horse and after Horse.' },
+  { k: '未', en: 'Sheep', r: 'Hitsuji', bell: 'Eighth', bj: '昼八つ', br: 'Hiru-yatsu', hex: '#FFD27A', d: 'Early afternoon. The eighth bell gave Japanese its word for an afternoon snack, oyatsu.' },
+  { k: '申', en: 'Monkey', r: 'Saru', bell: 'Seventh', bj: '夕七つ', br: 'Yū-nanatsu', hex: '#FFA45C', d: 'The light lowers and warms. The last stretch of the working day.' },
+  { k: '酉', en: 'Rooster', r: 'Tori', bell: 'Sixth', bj: '暮れ六つ', br: 'Kure-mutsu', hex: '#F2704E', d: 'Sunset falls in the middle of this toki. The evening sixth bell hands the day over to the night.' },
+  { k: '戌', en: 'Dog', r: 'Inu', bell: 'Fifth', bj: '宵五つ', br: 'Yoi-itsutsu', hex: '#E06C9C', d: 'Early evening. Lamps, the evening meal, company.' },
+  { k: '亥', en: 'Boar', r: 'I', bell: 'Fourth', bj: '夜四つ', br: 'Yo-yotsu', hex: '#6A4E9E', d: "The night deepens. Edo's ward gates closed at this bell." },
+  { k: '子', en: 'Rat', r: 'Ne', bell: 'Ninth', bj: '夜九つ', br: 'Yoru-kokonotsu', hex: '#0E1729', d: 'The middle of the night falls in the middle of this toki. The ninth bell rings again, as it did when the sun was highest.' },
+  { k: '丑', en: 'Ox', r: 'Ushi', bell: 'Eighth', bj: '夜八つ', br: 'Yoru-yatsu', hex: '#15233F', d: 'The deepest hours. In old stories, ushi-mitsu, the third quarter of Ox, belonged to ghosts.' },
+  { k: '寅', en: 'Tiger', r: 'Tora', bell: 'Seventh', bj: '暁七つ', br: 'Akatsuki-nanatsu', hex: '#3E7477', d: 'Before dawn. Travelers set out at the seventh bell to cover ground by daylight.' }
+];
+
+const CITIES = [
+  { id: 'austin', name: 'Austin', sub: 'Texas', lat: 30.2672, lng: -97.7431, tz: 'America/Chicago' },
+  { id: 'sanantonio', name: 'San Antonio', sub: 'Texas', lat: 29.4241, lng: -98.4936, tz: 'America/Chicago' },
+  { id: 'houston', name: 'Houston', sub: 'Texas', lat: 29.7604, lng: -95.3698, tz: 'America/Chicago' },
+  { id: 'dallas', name: 'Dallas', sub: 'Texas', lat: 32.7767, lng: -96.797, tz: 'America/Chicago' },
+  { id: 'nyc', name: 'New York', sub: 'United States', lat: 40.7128, lng: -74.006, tz: 'America/New_York' },
+  { id: 'la', name: 'Los Angeles', sub: 'United States', lat: 34.0522, lng: -118.2437, tz: 'America/Los_Angeles' },
+  { id: 'denver', name: 'Denver', sub: 'United States', lat: 39.7392, lng: -104.9903, tz: 'America/Denver' },
+  { id: 'honolulu', name: 'Honolulu', sub: 'Hawaiʻi', lat: 21.3069, lng: -157.8583, tz: 'Pacific/Honolulu' },
+  { id: 'cdmx', name: 'Mexico City', sub: 'Mexico', lat: 19.4326, lng: -99.1332, tz: 'America/Mexico_City' },
+  { id: 'london', name: 'London', sub: 'United Kingdom', lat: 51.5074, lng: -0.1278, tz: 'Europe/London' },
+  { id: 'reykjavik', name: 'Reykjavík', sub: 'Iceland', lat: 64.1466, lng: -21.9426, tz: 'Atlantic/Reykjavik' },
+  { id: 'tromso', name: 'Tromsø', sub: 'Norway · Arctic', lat: 69.6492, lng: 18.9553, tz: 'Europe/Oslo' },
+  { id: 'nairobi', name: 'Nairobi', sub: 'Kenya · equator', lat: -1.2921, lng: 36.8219, tz: 'Africa/Nairobi' },
+  { id: 'kyoto', name: 'Kyoto', sub: 'Japan', lat: 35.0116, lng: 135.7681, tz: 'Asia/Tokyo' },
+  { id: 'tokyo', name: 'Tokyo', sub: 'Japan · old Edo', lat: 35.6762, lng: 139.6503, tz: 'Asia/Tokyo' },
+  { id: 'sydney', name: 'Sydney', sub: 'Australia', lat: -33.8688, lng: 151.2093, tz: 'Australia/Sydney' }
+];
+
+/* ---------- colour: OKLab LUT over the 12-toki cycle ---------- */
+const toLin = c => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+const toSrgb = c => (c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055);
+function hexToLab(h) {
+  const r = toLin(parseInt(h.slice(1, 3), 16) / 255), g = toLin(parseInt(h.slice(3, 5), 16) / 255), b = toLin(parseInt(h.slice(5, 7), 16) / 255);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s];
+}
+function labToRgb(L, A, B) {
+  const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3, m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3, s = (L - 0.0894841775 * A - 1.291485548 * B) ** 3;
+  const c = [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s];
+  return c.map(v => Math.round(255 * Math.min(1, Math.max(0, toSrgb(Math.min(1, Math.max(0, v)))))));
+}
+const PAL = TOKI.map(t => hexToLab(t.hex));
+const LUTN = 1440, LUT = new Float32Array(LUTN * 3);
+for (let i = 0; i < LUTN; i++) {
+  const x = (i / LUTN) * 12 - 0.5;            // anchors sit at each toki's midpoint
+  const a = Math.floor(x), t = x - a, s = t * t * (3 - 2 * t);
+  const A = PAL[((a % 12) + 12) % 12], B = PAL[(((a + 1) % 12) + 12) % 12];
+  for (let c = 0; c < 3; c++) LUT[i * 3 + c] = A[c] + (B[c] - A[c]) * s;
+}
+function lut(x) { const i = Math.floor(((((x % 12) + 12) % 12) / 12) * LUTN) % LUTN; return [LUT[i * 3], LUT[i * 3 + 1], LUT[i * 3 + 2]]; }
+const css = x => { const [r, g, b] = labToRgb(...lut(x)); return `rgb(${r},${g},${b})`; };
+
+/* ---------- state ---------- */
+const $ = id => document.getElementById(id);
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const deviceTz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (e) { return 'UTC'; } })();
+const state = {
+  place: store.get('ntoki.place') || CITIES[0],
+  override: null, playing: false, cyc: null, p: 0, revealMode: null, lastIdx: -1, trackKey: ''
+};
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+const BELLN = { Ninth: 9, Eighth: 8, Seventh: 7, Sixth: 6, Fifth: 5, Fourth: 4 };
+state.label = ['kanji', 'en', 'bell'].includes(store.get('ntoki.label')) ? store.get('ntoki.label') : 'kanji';
+const glyph = i => (state.label === 'en' ? tokiAnimal(i) : state.label === 'bell' ? String(BELLN[TOKI[i].bell]) : TOKI[i].k);
+const subName = i => (state.lang !== 'en' ? tokiName(i) : state.label === 'en' ? TOKI[i].k : TOKI[i].en);
+const glyphMode = () => (state.label === 'en' && state.lang === 'zh' ? 'kanji' : state.label);
+const nowMs = () => (state.override != null ? state.override : Date.now());
+/* ---------- languages ---------- */
+const LANGS = [['en', 'English'], ['ja', '日本語'], ['zh', '简体中文']];
+const LOCALE = { en: 'en-US', ja: 'ja-JP', zh: 'zh-CN' };
+const CN = { 9: '九', 8: '八', 7: '七', 6: '六', 5: '五', 4: '四' };
+const TL = {
+  ja: {
+    name: ['卯の刻', '辰の刻', '巳の刻', '午の刻', '未の刻', '申の刻', '酉の刻', '戌の刻', '亥の刻', '子の刻', '丑の刻', '寅の刻'],
+    read: ['うのこく', 'たつのこく', 'みのこく', 'うまのこく', 'ひつじのこく', 'さるのこく', 'とりのこく', 'いぬのこく', 'いのこく', 'ねのこく', 'うしのこく', 'とらのこく'],
+    animal: ['うさぎ', 'たつ', 'へび', 'うま', 'ひつじ', 'さる', 'とり', 'いぬ', 'いのしし', 'ねずみ', 'うし', 'とら'],
+    d: [
+      '日の出がこの刻のまんなかに来ます。江戸では明け六つの鐘で町の木戸が開き、一日の仕事が始まりました。',
+      '朝の光が高くなり、影が短くなっていきます。店や仕事場が開いています。',
+      '昼前。光はほぼいっぱいの強さです。',
+      '太陽はこの刻のまんなかで最も高くなります。「正午」は「まさに午」という意味で、午前・午後も「午の前」「午の後」です。',
+      '昼過ぎ。昼八つの鐘から「おやつ」という言葉が生まれました。',
+      '光が低く、あたたかくなります。一日の仕事の終わりのひととき。',
+      '日の入りがこの刻のまんなかに来ます。暮れ六つの鐘が、昼を夜へと引き渡します。',
+      '宵のはじまり。灯り、夕餉、語らい。',
+      '夜が深まります。江戸の木戸は夜四つの鐘で閉まりました。',
+      '夜半がこの刻のまんなかに来ます。太陽が最も高かった時と同じく、九つの鐘がふたたび鳴ります。',
+      'いちばん深い時間。昔話では、丑三つ時は幽霊の時刻でした。',
+      '夜明け前。旅人は暁七つに発ち、明るいうちに道を進みました。'
+    ]
+  },
+  zh: {
+    name: ['卯时', '辰时', '巳时', '午时', '未时', '申时', '酉时', '戌时', '亥时', '子时', '丑时', '寅时'],
+    read: ['mǎo shí', 'chén shí', 'sì shí', 'wǔ shí', 'wèi shí', 'shēn shí', 'yǒu shí', 'xū shí', 'hài shí', 'zǐ shí', 'chǒu shí', 'yín shí'],
+    animal: ['兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪', '鼠', '牛', '虎'],
+    d: [
+      '日出落在这个时辰的正中。在江户，“明六”的钟声一响，街区的木户打开，一天的工作开始。',
+      '晨光升高，影子变短。店铺和作坊都已开门。',
+      '临近中午。阳光接近最强。',
+      '太阳在这个时辰的正中升到最高。中文的“正午”“午后”都来自这个时辰。',
+      '午后。日本“八响”的钟声，留下了“おやつ”（午后点心）这个词。',
+      '日光渐低、渐暖。一天工作的最后一段。',
+      '日落落在这个时辰的正中。“暮六”的钟声把白昼交给夜晚。',
+      '黄昏之后。点灯、晚饭、相聚。',
+      '夜渐深。江户的木户在“夜四”的钟声时关闭。',
+      '夜半落在这个时辰的正中。九响钟声再次敲响，就像太阳最高时一样。',
+      '最深的时刻。旧故事里，“丑三”是鬼魂出没的时候。',
+      '黎明之前。旅人在“晓七”出发，趁白天赶路。'
+    ]
+  }
+};
+const STR = {
+  en: {
+    hint: 'Hold anywhere for clock time · Swipe for the full cycle', clockTime: 'Clock time', hideClock: 'Hide clock time', cycle: 'Cycle', clock: 'Clock', travel: 'Travel', language: 'Language',
+    quiet: 'The sun has set. The day asks nothing more of you.',
+    lede: 'Read it like the sky facing south: the sun rises on the left, peaks at the top, and sets on the right. The middle of the night sits at the bottom. Tap any toki.',
+    mKanji: '<span lang="ja">漢字</span> Kanji', mAnimal: 'Animal', mBell: 'Bells',
+    whyT: 'Why the bells count down',
+    whyP1: 'A common explanation: temple bells struck in multiples of nine (9, 18, 27, 36, 45, 54), and only the last digit was kept. Either way, the count ran nine, eight, seven, six, five, four, then began again at noon and at midnight.',
+    whyP2: "In N-Toki each bell sits at the middle of its toki, so the ninth bell at the sun's height is the exact middle of Horse. Japan kept time this way until 1873, when it adopted equal Western hours.",
+    todayTitle: "Today's twelve toki", dayTitle: d => `Twelve toki of ${d}`, eachDay: 'Each daylight toki', eachNight: 'Each night toki',
+    sunrise: 'Sunrise', sunHeight: 'Sun at its height', sunset: 'Sunset', midnight: 'Middle of the night', noonF: 'Noon', midnightF: 'Midnight',
+    tokiWin: n => `${n} toki`, left: 'Left in this toki', dayToki: 'Daylight toki', nightToki: 'Night toki',
+    nowPct: p => `Now · ${p}%`, beginsIn: d => `Begins in ${d}`, ended: d => `Ended ${d} ago`, showCurrent: 'Show the current toki',
+    bell: 'Bell', place: 'Place in the day', daylight: 'Daylight', night: 'Night',
+    cSunrise: x => `Centered on sunrise (${x})`, cHeight: x => `Centered on the sun at its height (${x})`, cSunset: x => `Centered on sunset (${x})`, cMid: x => `Centered on the middle of the night (${x})`,
+    cF6: 'Centered on 6:00', cFnoon: 'Centered on noon', cF18: 'Centered on 18:00', cFmid: 'Centered on midnight',
+    began: n => `The ${n} toki has begun.`,
+    polarDay: 'Midnight sun: the sun never sets here today, so N-Toki is using equal two-hour toki.',
+    polarNight: 'Polar night: the sun never rises here today, so N-Toki is using equal two-hour toki.',
+    polarOther: 'No clear sunrise today, so N-Toki is using equal two-hour toki.',
+    sealAria: (n, p) => `${n}, ${p} percent through. Open details.`, close: 'Close',
+    cdNote: 'N-Toki is a modern system inspired by Edo-period timekeeping. Like the original, each toki is centered on a moment of the sun, calculated for where you are.',
+    cityTitle: 'Where is your sky?', citySub: 'Sunrise and sunset are calculated on this device from the place you choose. Nothing is sent anywhere.',
+    myLoc: 'Use my location', myLocName: 'My location', locErr: 'Location is not available here. Pick a city or enter coordinates.', locWait: 'Finding your location…',
+    lat: 'Latitude', lng: 'Longitude', tz: 'Time zone', useCoords: 'Use these coordinates', coordErr: 'Latitude must be between -90 and 90, and longitude between -180 and 180.', custom: 'Custom',
+    ttTitle: 'Travel through the day', ttSub: 'Pick any date and time to see its toki. Try a day in June and one in December to see the lengths change.',
+    date: 'Date', timeOfDay: 'Time of day', play: 'Play the whole day', stop: 'Stop', backNow: 'Back to now', playNote: 'Play the whole day runs one twelve-toki cycle in about 45 seconds. Play the year runs all 72 seasons in about 72 seconds.',
+    ttToki: (n, p, d) => `${n} toki, ${p}% through · daylight toki ${d}`,
+    langTitle: 'Language', langSub: 'N-Toki follows your device language when it can. Choose another here.',
+    views: 'Views', livingClock: 'Living clock', fullCycle: 'Full cycle', showAs: 'Show toki as', dialAria: 'The twelve toki of this cycle', previewAria: 'Previewing another time. Return to now', travelAria: 'Time travel',
+    seasons: 'Seasons', yearTitle: 'The 72 seasons', yearAria: 'The 72 seasons of this year',
+    yearLede: 'The year read by the sun: 24 solar terms, each split into three micro-seasons of about five days. Summer solstice at the top, winter solstice at the bottom. Tap any season.',
+    koNote: "The 72 kō came from China and were revised for Japan's climate by court astronomer Shibukawa Shunkai in 1685. N-Toki calculates them from the sun's position, so the dates are right every year.",
+    southNote: 'Seasons are shifted six months for the southern hemisphere.', sekki: 'Solar term', dates: 'Dates', koOf: k => `Season ${k} of 72`,
+    koNow: (d, n) => `Now · day ${d} of ${n}`, days: n => (n === 1 ? '1 day' : `${n} days`), showCurrentKo: 'Show the current season',
+    sprEq: 'Spring equinox', sumSol: 'Summer solstice', autEq: 'Autumn equinox', winSol: 'Winter solstice', playYear: 'Play the year',
+    durH: (h, m) => `${h} h ${m} min`, durM: m => `${m} min`
+  },
+  ja: {
+    hint: '長押しで時計の時刻 · スワイプで一日の巡り', clockTime: '時刻', hideClock: '時刻を隠す', cycle: '巡り', clock: '時計', travel: '時の旅', language: '言語',
+    quiet: '日が沈みました。今日はもう、何も求めません。',
+    lede: '南を向いて空を見るように読みます。日は左から昇り、上で最も高くなり、右へ沈みます。夜半は下。好きな刻をタップしてください。',
+    mKanji: '漢字', mAnimal: '動物', mBell: '鐘',
+    whyT: '鐘の数が減っていくわけ',
+    whyP1: 'よく知られた説では、鐘は九の倍数（9・18・27・36・45・54）で打たれ、下一桁だけが残ったといいます。いずれにせよ九・八・七・六・五・四と数え、正午と真夜中にまた九から始まりました。',
+    whyP2: 'N-Toki では各刻のまんなかに鐘を置くので、太陽が最も高い九つの鐘は午の刻のちょうど中央です。日本は1873年に西洋の定時法を採用するまで、この方法で時を刻んでいました。',
+    todayTitle: '今日の十二刻', dayTitle: d => `${d}の十二刻`, eachDay: '昼の一刻', eachNight: '夜の一刻',
+    sunrise: '日の出', sunHeight: '南中', sunset: '日の入り', midnight: '夜半', noonF: '正午', midnightF: '真夜中',
+    tokiWin: n => n, left: 'この刻の残り', dayToki: '昼の一刻', nightToki: '夜の一刻',
+    nowPct: p => `今 · ${p}%`, beginsIn: d => `あと${d}`, ended: d => `${d}前に終了`, showCurrent: '今の刻を表示',
+    bell: '鐘', place: '一日の中の位置', daylight: '昼', night: '夜',
+    cSunrise: x => `日の出が中心（${x}）`, cHeight: x => `南中が中心（${x}）`, cSunset: x => `日の入りが中心（${x}）`, cMid: x => `夜半が中心（${x}）`,
+    cF6: '6:00が中心', cFnoon: '正午が中心', cF18: '18:00が中心', cFmid: '真夜中が中心',
+    began: n => `${n}になりました。`,
+    polarDay: '白夜：今日は日が沈まないため、2時間ずつの均等な刻を使っています。',
+    polarNight: '極夜：今日は日が昇らないため、2時間ずつの均等な刻を使っています。',
+    polarOther: '今日ははっきりした日の出がないため、2時間ずつの均等な刻を使っています。',
+    sealAria: (n, p) => `${n}、${p}%経過。詳細を開く。`, close: '閉じる',
+    cdNote: 'N-Toki は江戸時代の時の数え方に着想を得た現代の仕組みです。もとの方法と同じく、各刻はあなたの場所で計算した太陽の瞬間を中心にしています。',
+    cityTitle: 'あなたの空はどこ？', citySub: '日の出と日の入りは、選んだ場所をもとにこの端末で計算します。どこにも送信しません。',
+    myLoc: '現在地を使う', myLocName: '現在地', locErr: 'ここでは位置情報を使えません。都市を選ぶか座標を入力してください。', locWait: '現在地を探しています…',
+    lat: '緯度', lng: '経度', tz: 'タイムゾーン', useCoords: 'この座標を使う', coordErr: '緯度は-90〜90、経度は-180〜180の範囲で入力してください。', custom: 'カスタム',
+    ttTitle: '一日を旅する', ttSub: '好きな日付と時刻を選ぶと、その刻が見られます。6月と12月で長さの違いを比べてみてください。',
+    date: '日付', timeOfDay: '時刻', play: '一日を再生', stop: '停止', backNow: '今に戻る', playNote: '「一日を再生」は十二刻の一巡りを約45秒で、「一年を再生」は七十二候を約72秒で再生します。',
+    ttToki: (n, p, d) => `${n}、${p}%経過 · 昼の一刻 ${d}`,
+    langTitle: '言語', langSub: 'N-Toki はできるだけ端末の言語に合わせます。ここで変更できます。',
+    views: '表示', livingClock: '生きた時計', fullCycle: '一日の巡り', showAs: '刻の表し方', dialAria: 'この巡りの十二刻', previewAria: '別の時刻を表示中。今に戻る', travelAria: '時の旅',
+    seasons: '七十二候', yearTitle: '七十二候', yearAria: '今年の七十二候',
+    yearLede: '太陽で読む一年。二十四節気をそれぞれ三つに分けた、約五日ずつの七十二候です。夏至が上、冬至が下。好きな候をタップしてください。',
+    koNote: '七十二候は中国から伝わり、1685年に天文方の渋川春海が日本の気候に合わせて改めました。N-Toki は太陽の位置から計算するので、毎年正しい日付になります。',
+    southNote: '南半球のため、季節を半年ずらしています。', sekki: '節気', dates: '期間', koOf: k => `七十二候の第${k}候`,
+    koNow: (d, n) => `今 · ${n}日のうち${d}日目`, days: n => `${n}日`, showCurrentKo: '今の候を表示',
+    sprEq: '春分', sumSol: '夏至', autEq: '秋分', winSol: '冬至', playYear: '一年を再生',
+    durH: (h, m) => `${h}時間${m}分`, durM: m => `${m}分`
+  },
+  zh: {
+    hint: '长按查看钟表时间 · 滑动查看完整周期', clockTime: '钟表时间', hideClock: '隐藏钟表时间', cycle: '周期', clock: '时钟', travel: '穿越', language: '语言',
+    quiet: '太阳已经落下。今天不再向你索取什么。',
+    lede: '像面朝南方看天空那样阅读：太阳从左边升起，在顶端最高，向右边落下。夜半在最下方。点按任意时辰。',
+    mKanji: '汉字', mAnimal: '生肖', mBell: '钟声',
+    whyT: '钟声为什么倒数',
+    whyP1: '一种常见说法是：寺钟按九的倍数（9、18、27、36、45、54）敲击，只保留个位数。无论如何，钟声依次为九、八、七、六、五、四，并在正午和半夜重新从九开始。',
+    whyP2: '在 N-Toki 中，每一响都位于其时辰的正中，所以太阳最高时的九响正是午时的中心。日本一直这样计时，直到1873年采用西方的等长小时。',
+    todayTitle: '今天的十二时辰', dayTitle: d => `${d}的十二时辰`, eachDay: '白天每个时辰', eachNight: '夜晚每个时辰',
+    sunrise: '日出', sunHeight: '太阳最高', sunset: '日落', midnight: '夜半', noonF: '中午', midnightF: '午夜',
+    tokiWin: n => n, left: '本时辰剩余', dayToki: '白天时辰', nightToki: '夜晚时辰',
+    nowPct: p => `现在 · ${p}%`, beginsIn: d => `${d}后开始`, ended: d => `${d}前结束`, showCurrent: '显示当前时辰',
+    bell: '钟声', place: '在一天中的位置', daylight: '白天', night: '夜晚',
+    cSunrise: x => `以日出为中心（${x}）`, cHeight: x => `以太阳最高点为中心（${x}）`, cSunset: x => `以日落为中心（${x}）`, cMid: x => `以夜半为中心（${x}）`,
+    cF6: '以6:00为中心', cFnoon: '以中午为中心', cF18: '以18:00为中心', cFmid: '以午夜为中心',
+    began: n => `${n}开始了。`,
+    polarDay: '极昼：今天这里太阳不落，N-Toki 改用每个两小时的等长时辰。',
+    polarNight: '极夜：今天这里太阳不升，N-Toki 改用每个两小时的等长时辰。',
+    polarOther: '今天没有明确的日出，N-Toki 改用每个两小时的等长时辰。',
+    sealAria: (n, p) => `${n}，已过${p}%。打开详情。`, close: '关闭',
+    cdNote: 'N-Toki 是受日本江户时代计时方式启发的现代系统。和原来一样，每个时辰都以你所在地点计算出的太阳时刻为中心。',
+    cityTitle: '你的天空在哪里？', citySub: '日出和日落根据你选择的地点在本设备上计算，不会发送到任何地方。',
+    myLoc: '使用我的位置', myLocName: '我的位置', locErr: '此处无法使用定位。请选择城市或输入坐标。', locWait: '正在获取位置…',
+    lat: '纬度', lng: '经度', tz: '时区', useCoords: '使用这些坐标', coordErr: '纬度须在-90到90之间，经度须在-180到180之间。', custom: '自定义',
+    ttTitle: '穿越一天', ttSub: '选择任意日期和时间，查看对应的时辰。试试六月和十二月的一天，看看长度的变化。',
+    date: '日期', timeOfDay: '时间', play: '播放一整天', stop: '停止', backNow: '回到现在', playNote: '“播放一整天”约45秒播完十二时辰；“播放一整年”约72秒播完七十二候。',
+    ttToki: (n, p, d) => `${n}，已过${p}% · 白天时辰 ${d}`,
+    langTitle: '语言', langSub: 'N-Toki 会尽量跟随设备语言，也可以在这里更改。',
+    views: '视图', livingClock: '活的时钟', fullCycle: '完整周期', showAs: '时辰显示方式', dialAria: '本周期的十二时辰', previewAria: '正在预览其他时间。回到现在', travelAria: '穿越时间',
+    seasons: '七十二候', yearTitle: '七十二候', yearAria: '今年的七十二候',
+    yearLede: '用太阳来读一年：二十四节气，每个节气再分为三候，每候约五天。夏至在上，冬至在下。点按任意一候。',
+    koNote: '七十二候源自中国，1685年由日本天文学家涩川春海根据日本气候修订。N-Toki 依据太阳位置计算，所以每年的日期都准确。这里使用日本版本，与中国的七十二候部分不同。',
+    southNote: '因位于南半球，季节已平移半年。', sekki: '节气', dates: '日期', koOf: k => `第${k}候（共72候）`,
+    koNow: (d, n) => `现在 · 第${d}天（共${n}天）`, days: n => `${n}天`, showCurrentKo: '显示当前一候',
+    sprEq: '春分', sumSol: '夏至', autEq: '秋分', winSol: '冬至', playYear: '播放一整年',
+    durH: (h, m) => `${h}小时${m}分`, durM: m => `${m}分钟`
+  }
+};
+function pickLang() {
+  const saved = store.get('ntoki.lang');
+  if (STR[saved]) return saved;
+  const prefs = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en']).map(x => String(x).toLowerCase());
+  for (const p of prefs) { if (p.startsWith('ja')) return 'ja'; if (p.startsWith('zh')) return 'zh'; if (p.startsWith('en')) return 'en'; }
+  return 'en';
+}
+state.lang = pickLang();
+function tr(k, ...a) { const s = STR[state.lang][k] != null ? STR[state.lang][k] : STR.en[k]; return typeof s === 'function' ? s(...a) : s; }
+const tokiName = i => (state.lang === 'en' ? TOKI[i].en : TL[state.lang].name[i]);
+const tokiAnimal = i => (state.lang === 'en' ? TOKI[i].en : TL[state.lang].animal[i]);
+const tokiReading = i => (state.lang === 'en' ? `${TOKI[i].r} no koku` : `${TL[state.lang].read[i]} · ${TL[state.lang].animal[i]}`);
+const tokiDesc = i => (state.lang === 'en' ? TOKI[i].d : TL[state.lang].d[i]);
+const bellNum = i => BELLN[TOKI[i].bell];
+function bellLine(i) {
+  const T = TOKI[i];
+  if (state.lang === 'ja') return `<span class="jp" lang="ja">${T.bj}</span>`;
+  if (state.lang === 'zh') return `钟声 ${CN[bellNum(i)]}响<span class="jp" lang="ja">${T.bj}</span>`;
+  return `${T.bell} Bell<span class="jp" lang="ja">${T.bj}</span>`;
+}
+const placeName = p => (p.id === 'geo' ? tr('myLocName') : p.name);
+function applyStatic() {
+  document.documentElement.lang = state.lang === 'zh' ? 'zh-CN' : state.lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', tr(el.dataset.i18nAria)));
+  const mode = { kanji: 'mKanji', en: 'mAnimal', bell: 'mBell' };
+  document.querySelectorAll('.seg-ctl button').forEach(b => { b.innerHTML = tr(mode[b.dataset.label]); });
+  $('langLbl').textContent = state.lang.toUpperCase();
+  $('cityLbl').textContent = placeName(state.place);
+}
+function setLang(l) {
+  state.lang = l; store.set('ntoki.lang', l);
+  for (const k in fmtCache) delete fmtCache[k];
+  applyStatic();
+  state.trackKey = ''; infoKey = ''; state.lastIdx = -1;
+  setReveal(state.revealMode); onPage(); tick();
+}
+
+
+const fmtCache = {};
+function fmt(ms, opts) {
+  const key = state.lang + state.place.tz + JSON.stringify(opts), loc = LOCALE[state.lang];
+  let f = fmtCache[key];
+  if (!f) { try { f = new Intl.DateTimeFormat(loc, { timeZone: state.place.tz, ...opts }); } catch (e) { f = new Intl.DateTimeFormat(loc, opts); } fmtCache[key] = f; }
+  return f.format(ms);
+}
+const tStr = ms => fmt(ms, { hour: 'numeric', minute: '2-digit' });
+function dur(ms) { const m = Math.round(ms / 60000), h = Math.floor(m / 60); return h ? tr('durH', h, m % 60) : tr('durM', m); }
+
+/* ---------- living clock ---------- */
+const RING = 2 * Math.PI * 97;
+function updateClock() {
+  const c = state.cyc, T = TOKI[c.idx];
+  $('kanji').textContent = glyph(c.idx);
+  $('kanji').setAttribute('lang', glyphMode() === 'kanji' ? 'ja' : state.lang);
+  $('seal').dataset.mode = glyphMode();
+  $('tokiName').textContent = subName(c.idx);
+  $('tokiReading').textContent = tokiReading(c.idx);
+  $('tokiBell').innerHTML = bellLine(c.idx);
+  $('ring').setAttribute('stroke-dashoffset', (RING * (1 - c.progress)).toFixed(2));
+  const ang = c.progress * 2 * Math.PI - Math.PI / 2;
+  $('ringDot').setAttribute('cx', (100 + 97 * Math.cos(ang)).toFixed(2));
+  $('ringDot').setAttribute('cy', (100 + 97 * Math.sin(ang)).toFixed(2));
+  $('seal').setAttribute('aria-label', tr('sealAria', tokiName(c.idx), Math.round(c.progress * 100)));
+  $('quiet').hidden = !(c.mode === 'solar' && c.t >= c.set);
+  const pn = $('polarNote');
+  if (c.mode === 'fixed') {
+    pn.hidden = false;
+    pn.textContent = tr(c.polar === 'day' ? 'polarDay' : c.polar === 'night' ? 'polarNight' : 'polarOther');
+  } else pn.hidden = true;
+  if (c.idx !== state.lastIdx) {
+    if (state.lastIdx !== -1 && !state.playing) $('live').textContent = tr('began', tokiName(c.idx));
+    state.lastIdx = c.idx;
+  }
+}
+
+function updateReveal() {
+  const c = state.cyc, t = c.t;
+  const parts = tStr(t).split(' ');
+  $('rvTime').innerHTML = `${parts[0]}<small>${parts[1] || ''}</small>`;
+  $('rvDate').textContent = fmt(t, { weekday: 'long', month: 'long', day: 'numeric' });
+  const T = TOKI[c.idx];
+  const rows = [
+    [tr('sunrise'), c.mode === 'solar' ? tStr(c.rise) : '—'],
+    [tr('sunHeight'), c.mode === 'solar' ? tStr(c.noon) : '—'],
+    [tr('sunset'), c.mode === 'solar' ? tStr(c.set) : '—'],
+    [tr('tokiWin', tokiName(c.idx)), `${tStr(c.b[c.idx])} – ${tStr(c.b[c.idx + 1])}`],
+    [tr('left'), dur(c.b[c.idx + 1] - t)],
+    [tr('dayToki'), dur(c.dayToki)],
+    [tr('nightToki'), dur(c.nightToki)]
+  ];
+  $('rvList').innerHTML = rows.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join('');
+}
+
+function setReveal(mode) {
+  state.revealMode = mode;
+  const on = !!mode;
+  $('clockPage').classList.toggle('revealed', on);
+  $('reveal').setAttribute('aria-hidden', on ? 'false' : 'true');
+  $('revealBtn').setAttribute('aria-pressed', on ? 'true' : 'false');
+  $('revealBtn').textContent = on ? tr('hideClock') : tr('clockTime');
+}
+
+/* press and hold */
+(() => {
+  const page = $('clockPage');
+  let timer = null, sx = 0, sy = 0;
+  page.addEventListener('pointerdown', e => {
+    if (e.target.closest('button,a,input,select')) return;
+    sx = e.clientX; sy = e.clientY;
+    clearTimeout(timer);
+    timer = setTimeout(() => setReveal('hold'), 320);
+  });
+  page.addEventListener('pointermove', e => { if (timer && Math.hypot(e.clientX - sx, e.clientY - sy) > 12) { clearTimeout(timer); timer = null; } });
+  const end = () => { clearTimeout(timer); timer = null; if (state.revealMode === 'hold') setReveal(null); };
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => page.addEventListener(ev, end));
+  page.addEventListener('contextmenu', e => e.preventDefault());
+})();
+$('revealBtn').addEventListener('click', () => setReveal(state.revealMode ? null : 'toggle'));
+
+/* ---------- cycle dial: 12 connected segments, noon at the top, midnight at the bottom ---------- */
+const DIAL = { cx: 200, cy: 200, ro: 174, ri: 120, gap: 0.75 };
+state.sel = null;   // null = follow the current toki
+let infoKey = '';
+const angOf = (t, c) => ((t - c.noon) / (c.b[12] - c.b[0])) * 360;
+function pt(a, r) { const q = (a * Math.PI) / 180; return [DIAL.cx + r * Math.sin(q), DIAL.cy - r * Math.cos(q)]; }
+function arcPath(a1, a2, ro, ri) {
+  if (a2 <= a1) return '';
+  const [x1, y1] = pt(a1, ro), [x2, y2] = pt(a2, ro), [x3, y3] = pt(a2, ri), [x4, y4] = pt(a1, ri), lg = a2 - a1 > 180 ? 1 : 0, f = n => n.toFixed(2);
+  return `M${f(x1)} ${f(y1)}A${ro} ${ro} 0 ${lg} 1 ${f(x2)} ${f(y2)}L${f(x3)} ${f(y3)}A${ri} ${ri} 0 ${lg} 0 ${f(x4)} ${f(y4)}Z`;
+}
+function segAngles(c, i) { return [angOf(c.b[i], c) + DIAL.gap, angOf(c.b[i + 1], c) - DIAL.gap]; }
+
+function buildTrack() {
+  const c = state.cyc, rm = (DIAL.ro + DIAL.ri) / 2;
+  let defs = '', segs = '', ticks = '';
+  for (let i = 0; i < 12; i++) {
+    const [a1, a2] = segAngles(c, i), am = (a1 + a2) / 2;
+    const [gx1, gy1] = pt(a1, rm), [gx2, gy2] = pt(a2, rm), [kx, ky] = pt(am, rm);
+    const ink = lut(i + 0.5)[0] > 0.62 ? '#1c1a29' : '#f7f2e8';
+    defs += `<linearGradient id="g${i}" gradientUnits="userSpaceOnUse" x1="${gx1.toFixed(1)}" y1="${gy1.toFixed(1)}" x2="${gx2.toFixed(1)}" y2="${gy2.toFixed(1)}"><stop offset="0" stop-color="${css(i)}"/><stop offset=".5" stop-color="${css(i + 0.5)}"/><stop offset="1" stop-color="${css(i + 1)}"/></linearGradient>`;
+    segs += `<g class="dseg" id="d${i}" data-i="${i}" role="button" tabindex="0" aria-label="${tokiName(i)}, ${tStr(c.b[i])} – ${tStr(c.b[i + 1])}"><path class="fill" d="${arcPath(a1, a2, DIAL.ro, DIAL.ri)}" fill="url(#g${i})"/><text x="${kx.toFixed(1)}" y="${ky.toFixed(1)}" fill="${ink}" lang="${glyphMode() === 'kanji' ? 'ja' : state.lang}">${glyph(i)}</text></g>`;
+  }
+  const anchors = c.mode === 'solar'
+    ? [[tr('sunrise'), c.rise], [tr('sunHeight'), c.noon], [tr('sunset'), c.set], [tr('midnight'), c.midnight]]
+    : [[tr('noonF'), c.noon], [tr('midnightF'), c.midnight]];
+  for (const [, t] of anchors) {
+    const a = angOf(t, c), [x1, y1] = pt(a, DIAL.ro + 5), [x2, y2] = pt(a, DIAL.ro + 15);
+    ticks += `<line class="atick" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`;
+  }
+  $('dial').dataset.mode = glyphMode();
+  $('dial').innerHTML = `<defs>${defs}</defs><circle class="donetrack" cx="200" cy="200" r="${DIAL.ri - 8}"/><path id="doneArc"/>${segs}${ticks}<line id="handLine"/><circle id="handDot" r="4.5"/>`;
+  $('legend').innerHTML = anchors.map(([l, t]) => `<span>${l}<b>${tStr(t)}</b></span>`).join('');
+  $('dial').querySelectorAll('.dseg').forEach(g => {
+    const pick = () => { const i = +g.dataset.i; state.sel = state.sel === i || i === state.cyc.idx ? null : i; updateTrack(); };
+    g.addEventListener('click', pick);
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+  });
+  const p = NT.partsOf(c.noon, state.place.tz), today = NT.partsOf(Date.now(), state.place.tz);
+  const sameDay = p.year === today.year && p.month === today.month && p.day === today.day;
+  $('cycleTitle').textContent = sameDay && state.override == null ? tr('todayTitle') : tr('dayTitle', fmt(c.noon, { month: 'long', day: 'numeric' }));
+  $('lens').innerHTML = `<span>${tr('eachDay')} <b>${dur(c.dayToki)}</b></span><span>${tr('eachNight')} <b>${dur(c.nightToki)}</b></span>`;
+}
+
+function updateTrack() {
+  const c = state.cyc, t = c.t;
+  const key = state.place.id + ':' + Math.round(c.b[0] / 60000);
+  if (key !== state.trackKey) { state.trackKey = key; state.sel = null; buildTrack(); }
+  const sel = state.sel == null ? c.idx : state.sel;
+  for (let i = 0; i < 12; i++) {
+    const g = $('d' + i); if (!g) continue;
+    const [a1, a2] = segAngles(c, i), past = i < c.idx, cur = i === c.idx;
+    g.classList.toggle('past', past); g.classList.toggle('cur', cur); g.classList.toggle('sel', i === sel);
+    g.setAttribute('aria-pressed', i === sel ? 'true' : 'false');
+    const am = ((a1 + a2) / 2) * Math.PI / 180, lift = i === sel ? 8 : 0;
+    g.style.transform = `translate(${(Math.sin(am) * lift).toFixed(2)}px, ${(-Math.cos(am) * lift).toFixed(2)}px)`;
+  }
+  const an = angOf(t, c), [hx1, hy1] = pt(an, DIAL.ri - 6), [hx2, hy2] = pt(an, DIAL.ro + 6), [dx, dy] = pt(an, DIAL.ri - 14);
+  const da = $('doneArc');
+  if (da) {
+    const a0 = angOf(c.b[0], c), r = DIAL.ri - 8, [sx, sy] = pt(a0, r), [ex, ey] = pt(an, r);
+    da.setAttribute('d', an - a0 > 0.2 ? `M${sx.toFixed(2)} ${sy.toFixed(2)}A${r} ${r} 0 ${an - a0 > 180 ? 1 : 0} 1 ${ex.toFixed(2)} ${ey.toFixed(2)}` : '');
+  }
+  const hl = $('handLine');
+  if (hl) { hl.setAttribute('x1', hx1); hl.setAttribute('y1', hy1); hl.setAttribute('x2', hx2); hl.setAttribute('y2', hy2); $('handDot').setAttribute('cx', dx); $('handDot').setAttribute('cy', dy); }
+
+  const T = TOKI[sel], s0 = c.b[sel], s1 = c.b[sel + 1];
+  const status = sel === c.idx ? tr('nowPct', Math.round(c.progress * 100)) : t < s0 ? tr('beginsIn', dur(s0 - t)) : tr('ended', dur(t - s1));
+  $('dialCenter').innerHTML = `<div class="dc-k" data-mode="${glyphMode()}">${glyph(sel)}</div><div class="dc-n">${subName(sel)}</div><div class="dc-t">${tStr(s0)} – ${tStr(s1)}</div><div class="dc-s">${status}</div>`;
+  const ik = key + ':' + sel + ':' + c.idx;
+  if (ik !== infoKey) {
+    infoKey = ik;
+    const bl = state.lang === 'en' ? `${T.bell} Bell <span lang="ja">${T.bj}</span> · ${T.br}` : bellLine(sel);
+    const meta = state.lang === 'en' ? `${T.r} no koku · <span lang="ja">${T.k}の刻</span>` : tokiReading(sel);
+    $('dialInfo').innerHTML = `<div class="di-bell">${bl}</div>
+      <div class="di-meta">${meta} · ${dur(s1 - s0)}</div>
+      <div class="di-anchor">${placeInDay(c, sel)}</div>
+      <p>${tokiDesc(sel)}</p>
+      ${sel !== c.idx ? `<button class="pill" type="button" id="backCur">${tr('showCurrent')}</button>` : ''}`;
+    const bc = $('backCur'); if (bc) bc.addEventListener('click', () => { state.sel = null; updateTrack(); $('d' + state.cyc.idx).focus({ preventScroll: true }); });
+  }
+}
+
+function setLabel(m) {
+  state.label = m; store.set('ntoki.label', m);
+  document.querySelectorAll('.seg-ctl button').forEach(b => b.setAttribute('aria-checked', b.dataset.label === m ? 'true' : 'false'));
+  state.trackKey = ''; infoKey = '';
+  tick();
+}
+document.querySelectorAll('.seg-ctl button').forEach(b => b.addEventListener('click', () => setLabel(b.dataset.label)));
+document.querySelectorAll('.seg-ctl button').forEach(b => b.setAttribute('aria-checked', b.dataset.label === state.label ? 'true' : 'false'));
+
+/* ---------- the year: 24 sekki and 72 kō, from the sun's ecliptic longitude ---------- */
+// Source of names: nippon.com "Japan's 72 Microseasons" (Shibukawa Shunkai's 1685 Japanese set).
+const SEKKI = [
+  ['立春', '立春', 'Risshun', 'Beginning of spring', 'りっしゅん'], ['雨水', '雨水', 'Usui', 'Rainwater', 'うすい'], ['啓蟄', '惊蛰', 'Keichitsu', 'Insects awaken', 'けいちつ'],
+  ['春分', '春分', 'Shunbun', 'Spring equinox', 'しゅんぶん'], ['清明', '清明', 'Seimei', 'Pure and clear', 'せいめい'], ['穀雨', '谷雨', 'Kokuu', 'Grain rains', 'こくう'],
+  ['立夏', '立夏', 'Rikka', 'Beginning of summer', 'りっか'], ['小満', '小满', 'Shōman', 'Lesser ripening', 'しょうまん'], ['芒種', '芒种', 'Bōshu', 'Grain beards and seeds', 'ぼうしゅ'],
+  ['夏至', '夏至', 'Geshi', 'Summer solstice', 'げし'], ['小暑', '小暑', 'Shōsho', 'Lesser heat', 'しょうしょ'], ['大暑', '大暑', 'Taisho', 'Greater heat', 'たいしょ'],
+  ['立秋', '立秋', 'Risshū', 'Beginning of autumn', 'りっしゅう'], ['処暑', '处暑', 'Shosho', 'Manageable heat', 'しょしょ'], ['白露', '白露', 'Hakuro', 'White dew', 'はくろ'],
+  ['秋分', '秋分', 'Shūbun', 'Autumn equinox', 'しゅうぶん'], ['寒露', '寒露', 'Kanro', 'Cold dew', 'かんろ'], ['霜降', '霜降', 'Sōkō', 'Frost falls', 'そうこう'],
+  ['立冬', '立冬', 'Rittō', 'Beginning of winter', 'りっとう'], ['小雪', '小雪', 'Shōsetsu', 'Lesser snow', 'しょうせつ'], ['大雪', '大雪', 'Taisetsu', 'Greater snow', 'たいせつ'],
+  ['冬至', '冬至', 'Tōji', 'Winter solstice', 'とうじ'], ['小寒', '小寒', 'Shōkan', 'Lesser cold', 'しょうかん'], ['大寒', '大寒', 'Daikan', 'Greater cold', 'だいかん']
+];
+// [kanji, romaji, English, kana, Simplified Chinese gloss]
+const KO = [
+  ['東風解凍', 'Harukaze kōri o toku', 'East wind thaws the ice', 'はるかぜこおりをとく', '东风解冻'],
+  ['黄鶯睍睆', 'Kōō kenkan su', 'Warblers sing in the hills', 'こうおうけんかんす', '黄莺在山中鸣唱'],
+  ['魚上氷', 'Uo kōri o izuru', 'Fish rise beneath the ice', 'うおこおりをいずる', '鱼从冰下浮起'],
+  ['土脉潤起', 'Tsuchi no shō uruoi okoru', 'Rain softens the soil', 'つちのしょううるおいおこる', '春雨润土'],
+  ['霞始靆', 'Kasumi hajimete tanabiku', 'Mist begins to linger', 'かすみはじめてたなびく', '春霭初现'],
+  ['草木萌動', 'Sōmoku mebae izuru', 'Plants begin to sprout', 'そうもくめばえいずる', '草木萌芽'],
+  ['蟄虫啓戸', 'Sugomori mushi to o hiraku', 'Hibernating insects emerge', 'すごもりむしとをひらく', '蛰虫出洞'],
+  ['桃始笑', 'Momo hajimete saku', 'First peach blossoms', 'ももはじめてさく', '桃花初开'],
+  ['菜虫化蝶', 'Namushi chō to naru', 'Caterpillars become butterflies', 'なむしちょうとなる', '青虫化蝶'],
+  ['雀始巣', 'Suzume hajimete sukū', 'Sparrows start nesting', 'すずめはじめてすくう', '麻雀筑巢'],
+  ['櫻始開', 'Sakura hajimete saku', 'First cherry blossoms', 'さくらはじめてさく', '樱花初开'],
+  ['雷乃発声', 'Kaminari sunawachi koe o hassu', 'Distant thunder', 'かみなりすなわちこえをはっす', '远雷初鸣'],
+  ['玄鳥至', 'Tsubame kitaru', 'Swallows return', 'つばめきたる', '燕子归来'],
+  ['鴻雁北', 'Kōgan kaeru', 'Wild geese fly north', 'こうがんかえる', '大雁北飞'],
+  ['虹始見', 'Niji hajimete arawaru', 'First rainbows', 'にじはじめてあらわる', '彩虹初现'],
+  ['葭始生', 'Ashi hajimete shōzu', 'Reeds sprout', 'あしはじめてしょうず', '芦苇发芽'],
+  ['霜止出苗', 'Shimo yamite nae izuru', 'Frost ends, rice seedlings grow', 'しもやみてなえいずる', '霜止秧苗生'],
+  ['牡丹華', 'Botan hana saku', 'Peonies bloom', 'ぼたんはなさく', '牡丹盛开'],
+  ['蛙始鳴', 'Kawazu hajimete naku', 'Frogs start singing', 'かわずはじめてなく', '青蛙始鸣'],
+  ['蚯蚓出', 'Mimizu izuru', 'Worms surface', 'みみずいずる', '蚯蚓出土'],
+  ['竹笋生', 'Takenoko shōzu', 'Bamboo shoots sprout', 'たけのこしょうず', '竹笋生长'],
+  ['蚕起食桑', 'Kaiko okite kuwa o hamu', 'Silkworms feast on mulberry leaves', 'かいこおきてくわをはむ', '蚕食桑叶'],
+  ['紅花栄', 'Benibana sakau', 'Safflowers bloom', 'べにばなさかう', '红花盛开'],
+  ['麦秋至', 'Mugi no toki itaru', 'Wheat ripens and is harvested', 'むぎのときいたる', '麦子成熟'],
+  ['蟷螂生', 'Kamakiri shōzu', 'Praying mantises hatch', 'かまきりしょうず', '螳螂孵化'],
+  ['腐草為螢', 'Kusaretaru kusa hotaru to naru', 'Rotten grass becomes fireflies', 'くされたるくさほたるとなる', '腐草化萤'],
+  ['梅子黄', 'Ume no mi kibamu', 'Plums turn yellow', 'うめのみきばむ', '梅子变黄'],
+  ['乃東枯', 'Natsukarekusa karuru', 'Self-heal withers', 'なつかれくさかるる', '夏枯草枯萎'],
+  ['菖蒲華', 'Ayame hana saku', 'Irises bloom', 'あやめはなさく', '菖蒲开花'],
+  ['半夏生', 'Hange shōzu', 'Crow-dipper sprouts', 'はんげしょうず', '半夏生长'],
+  ['温風至', 'Atsukaze itaru', 'Warm winds blow', 'あつかぜいたる', '暖风吹来'],
+  ['蓮始開', 'Hasu hajimete hiraku', 'First lotus blossoms open', 'はすはじめてひらく', '莲花初开'],
+  ['鷹乃学習', 'Taka sunawachi waza o narau', 'Young hawks learn to fly', 'たかすなわちわざをならう', '雏鹰学飞'],
+  ['桐始結花', 'Kiri hajimete hana o musubu', 'Paulownia sets seed', 'きりはじめてはなをむすぶ', '桐树结籽'],
+  ['土潤溽暑', 'Tsuchi uruōte mushi atsushi', 'Earth is damp, air is muggy', 'つちうるおうてむしあつし', '土湿闷热'],
+  ['大雨時行', 'Taiu tokidoki furu', 'Heavy rains fall at times', 'たいうときどきふる', '时有大雨'],
+  ['涼風至', 'Suzukaze itaru', 'Cool winds blow', 'すずかぜいたる', '凉风吹来'],
+  ['寒蝉鳴', 'Higurashi naku', 'Evening cicadas sing', 'ひぐらしなく', '寒蝉鸣叫'],
+  ['蒙霧升降', 'Fukaki kiri matō', 'Thick fog descends', 'ふかききりまとう', '浓雾弥漫'],
+  ['綿柎開', 'Wata no hana shibe hiraku', 'Cotton flowers bloom', 'わたのはなしべひらく', '棉花开放'],
+  ['天地始粛', 'Tenchi hajimete samushi', 'Heat begins to subside', 'てんちはじめてさむし', '暑气渐消'],
+  ['禾乃登', 'Kokumono sunawachi minoru', 'Rice ripens', 'こくものすなわちみのる', '稻谷成熟'],
+  ['草露白', 'Kusa no tsuyu shiroshi', 'Dew on grass glistens white', 'くさのつゆしろし', '草露泛白'],
+  ['鶺鴒鳴', 'Sekirei naku', 'Wagtails sing', 'せきれいなく', '鹡鸰鸣叫'],
+  ['玄鳥去', 'Tsubame saru', 'Swallows leave', 'つばめさる', '燕子离去'],
+  ['雷乃収声', 'Kaminari sunawachi koe o osamu', 'Thunder ceases', 'かみなりすなわちこえをおさむ', '雷声收敛'],
+  ['蟄虫坏戸', 'Mushi kakurete to o fusagu', 'Insects hole up underground', 'むしかくれてとをふさぐ', '蛰虫封洞'],
+  ['水始涸', 'Mizu hajimete karuru', 'Farmers drain fields', 'みずはじめてかるる', '田水始干'],
+  ['鴻雁来', 'Kōgan kitaru', 'Wild geese return', 'こうがんきたる', '大雁南来'],
+  ['菊花開', 'Kiku no hana hiraku', 'Chrysanthemums bloom', 'きくのはなひらく', '菊花开放'],
+  ['蟋蟀在戸', 'Kirigirisu to ni ari', 'Crickets chirp around the door', 'きりぎりすとにあり', '蟋蟀在户'],
+  ['霜始降', 'Shimo hajimete furu', 'First frost', 'しもはじめてふる', '初霜降临'],
+  ['霎時施', 'Kosame tokidoki furu', 'Light rain falls at times', 'こさめときどきふる', '时有小雨'],
+  ['楓蔦黄', 'Momiji tsuta kibamu', 'Maple and ivy turn yellow', 'もみじつたきばむ', '枫叶与藤叶变黄'],
+  ['山茶始開', 'Tsubaki hajimete hiraku', 'Camellias bloom', 'つばきはじめてひらく', '山茶初开'],
+  ['地始凍', 'Chi hajimete kōru', 'Land begins to freeze', 'ちはじめてこおる', '大地始冻'],
+  ['金盞香', 'Kinsenka saku', 'Daffodils bloom', 'きんせんかさく', '水仙飘香'],
+  ['虹蔵不見', 'Niji kakurete miezu', 'Rainbows hide', 'にじかくれてみえず', '彩虹隐没'],
+  ['朔風払葉', 'Kitakaze konoha o harau', 'North wind strips the leaves', 'きたかぜこのはをはらう', '北风扫落叶'],
+  ['橘始黄', 'Tachibana hajimete kibamu', 'Tachibana citrus begins to yellow', 'たちばなはじめてきばむ', '柑橘始黄'],
+  ['閉塞成冬', 'Sora samuku fuyu to naru', 'Cold sets in, winter begins', 'そらさむくふゆとなる', '天寒入冬'],
+  ['熊蟄穴', 'Kuma ana ni komoru', 'Bears start hibernating', 'くまあなにこもる', '熊入洞冬眠'],
+  ['鱖魚群', 'Sake no uo muragaru', 'Salmon gather and swim upstream', 'さけのうおむらがる', '鲑鱼成群洄游'],
+  ['乃東生', 'Natsukarekusa shōzu', 'Self-heal sprouts', 'なつかれくさしょうず', '夏枯草萌芽'],
+  ['麋角解', 'Sawashika no tsuno otsuru', 'Deer shed antlers', 'さわしかのつのおつる', '鹿角脱落'],
+  ['雪下出麦', 'Yuki watarite mugi nobiru', 'Wheat sprouts under snow', 'ゆきわたりてむぎのびる', '雪下麦生'],
+  ['芹乃栄', 'Seri sunawachi sakau', 'Parsley flourishes', 'せりすなわちさかう', '水芹繁茂'],
+  ['水泉動', 'Shimizu atataka o fukumu', 'Springs thaw', 'しみずあたたかをふくむ', '泉水始动'],
+  ['雉始雊', 'Kiji hajimete naku', 'Pheasants start to call', 'きじはじめてなく', '野鸡始鸣'],
+  ['款冬華', 'Fuki no hana saku', 'Butterburs bud', 'ふきのはなさく', '款冬花开'],
+  ['水沢腹堅', 'Sawamizu kōri tsumeru', 'Ice thickens on streams', 'さわみずこおりつめる', '溪水冻实'],
+  ['鶏始乳', 'Niwatori hajimete toya ni tsuku', 'Hens start laying eggs', 'にわとりはじめてとやにつく', '母鸡开始产蛋']
+];
+const SKY = (() => {
+  const rad = Math.PI / 180, dayMs = 864e5, J1970 = 2440588, J2000 = 2451545, YEAR = 365.2422 * dayMs;
+  // The sun's apparent ecliptic longitude in degrees (Meeus, Astronomical Algorithms ch. 25; within ~0.01°, i.e. minutes).
+  function sunLon(ms) {
+    const T = (ms / dayMs + J1970 - 0.5 - J2000) / 36525;
+    const L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
+    const M = rad * (357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+    const C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(M) + (0.019993 - 0.000101 * T) * Math.sin(2 * M) + 0.000289 * Math.sin(3 * M);
+    const lon = L0 + C - 0.00569 - 0.00478 * Math.sin(rad * (125.04 - 1934.136 * T));
+    return ((lon % 360) + 360) % 360;
+  }
+  // The instant the sun reaches `target` degrees, searched within ±12 days of `guess`.
+  function reach(target, guess) {
+    const f = t => ((sunLon(t) - target + 540) % 360) - 180;
+    let a = guess - 12 * dayMs, b = guess + 12 * dayMs;
+    for (let i = 0; i < 48; i++) { const m = (a + b) / 2; if (f(m) < 0) a = m; else b = m; }
+    return (a + b) / 2;
+  }
+  // The season year containing t, starting at Risshun (315°). South of the equator the year is shifted 180°.
+  function year(t, lat) {
+    const flip = lat < 0 ? 180 : 0, disp = (sunLon(t) + flip) % 360, rel = (((disp - 315) % 360) + 360) % 360;
+    const start = reach((315 - flip + 360) % 360, t - (rel / 360) * YEAR);
+    const b = [start];
+    for (let j = 1; j <= 72; j++) b.push(reach((315 + 5 * j - flip + 720) % 360, start + (j / 72) * YEAR));
+    let k = 0;
+    for (let j = 0; j < 72; j++) if (t >= b[j]) k = j;
+    const marks = [0, 90, 180, 270].map(L => reach((L - flip + 360) % 360, start + ((((L - 315) % 360) + 360) % 360) / 360 * YEAR));
+    return { flip, disp, k, b, marks, progress: (t - b[k]) / (b[k + 1] - b[k]) };
+  }
+  return { sunLon, reach, year };
+})();
+
+/* season colours around the year (anchors by displayed longitude) */
+const SEASON = [[315, '#E7C9D2'], [0, '#F3C6CF'], [30, '#CFE3A8'], [60, '#9ECB8E'], [90, '#5FAE8C'], [120, '#F2C45A'], [165, '#EBA24E'], [210, '#D0643E'], [240, '#A2564B'], [270, '#4F6E9E'], [295, '#8EA7C6']].map(([l, h]) => [l, hexToLab(h)]);
+function seasonLab(L) {
+  L = ((L % 360) + 360) % 360;
+  for (let i = 0; i < SEASON.length; i++) {
+    const [l0, c0] = SEASON[i], [l1raw, c1] = SEASON[(i + 1) % SEASON.length];
+    const l1 = l1raw <= l0 ? l1raw + 360 : l1raw, x = L < l0 ? L + 360 : L;
+    if (x >= l0 && x <= l1) { const t = (x - l0) / (l1 - l0), s = t * t * (3 - 2 * t); return [0, 1, 2].map(n => c0[n] + (c1[n] - c0[n]) * s); }
+  }
+  return SEASON[0][1];
+}
+const seasonCss = L => { const [r, g, b] = labToRgb(...seasonLab(L)); return `rgb(${r},${g},${b})`; };
+
+const koGloss = k => (state.lang === 'ja' ? KO[k][3] : state.lang === 'zh' ? KO[k][4] : KO[k][2]);
+const sekkiName = s => (state.lang === 'zh' ? SEKKI[s][1] : SEKKI[s][0]);
+const sekkiGloss = s => (state.lang === 'ja' ? SEKKI[s][4] : state.lang === 'zh' ? '' : `${SEKKI[s][2]} · ${SEKKI[s][3]}`);
+const dShort = ms => fmt(ms, { month: 'short', day: 'numeric' });
+const koRange = (y, k) => `${dShort(y.b[k])} – ${dShort(y.b[k + 1] - 3600e3)}`;
+function daysStr(ms) { const n = Math.max(1, Math.round(ms / 864e5)); return tr('days', n); }
+
+/* clock line + card */
+function updateKoLine() {
+  const y = state.yr, k = y.k;
+  $('koLine').innerHTML = `<span lang="ja">${KO[k][0]}</span> · ${koGloss(k)} · ${koRange(y, k)}`;
+  $('koLine').setAttribute('aria-label', `${KO[k][0]}, ${KO[k][2]}, ${koRange(y, k)}`);
+}
+function openKo(k) {
+  const y = state.yr, s = Math.floor(k / 3);
+  $('kcK').textContent = KO[k][0];
+  $('kcName').textContent = koGloss(k);
+  $('kcSub').textContent = state.lang === 'en' ? KO[k][1] : state.lang === 'ja' ? KO[k][2] : KO[k][2];
+  $('kcMeta').innerHTML = `<dt>${tr('sekki')}</dt><dd><span lang="ja">${sekkiName(s)}</span> ${sekkiGloss(s)}</dd><dt>${tr('dates')}</dt><dd>${koRange(y, k)}</dd><dt>&nbsp;</dt><dd>${tr('koOf', k + 1)}</dd>`;
+  $('kcSouth').hidden = !y.flip;
+  openSheet('sheetKo');
+}
+$('koLine').addEventListener('click', () => openKo(state.yr.k));
+
+/* year ring: 72 equal 5° segments, summer solstice at the top, winter solstice at the bottom */
+const YR = { ro: 174, ri: 120, gap: 0.35 };
+state.ysel = null;
+let yearKey = '', yInfoKey = '';
+const yAng = L => L - 90;   // displayed longitude → degrees clockwise from the top
+function buildYear() {
+  const y = state.yr, rm = (YR.ro + YR.ri) / 2;
+  let segs = '', labels = '', ticks = '';
+  for (let j = 0; j < 72; j++) {
+    const L0 = 315 + 5 * j, a1 = yAng(L0) + YR.gap, a2 = yAng(L0 + 5) - YR.gap;
+    const [gx1, gy1] = pt(a1, rm), [gx2, gy2] = pt(a2, rm);
+    const g = j % 3 === 2 ? 1.1 : 0;   // a wider gap between solar terms
+    segs += `<linearGradient id="yg${j}" gradientUnits="userSpaceOnUse" x1="${gx1.toFixed(1)}" y1="${gy1.toFixed(1)}" x2="${gx2.toFixed(1)}" y2="${gy2.toFixed(1)}"><stop offset="0" stop-color="${seasonCss(L0)}"/><stop offset="1" stop-color="${seasonCss(L0 + 5)}"/></linearGradient>`;
+    segs += `<g class="yseg" id="y${j}" data-k="${j}" role="button" tabindex="-1" aria-label="${KO[j][0]}, ${KO[j][2]}, ${koRange(y, j)}"><path class="fill" d="${arcPath(a1, a2 - g, YR.ro, YR.ri)}" fill="url(#yg${j})"/></g>`;
+  }
+  for (let s = 0; s < 24; s++) {
+    const Lm = 315 + 15 * s + 7.5, [x, yy] = pt(yAng(Lm), rm), ink = seasonLab(Lm)[0] > 0.62 ? '#1c1a29' : '#f7f2e8';
+    labels += `<text class="ylab" x="${x.toFixed(1)}" y="${yy.toFixed(1)}" fill="${ink}" lang="${state.lang === 'zh' ? 'zh' : 'ja'}">${sekkiName(s)}</text>`;
+  }
+  for (const L of [0, 90, 180, 270]) { const [x1, y1] = pt(yAng(L), YR.ro + 5), [x2, y2] = pt(yAng(L), YR.ro + 15); ticks += `<line class="atick" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`; }
+  const grads = (segs.match(/<linearGradient[\s\S]*?<\/linearGradient>/g) || []).join(''), shapes = segs.replace(/<linearGradient[\s\S]*?<\/linearGradient>/g, '');
+  $('yearDial').innerHTML = `<defs>${grads}</defs><circle class="donetrack" cx="200" cy="200" r="${YR.ri - 8}"/><path id="yDone"/>${shapes}${labels}${ticks}<line id="yHand"/><circle id="yDot" r="4.5"/>`;
+  $('yearDial').querySelectorAll('.yseg').forEach(g => g.addEventListener('click', () => { const k = +g.dataset.k; state.ysel = state.ysel === k || k === state.yr.k ? null : k; updateYear(); }));
+  const names = [tr('sprEq'), tr('sumSol'), tr('autEq'), tr('winSol')];
+  $('yLegend').innerHTML = y.marks.map((m, i) => `<span>${names[i]}<b>${dShort(m)}</b></span>`).join('');
+  $('ySouth').hidden = !y.flip;
+}
+function updateYear() {
+  const y = state.yr, t = nowMs();
+  const key = state.place.id + ':' + Math.round(y.b[0] / 864e5) + ':' + state.lang;
+  if (key !== yearKey) { yearKey = key; state.ysel = null; buildYear(); }
+  const sel = state.ysel == null ? y.k : state.ysel;
+  for (let j = 0; j < 72; j++) {
+    const g = $('y' + j); if (!g) continue;
+    g.classList.toggle('past', j < y.k); g.classList.toggle('sel', j === sel);
+    const am = yAng(315 + 5 * j + 2.5) * Math.PI / 180, lift = j === sel ? 9 : 0;
+    g.style.transform = `translate(${(Math.sin(am) * lift).toFixed(2)}px, ${(-Math.cos(am) * lift).toFixed(2)}px)`;
+  }
+  const L = 315 + 5 * y.k + 5 * y.progress, an = yAng(L), a0 = yAng(315), r = YR.ri - 8;
+  const [sx, sy] = pt(a0, r), [ex, ey] = pt(an, r);
+  $('yDone').setAttribute('d', an - a0 > 0.2 ? `M${sx.toFixed(2)} ${sy.toFixed(2)}A${r} ${r} 0 ${an - a0 > 180 ? 1 : 0} 1 ${ex.toFixed(2)} ${ey.toFixed(2)}` : '');
+  const [hx1, hy1] = pt(an, YR.ri - 6), [hx2, hy2] = pt(an, YR.ro + 6), [dx, dy] = pt(an, YR.ri - 14);
+  const h = $('yHand'); h.setAttribute('x1', hx1); h.setAttribute('y1', hy1); h.setAttribute('x2', hx2); h.setAttribute('y2', hy2);
+  $('yDot').setAttribute('cx', dx); $('yDot').setAttribute('cy', dy);
+  const s0 = y.b[sel], s1 = y.b[sel + 1], len = Math.round((s1 - s0) / 864e5);
+  const status = sel === y.k ? tr('koNow', Math.min(len, Math.floor((t - s0) / 864e5) + 1), len) : t < s0 ? tr('beginsIn', daysStr(s0 - t)) : tr('ended', daysStr(t - s1));
+  $('yCenter').innerHTML = `<div class="yc-k" lang="ja">${KO[sel][0]}</div><div class="yc-n">${koGloss(sel)}</div><div class="dc-t">${koRange(y, sel)}</div><div class="dc-s">${status}</div>`;
+  const ik = key + ':' + sel + ':' + y.k;
+  if (ik !== yInfoKey) {
+    yInfoKey = ik;
+    const s = Math.floor(sel / 3);
+    $('yInfo').innerHTML = `<div class="di-bell"><span lang="ja">${sekkiName(s)}</span> ${sekkiGloss(s)}</div>
+      <div class="di-meta">${state.lang === 'en' ? KO[sel][1] + ' · ' : ''}${tr('koOf', sel + 1)}</div>
+      ${sel !== y.k ? `<button class="pill" type="button" id="backKo">${tr('showCurrentKo')}</button>` : ''}`;
+    const bk = $('backKo'); if (bk) bk.addEventListener('click', () => { state.ysel = null; updateYear(); });
+  }
+}
+
+/* ---------- pager ---------- */
+const pager = $('pager');
+function goPage(n) { pager.scrollTo({ left: n * pager.clientWidth, behavior: reduced.matches ? 'auto' : 'smooth' }); }
+const curPage = () => Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth));
+function onPage() {
+  const n = curPage();
+  ['dot0', 'dot1', 'dot2'].forEach((d, i) => $(d).setAttribute('aria-current', n === i ? 'true' : 'false'));
+  $('switchBtn').textContent = n === 0 ? tr('cycle') : n === 1 ? tr('seasons') : tr('clock');
+  if (n !== 0 && state.revealMode) setReveal(null);
+}
+pager.addEventListener('scroll', () => requestAnimationFrame(onPage), { passive: true });
+$('dot0').addEventListener('click', () => goPage(0));
+$('dot1').addEventListener('click', () => goPage(1));
+$('dot2').addEventListener('click', () => goPage(2));
+$('switchBtn').addEventListener('click', () => goPage((curPage() + 1) % 3));
+addEventListener('keydown', e => {
+  if (!sheetOpen() && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.target.closest('input,select')) goPage(Math.max(0, Math.min(2, curPage() + (e.key === 'ArrowRight' ? 1 : -1))));
+});
+addEventListener('resize', () => goPage(Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth))));
+
+/* ---------- ink colour follows the sky ---------- */
+function updateInk() {
+  const [L] = lut(state.p);
+  $('app').classList.toggle('ink-dark', L > 0.62);
+}
+
+/* ---------- sky renderer ---------- */
+const sky = $('sky'), ctx = sky.getContext('2d'), SW = sky.width, SH = sky.height, img = ctx.createImageData(SW, SH);
+function mix(a, b, w) { return [a[0] + (b[0] - a[0]) * w, a[1] + (b[1] - a[1]) * w, a[2] + (b[2] - a[2]) * w]; }
+function drawSky(ts) {
+  const p = state.p, T = reduced.matches ? 0 : ts / 1000;
+  const fut = lut(p + 0.9), past = lut(p - 0.7);
+  const b1x = 0.28 + 0.14 * Math.sin(T / 23), b1y = 0.32 + 0.1 * Math.cos(T / 31);
+  const b2x = 0.74 + 0.12 * Math.sin(T / 29 + 1.3), b2y = 0.72 + 0.09 * Math.sin(T / 19);
+  const breath = 1 + 0.012 * Math.sin(T / 7);
+  const night = p >= 6 && p < 12;
+  let o = 0;
+  for (let y = 0; y < SH; y++) {
+    const v = y / (SH - 1);
+    for (let x = 0; x < SW; x++) {
+      const u = x / (SW - 1);
+      let c = lut(p + (0.5 - u) * 1.15 - (v - 0.5) * 0.2);   // incoming toki enters from the left
+      c[0] += -0.045 * (1 - v) + (night ? 0.015 : 0.04) * v * v; // deeper zenith, lighter horizon
+      const d1 = (u - b1x) ** 2 + 0.55 * (v - b1y) ** 2, d2 = (u - b2x) ** 2 + 0.55 * (v - b2y) ** 2;
+      c = mix(c, fut, 0.34 * Math.exp(-d1 / 0.07));
+      c = mix(c, past, 0.28 * Math.exp(-d2 / 0.09));
+      const [r, g, b] = labToRgb(c[0] * breath, c[1], c[2]);
+      img.data[o++] = r; img.data[o++] = g; img.data[o++] = b; img.data[o++] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  document.body.style.background = css(state.p);
+}
+let lastDraw = 0;
+function loop(ts) {
+  if (!document.hidden && (ts - lastDraw > (reduced.matches ? 5000 : 45) || state.playing)) { lastDraw = ts; drawSky(ts); }
+  requestAnimationFrame(loop);
+}
+
+/* ---------- sheets ---------- */
+let lastFocus = null;
+const sheetOpen = () => !$('scrim').hidden;
+function openSheet(id) {
+  closeSheets();
+  lastFocus = document.activeElement;
+  $('scrim').hidden = false; $(id).hidden = false;
+  const f = $(id).querySelector('button:not([data-close]),input,select') || $(id).querySelector('button');
+  f && f.focus({ preventScroll: true });
+}
+function closeSheets() {
+  const was = sheetOpen();
+  ['sheetCompanion', 'sheetCity', 'sheetTravel', 'sheetLang', 'sheetKo'].forEach(s => ($(s).hidden = true));
+  $('scrim').hidden = true;
+  if (was && lastFocus) lastFocus.focus({ preventScroll: true });
+}
+$('scrim').addEventListener('click', closeSheets);
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeSheets));
+addEventListener('keydown', e => { if (e.key === 'Escape' && sheetOpen()) closeSheets(); });
+
+/* companion */
+function placeInDay(c, i = c.idx) {
+  const solar = c.mode === 'solar';
+  switch (i) {
+    case 0: return solar ? tr('cSunrise', tStr(c.rise)) : tr('cF6');
+    case 3: return solar ? tr('cHeight', tStr(c.noon)) : tr('cFnoon');
+    case 6: return solar ? tr('cSunset', tStr(c.set)) : tr('cF18');
+    case 9: return solar ? tr('cMid', tStr(c.midnight)) : tr('cFmid');
+    default: return i < 6 ? tr('daylight') : tr('night');
+  }
+}
+$('seal').addEventListener('click', () => {
+  const T = TOKI[state.cyc.idx];
+  $('cdK').textContent = T.k;
+  const i = state.cyc.idx;
+  $('cdName').textContent = tokiName(i);
+  $('cdSub').textContent = state.lang === 'en' ? `${T.r} no koku · ${T.k}の刻` : tokiReading(i);
+  $('cdDesc').textContent = tokiDesc(i);
+  $('cdMeta').innerHTML = `<dt>${tr('bell')}</dt><dd>${state.lang === 'en' ? `${T.bell} Bell · <span lang="ja">${T.bj}</span> (${T.br})` : bellLine(i)}</dd><dt>${tr('place')}</dt><dd>${placeInDay(state.cyc)}</dd>`;
+  openSheet('sheetCompanion');
+});
+
+/* city */
+function renderCities() {
+  $('cityList').innerHTML = CITIES.map(c => `<li><button type="button" data-city="${c.id}" aria-pressed="${state.place.id === c.id}">${c.name}<small>${c.sub}</small></button></li>`).join('');
+  $('cityList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { setPlace(CITIES.find(c => c.id === b.dataset.city)); closeSheets(); }));
+}
+function setPlace(p) {
+  state.place = p; store.set('ntoki.place', p);
+  for (const k in fmtCache) delete fmtCache[k];
+  $('cityLbl').textContent = placeName(p);
+  state.trackKey = ''; state.lastIdx = -1;
+  if (state.override != null) syncTravelInputs();
+  tick();
+}
+(() => {
+  let zones = [];
+  try { zones = Intl.supportedValuesOf('timeZone'); } catch (e) {}
+  if (!zones.length) zones = [...new Set([deviceTz, ...CITIES.map(c => c.tz), 'UTC'])];
+  if (!zones.includes(deviceTz)) zones.unshift(deviceTz);
+  $('cTz').innerHTML = zones.map(z => `<option${z === deviceTz ? ' selected' : ''}>${z}</option>`).join('');
+})();
+$('customForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const lat = parseFloat($('cLat').value), lng = parseFloat($('cLng').value), err = $('customErr');
+  if (!(lat >= -90 && lat <= 90) || !(lng >= -180 && lng <= 180)) { err.hidden = false; err.textContent = tr('coordErr'); return; }
+  err.hidden = true;
+  setPlace({ id: `custom:${lat},${lng}`, name: `${lat.toFixed(2)}, ${lng.toFixed(2)}`, sub: tr('custom'), lat, lng, tz: $('cTz').value });
+  closeSheets();
+});
+$('cityBtn').addEventListener('click', () => { renderCities(); $('geoMsg').hidden = true; openSheet('sheetCity'); });
+$('geoBtn').addEventListener('click', () => {
+  const msg = $('geoMsg');
+  const fail = () => { msg.hidden = false; msg.textContent = tr('locErr'); };
+  if (!navigator.geolocation) return fail();
+  msg.hidden = false; msg.textContent = tr('locWait');
+  try {
+    navigator.geolocation.getCurrentPosition(pos => {
+      const lat = +pos.coords.latitude.toFixed(4), lng = +pos.coords.longitude.toFixed(4);
+      msg.hidden = true;
+      setPlace({ id: 'geo', name: 'My location', sub: `${lat.toFixed(2)}, ${lng.toFixed(2)}`, lat, lng, tz: deviceTz });
+      closeSheets();
+    }, fail, { timeout: 10000, maximumAge: 3600e3 });
+  } catch (e) { fail(); }
+});
+$('langBtn').addEventListener('click', () => {
+  $('langList').innerHTML = LANGS.map(([k, n]) => `<li><button type="button" data-lang="${k}" lang="${k}" aria-pressed="${state.lang === k}">${n}</button></li>`).join('');
+  $('langList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { setLang(b.dataset.lang); closeSheets(); }));
+  openSheet('sheetLang');
+});
+
+/* time travel */
+function syncTravelInputs() {
+  const p = NT.partsOf(nowMs(), state.place.tz);
+  $('ttDate').value = `${p.year}-${String(p.month).padStart(2, '0')}-${String(p.day).padStart(2, '0')}`;
+  $('ttTime').value = p.hour * 60 + p.minute;
+  updateTravelOut();
+}
+function updateTravelOut() {
+  const t = nowMs(), c = state.cyc || NT.cycle(t, state.place);
+  $('ttOut').textContent = `${fmt(t, { weekday: 'short', month: 'short', day: 'numeric' })} · ${tStr(t)}`;
+  $('ttToki').textContent = tr('ttToki', tokiName(c.idx), Math.round(c.progress * 100), dur(c.dayToki));
+  $('playBtn').textContent = state.playing === 'day' ? tr('stop') : tr('play');
+  $('playYearBtn').textContent = state.playing === 'year' ? tr('stop') : tr('playYear');
+}
+function applyTravel() {
+  const [y, m, d] = ($('ttDate').value || '').split('-').map(Number);
+  if (!y) return;
+  state.playing = false;
+  state.override = NT.zoned(y, m, d, +$('ttTime').value, state.place.tz);
+  tick(); updateTravelOut();
+}
+$('ttDate').addEventListener('change', applyTravel);
+$('ttTime').addEventListener('input', applyTravel);
+$('ttBtn').addEventListener('click', () => { syncTravelInputs(); openSheet('sheetTravel'); });
+function backToNow() { state.playing = false; state.override = null; tick(); syncTravelInputs(); }
+$('nowBtn').addEventListener('click', backToNow);
+$('previewPill').addEventListener('click', backToNow);
+$('playBtn').addEventListener('click', () => {
+  if (state.playing) { state.playing = false; updateTravelOut(); return; }
+  const c = NT.cycle(nowMs(), state.place), from = c.b[0], to = c.b[12] - 1, span = 45000, t0 = performance.now();
+  state.playing = 'day'; closeSheets(); setReveal(null);
+  const step = ts => {
+    if (!state.playing) return;
+    const k = Math.min(1, (ts - t0) / span);
+    state.override = from + (to - from) * k;
+    tick();
+    if (k < 1) requestAnimationFrame(step); else { state.playing = false; state.override = null; tick(); }
+  };
+  requestAnimationFrame(step);
+});
+$('playYearBtn').addEventListener('click', () => {
+  if (state.playing) { state.playing = false; updateTravelOut(); return; }
+  const base = nowMs(), y = SKY.year(base, state.place.lat), from = y.b[0], days = Math.round((y.b[72] - from) / 864e5);
+  const tod = (((base - from) % 864e5) + 864e5) % 864e5, span = 72000, t0 = performance.now();
+  state.playing = 'year'; closeSheets(); setReveal(null); goPage(2);
+  const step = ts => {
+    if (state.playing !== 'year') return;
+    const k = Math.min(1, (ts - t0) / span);
+    state.override = from + Math.min(days - 1, Math.floor(k * days)) * 864e5 + tod;
+    tick();
+    if (k < 1) requestAnimationFrame(step); else { state.playing = false; state.override = null; tick(); }
+  };
+  requestAnimationFrame(step);
+});
+
+/* ---------- tick ---------- */
+function tick() {
+  const t = nowMs();
+  state.cyc = NT.cycle(t, state.place);
+  state.p = state.cyc.idx + state.cyc.progress;
+  state.yr = SKY.year(t, state.place.lat);
+  updateClock(); updateKoLine(); updateReveal(); updateTrack(); updateYear(); updateInk();
+  const prev = state.override != null;
+  $('app').classList.toggle('previewing', prev);
+  $('previewLbl').textContent = tStr(t);
+  if (!$('sheetTravel').hidden) updateTravelOut();
+}
+
+if (window.NTOKI_MODE === 'wall' || /[?&]wall/.test(location.search)) $('app').classList.add('wall');
+applyStatic();
+setReveal(null);
+tick();
+onPage();
+drawSky(0);
+requestAnimationFrame(loop);
+setInterval(() => { if (!state.playing) tick(); }, 1000);
+</script>
+</body></html>
