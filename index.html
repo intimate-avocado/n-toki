@@ -36,6 +36,9 @@
   --paper-muted:#6c6677;
   --paper-line:#e1d8c6;
   --shu:#b8432f;
+  --btn-bg:#fffaf0;
+  --field-bg:#fffdf7;
+  --accent:#f7f2e8;
   --night-fallback:#15233f;
   --f-display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",Georgia,serif;
   --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;
@@ -189,9 +192,27 @@ button{font:inherit;color:inherit}
 
 html[lang|="zh"]{--f-display:"Noto Serif SC","Songti SC","SimSun",serif;--f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif}
 .langs{display:grid;gap:6px;margin:0;padding:0;list-style:none}
-.langs button{width:100%;text-align:left;padding:12px 14px;border-radius:10px;border:1px solid var(--paper-line);background:#fffaf0;color:var(--paper-ink);cursor:pointer;font:500 15px var(--f-body)}
+.langs button{width:100%;text-align:left;padding:12px 14px;border-radius:10px;border:1px solid var(--paper-line);background:var(--btn-bg);color:var(--paper-ink);cursor:pointer;font:500 15px var(--f-body)}
 .langs button[aria-pressed="true"]{border-color:var(--paper-ink);box-shadow:inset 0 0 0 1px var(--paper-ink)}
 .geo-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+
+/* dark theme: deep night background, the toki colour glows */
+html.dark{--paper:#1c1b24;--paper-ink:#ece6da;--paper-muted:#9d97a8;--paper-line:#34313f;--btn-bg:#25232e;--field-bg:#22202b;--shu:#ff8f6e;color-scheme:dark}
+html.dark .app{color:#efe9de}
+html.dark #ring{stroke:var(--accent)}
+html.dark #ringDot,html.dark #handDot,html.dark #yDot{fill:var(--accent)}
+html.dark #handLine,html.dark #yHand{stroke:var(--accent)}
+html.dark #doneArc,html.dark #yDone{stroke:var(--accent)}
+html.dark .seal .k{text-shadow:0 0 34px color-mix(in srgb,var(--accent) 60%,transparent)}
+html.dark .dseg .fill,html.dark .yseg .fill{stroke:rgba(255,255,255,.16);stroke-width:1}
+html.dark .dseg.sel .fill,html.dark .yseg.sel .fill{stroke:var(--accent);stroke-width:2.5}
+html.dark .scrim{background:rgba(0,0,0,.5)}
+html.dark .sheet{box-shadow:0 -10px 40px rgba(0,0,0,.6)}
+.themes{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.themes button{width:100%;text-align:left;padding:10px 14px;border-radius:10px;border:1px solid var(--paper-line);background:var(--btn-bg);color:var(--paper-ink);cursor:pointer;display:flex;flex-direction:column;gap:2px;font:500 15px var(--f-body)}
+.themes button small{color:var(--paper-muted);font-size:12px;font-weight:400}
+.themes button[aria-pressed="true"]{border-color:var(--paper-ink);box-shadow:inset 0 0 0 1px var(--paper-ink)}
+.sheet h4{font-family:var(--f-display);font-weight:500;font-size:17px;margin:20px 0 8px}
 
 /* seasons */
 .koline{margin-top:12px;border:0;background:none;color:inherit;font:400 13.5px/1.4 var(--f-body);opacity:.85;cursor:pointer;padding:4px 8px;border-radius:8px;max-width:34ch;text-wrap:balance}
@@ -222,21 +243,21 @@ html[lang|="zh"]{--f-display:"Noto Serif SC","Songti SC","SimSun",serif;--f-body
 
 /* sheets */
 .scrim{position:fixed;inset:0;z-index:5;background:rgba(10,10,20,.32)}
-.sheet{position:fixed;z-index:6;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,100%);max-height:84%;overflow-y:auto;background:var(--paper);color:var(--paper-ink);border-radius:20px 20px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);padding-top:10px;padding-bottom:max(22px, env(safe-area-inset-bottom, 0px));padding-left:max(20px, env(safe-area-inset-left, 0px));padding-right:max(20px, env(safe-area-inset-right, 0px));font-size:14px;line-height:1.55}
+.sheet{box-sizing:border-box;position:fixed;z-index:6;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,100%);max-height:84%;overflow-y:auto;background:var(--paper);color:var(--paper-ink);border-radius:20px 20px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);padding-top:10px;padding-bottom:max(22px, env(safe-area-inset-bottom, 0px));padding-left:max(20px, env(safe-area-inset-left, 0px));padding-right:max(20px, env(safe-area-inset-right, 0px));font-size:14px;line-height:1.55}
 .sheet::before{content:"";display:block;width:38px;height:4px;border-radius:2px;background:var(--paper-line);margin:0 auto 14px}
 .sheet h3{font-family:var(--f-display);font-weight:500;font-size:22px;margin:0 0 4px}
 .sheet .sub{color:var(--paper-muted);font-size:13px;margin:0 0 14px}
 .sheet .close{position:absolute;top:12px;right:max(14px, env(safe-area-inset-right, 0px));border:0;background:none;color:var(--paper-muted);font-size:13px;cursor:pointer;padding:6px 8px}
-.btn{font:500 14px/1 var(--f-body);padding:11px 16px;border-radius:10px;border:1px solid var(--paper-line);background:#fffaf0;color:var(--paper-ink);cursor:pointer}
+.btn{font:500 14px/1 var(--f-body);padding:11px 16px;border-radius:10px;border:1px solid var(--paper-line);background:var(--btn-bg);color:var(--paper-ink);cursor:pointer}
 .btn.primary{background:var(--paper-ink);border-color:var(--paper-ink);color:var(--paper)}
 .btn:hover{filter:brightness(.97)}
 .row-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .cities{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin:0 0 16px;padding:0;list-style:none}
-.cities button{width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--paper-line);background:#fffaf0;color:var(--paper-ink);cursor:pointer;display:flex;flex-direction:column;gap:1px}
+.cities button{width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--paper-line);background:var(--btn-bg);color:var(--paper-ink);cursor:pointer;display:flex;flex-direction:column;gap:1px}
 .cities button small{color:var(--paper-muted);font-size:11px}
 .cities button[aria-pressed="true"]{border-color:var(--paper-ink);box-shadow:inset 0 0 0 1px var(--paper-ink)}
 .field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--paper-muted);min-width:0}
-.field input,.field select{font:15px var(--f-body);padding:9px 10px;border-radius:9px;border:1px solid var(--paper-line);background:#fffdf7;color:var(--paper-ink);min-width:0;width:100%}
+.field input,.field select{font:15px var(--f-body);padding:9px 10px;border-radius:9px;border:1px solid var(--paper-line);background:var(--field-bg);color:var(--paper-ink);min-width:0;width:100%}
 .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .fields .wide{grid-column:1/-1}
 .tt-out{font-family:var(--f-display);font-size:26px;margin:4px 0 2px}
@@ -423,6 +444,8 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
   <h3 id="langTitle" data-i18n="langTitle">Language</h3>
   <p class="sub" data-i18n="langSub">N-Toki follows your device language when it can. Choose another here.</p>
   <ul class="langs" id="langList"></ul>
+  <h4 data-i18n="appearance">Appearance</h4>
+  <ul class="themes" id="themeList"></ul>
 </div>
 
 <script>
@@ -680,6 +703,7 @@ const STR = {
     ttTitle: 'Travel through the day', ttSub: 'Pick any date and time to see its toki. Try a day in June and one in December to see the lengths change.',
     date: 'Date', timeOfDay: 'Time of day', play: 'Play the whole day', stop: 'Stop', backNow: 'Back to now', playNote: 'Play the whole day runs one twelve-toki cycle in about 45 seconds. Play the year runs all 72 seasons in about 72 seconds.',
     ttToki: (n, p, d) => `${n} toki, ${p}% through · daylight toki ${d}`,
+    appearance: 'Appearance', thSky: 'Sky', thSkyD: 'Full color, changing with the sun', thDark: 'Dark', thDarkD: 'Night background; the toki color glows', thSun: 'Follow the sun', thSunD: 'Sky by day, dark from sunset to sunrise', thDevice: 'Match device', thDeviceD: "Uses your device's light or dark setting",
     langTitle: 'Language', langSub: 'N-Toki follows your device language when it can. Choose another here.',
     views: 'Views', livingClock: 'Living clock', fullCycle: 'Full cycle', showAs: 'Show toki as', dialAria: 'The twelve toki of this cycle', previewAria: 'Previewing another time. Return to now', travelAria: 'Time travel',
     seasons: 'Seasons', yearTitle: 'The 72 seasons', yearAria: 'The 72 seasons of this year',
@@ -717,6 +741,7 @@ const STR = {
     ttTitle: '一日を旅する', ttSub: '好きな日付と時刻を選ぶと、その刻が見られます。6月と12月で長さの違いを比べてみてください。',
     date: '日付', timeOfDay: '時刻', play: '一日を再生', stop: '停止', backNow: '今に戻る', playNote: '「一日を再生」は十二刻の一巡りを約45秒で、「一年を再生」は七十二候を約72秒で再生します。',
     ttToki: (n, p, d) => `${n}、${p}%経過 · 昼の一刻 ${d}`,
+    appearance: '表示', thSky: '空', thSkyD: '太陽とともに変わるフルカラー', thDark: 'ダーク', thDarkD: '夜の背景に、刻の色が灯ります', thSun: '太陽に合わせる', thSunD: '昼は空、日の入りから日の出まではダーク', thDevice: '端末に合わせる', thDeviceD: '端末のライト／ダーク設定を使います',
     langTitle: '言語', langSub: 'N-Toki はできるだけ端末の言語に合わせます。ここで変更できます。',
     views: '表示', livingClock: '生きた時計', fullCycle: '一日の巡り', showAs: '刻の表し方', dialAria: 'この巡りの十二刻', previewAria: '別の時刻を表示中。今に戻る', travelAria: '時の旅',
     seasons: '七十二候', yearTitle: '七十二候', yearAria: '今年の七十二候',
@@ -754,6 +779,7 @@ const STR = {
     ttTitle: '穿越一天', ttSub: '选择任意日期和时间，查看对应的时辰。试试六月和十二月的一天，看看长度的变化。',
     date: '日期', timeOfDay: '时间', play: '播放一整天', stop: '停止', backNow: '回到现在', playNote: '“播放一整天”约45秒播完十二时辰；“播放一整年”约72秒播完七十二候。',
     ttToki: (n, p, d) => `${n}，已过${p}% · 白天时辰 ${d}`,
+    appearance: '外观', thSky: '天空', thSkyD: '随太阳变化的全彩', thDark: '深色', thDarkD: '夜色背景上，时辰之色发光', thSun: '跟随太阳', thSunD: '白天显示天空，日落到日出为深色', thDevice: '跟随设备', thDeviceD: '使用设备的浅色或深色设置',
     langTitle: '语言', langSub: 'N-Toki 会尽量跟随设备语言，也可以在这里更改。',
     views: '视图', livingClock: '活的时钟', fullCycle: '完整周期', showAs: '时辰显示方式', dialAria: '本周期的十二时辰', previewAria: '正在预览其他时间。回到现在', travelAria: '穿越时间',
     seasons: '七十二候', yearTitle: '七十二候', yearAria: '今年的七十二候',
@@ -773,6 +799,23 @@ function pickLang() {
   return 'en';
 }
 state.lang = pickLang();
+const THEMES = [['sky', 'thSky', 'thSkyD'], ['dark', 'thDark', 'thDarkD'], ['sun', 'thSun', 'thSunD'], ['device', 'thDevice', 'thDeviceD']];
+state.theme = window.NTOKI_THEME || (THEMES.some(x => x[0] === store.get('ntoki.theme')) ? store.get('ntoki.theme') : 'sky');
+const deviceDark = matchMedia('(prefers-color-scheme: dark)');
+function isDark() {
+  if (state.theme === 'dark') return true;
+  if (state.theme === 'device') return deviceDark.matches || document.documentElement.dataset.theme === 'dark';
+  if (state.theme === 'sun') { const c = state.cyc; return !!c && c.mode === 'solar' && (c.t >= c.set || c.t < c.rise); }
+  return false;
+}
+function renderThemes() {
+  $('themeList').innerHTML = THEMES.map(([k, n, d]) => `<li><button type="button" data-theme-pick="${k}" aria-pressed="${state.theme === k}">${tr(n)}<small>${tr(d)}</small></button></li>`).join('');
+  $('themeList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    state.theme = b.dataset.themePick; store.set('ntoki.theme', state.theme);
+    renderThemes(); state.trackKey = ''; tick(); drawSky(performance.now());
+  }));
+}
+try { deviceDark.addEventListener('change', () => { tick(); drawSky(performance.now()); }); } catch (e) {}
 function tr(k, ...a) { const s = STR[state.lang][k] != null ? STR[state.lang][k] : STR.en[k]; return typeof s === 'function' ? s(...a) : s; }
 const tokiName = i => (state.lang === 'en' ? TOKI[i].en : TL[state.lang].name[i]);
 const tokiAnimal = i => (state.lang === 'en' ? TOKI[i].en : TL[state.lang].animal[i]);
@@ -1212,9 +1255,16 @@ addEventListener('keydown', e => {
 addEventListener('resize', () => goPage(Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth))));
 
 /* ---------- ink colour follows the sky ---------- */
+// The toki colour lifted so it reads as a light accent on a dark background.
+function accentLab(x) { const c = lut(x), k = c[0] < 0.6 ? 1.6 : 1.15; return [Math.max(0.76, c[0]), c[1] * k, c[2] * k]; }
+const accentCss = x => { const [r, g, b] = labToRgb(...accentLab(x)); return `rgb(${r},${g},${b})`; };
 function updateInk() {
+  const dark = isDark();
+  state.dark = dark;
+  document.documentElement.classList.toggle('dark', dark);
+  $('app').style.setProperty('--accent', accentCss(state.p));
   const [L] = lut(state.p);
-  $('app').classList.toggle('ink-dark', L > 0.62);
+  $('app').classList.toggle('ink-dark', !dark && L > 0.62);
 }
 
 /* ---------- sky renderer ---------- */
@@ -1226,7 +1276,7 @@ function drawSky(ts) {
   const b1x = 0.28 + 0.14 * Math.sin(T / 23), b1y = 0.32 + 0.1 * Math.cos(T / 31);
   const b2x = 0.74 + 0.12 * Math.sin(T / 29 + 1.3), b2y = 0.72 + 0.09 * Math.sin(T / 19);
   const breath = 1 + 0.012 * Math.sin(T / 7);
-  const night = p >= 6 && p < 12;
+  const night = p >= 6 && p < 12, dark = !!state.dark, acc = accentLab(p);
   let o = 0;
   for (let y = 0; y < SH; y++) {
     const v = y / (SH - 1);
@@ -1237,12 +1287,18 @@ function drawSky(ts) {
       const d1 = (u - b1x) ** 2 + 0.55 * (v - b1y) ** 2, d2 = (u - b2x) ** 2 + 0.55 * (v - b2y) ** 2;
       c = mix(c, fut, 0.34 * Math.exp(-d1 / 0.07));
       c = mix(c, past, 0.28 * Math.exp(-d2 / 0.09));
+      if (dark) {
+        // Night field tinted by the sky colour, with the toki colour glowing behind the seal.
+        const glow = Math.exp(-(((u - 0.5) ** 2) + 0.75 * ((v - 0.4) ** 2)) / 0.05);
+        const base = [0.12 + 0.025 * (1 - v), c[1] * 0.32, c[2] * 0.32];
+        c = mix(base, acc, 0.46 * glow + 0.16 * Math.exp(-d1 / 0.07));
+      }
       const [r, g, b] = labToRgb(c[0] * breath, c[1], c[2]);
       img.data[o++] = r; img.data[o++] = g; img.data[o++] = b; img.data[o++] = 255;
     }
   }
   ctx.putImageData(img, 0, 0);
-  document.body.style.background = css(state.p);
+  { const bg = dark ? labToRgb(0.12, lut(p)[1] * 0.32, lut(p)[2] * 0.32) : null; document.body.style.background = dark ? `rgb(${bg[0]},${bg[1]},${bg[2]})` : css(p); }
 }
 let lastDraw = 0;
 function loop(ts) {
@@ -1338,6 +1394,7 @@ $('geoBtn').addEventListener('click', () => {
 $('langBtn').addEventListener('click', () => {
   $('langList').innerHTML = LANGS.map(([k, n]) => `<li><button type="button" data-lang="${k}" lang="${k}" aria-pressed="${state.lang === k}">${n}</button></li>`).join('');
   $('langList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { setLang(b.dataset.lang); closeSheets(); }));
+  renderThemes();
   openSheet('sheetLang');
 });
 
@@ -1418,5 +1475,6 @@ drawSky(0);
 requestAnimationFrame(loop);
 setInterval(() => { if (!state.playing) tick(); }, 1000);
 </script>
+
 <script>if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
 </body></html>

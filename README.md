@@ -19,6 +19,7 @@ N is pronounced *en*: 円 (circle, and yen), 縁 (the bond between people), 時 
 - **The 72 seasons:** the year as a ring of 72, summer solstice at the top, winter solstice at the bottom.
 - **Time travel:** jump to any date, play a whole day in 45 seconds, or the whole year in 72.
 - **Languages:** English, 日本語, 简体中文, chosen from your device.
+- **Appearance:** Sky (full color), Dark (night background with the toki color glowing), Follow the sun (sky by day, dark after sunset), or Match device.
 - **Anywhere on Earth:** pick a city, use your location, or enter coordinates. Polar day and night fall back to clearly labeled equal toki.
 - **Private by design:** no account, no tracking, no server. Everything is calculated on your device and it works offline once installed.
 
@@ -27,7 +28,7 @@ N is pronounced *en*: 円 (circle, and yen), 縁 (the bond between people), 時 
 - **Phone:** open the live link, then *Share → Add to Home Screen* (iPhone) or *Install app* (Android).
 - **Desktop:** in Chrome or Edge, use the install icon in the address bar.
 - **Windows window:** double-click `desktop/Open N-Toki (online).bat` for a clean window with no browser bars.
-- **Live wallpaper (Windows):** install the free, open-source [Lively Wallpaper](https://github.com/rocksdanister/lively), click *+*, and add `wallpaper.html` (or its live link).
+- **Live wallpaper (Windows):** install the free, open-source [Lively Wallpaper](https://github.com/rocksdanister/lively), click *+*, and add `wallpaper.html` or `wallpaper-dark.html` (or their live links).
 
 ## The engine
 
