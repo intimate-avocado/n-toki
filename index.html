@@ -197,6 +197,11 @@ html[lang|="zh"]{--f-display:"Noto Serif SC","Songti SC","SimSun",serif;--f-body
 .geo-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
 
 /* dark theme: deep night background, the toki colour glows */
+html.bigtext{font-size:118%}
+html.bigtext .name{font-size:clamp(36px,9vw,52px)}
+html.bigtext .reading{font-size:14px}
+html.bigtext .bell,html.bigtext .koline{font-size:17px}
+html.bigtext .sheet,html.bigtext .dial-info,html.bigtext .lede,html.bigtext .why{font-size:16px}
 html.dark{--paper:#1c1b24;--paper-ink:#ece6da;--paper-muted:#9d97a8;--paper-line:#34313f;--btn-bg:#25232e;--field-bg:#22202b;--shu:#ff8f6e;color-scheme:dark}
 html.dark .app{color:#efe9de}
 html.dark #ring{stroke:var(--accent)}
@@ -213,6 +218,10 @@ html.dark .sheet{box-shadow:0 -10px 40px rgba(0,0,0,.6)}
 .themes button small{color:var(--paper-muted);font-size:12px;font-weight:400}
 .themes button[aria-pressed="true"]{border-color:var(--paper-ink);box-shadow:inset 0 0 0 1px var(--paper-ink)}
 .sheet h4{font-family:var(--f-display);font-weight:500;font-size:17px;margin:20px 0 8px}
+.seg-ctl--settings{margin:0}
+.welcome{margin:0 0 6px;padding-left:20px;line-height:1.55}
+.welcome li{margin-bottom:8px}
+.sheet a{color:var(--paper-ink)}
 
 /* seasons */
 .koline{margin-top:12px;border:0;background:none;color:inherit;font:400 13.5px/1.4 var(--f-body);opacity:.85;cursor:pointer;padding:4px 8px;border-radius:8px;max-width:34ch;text-wrap:balance}
@@ -292,10 +301,10 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 1 0 1.5-3.6M3 2.5v2.5h2.5"/></svg><span id="previewLbl">Now</span>
     </button>
     <button class="pill" id="cityBtn" type="button" aria-haspopup="dialog">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14.5s4.5-4.2 4.5-7.8a4.5 4.5 0 0 0-9 0c0 3.6 4.5 7.8 4.5 7.8z"/><circle cx="8" cy="6.7" r="1.6"/></svg><span id="cityLbl">Austin</span>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14.5s4.5-4.2 4.5-7.8a4.5 4.5 0 0 0-9 0c0 3.6 4.5 7.8 4.5 7.8z"/><circle cx="8" cy="6.7" r="1.6"/></svg><span id="cityLbl">Tokyo</span>
     </button>
-    <button class="pill" id="langBtn" type="button" aria-haspopup="dialog" aria-label="Language" data-i18n-aria="language">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c1.8 1.7 2.6 3.8 2.6 6S9.8 12.3 8 14M8 2C6.2 3.7 5.4 5.8 5.4 8S6.2 12.3 8 14"/></svg><span id="langLbl">EN</span>
+    <button class="pill" id="settingsBtn" type="button" aria-haspopup="dialog" aria-label="Settings" data-i18n-aria="settings">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.3"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/></svg><span class="lbl-long" data-i18n="settings">Settings</span>
     </button>
     <button class="pill" id="ttBtn" type="button" aria-haspopup="dialog" aria-label="Time travel" data-i18n-aria="travelAria">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.6"/></svg><span class="lbl-long" data-i18n="travel">Travel</span>
@@ -439,13 +448,44 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
   <p class="note" data-i18n="koNote"></p>
 </div>
 
-<div class="sheet" id="sheetLang" role="dialog" aria-modal="true" aria-labelledby="langTitle" hidden>
+<div class="sheet" id="sheetLang" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
   <button class="close" type="button" data-close data-i18n="close">Close</button>
-  <h3 id="langTitle" data-i18n="langTitle">Language</h3>
-  <p class="sub" data-i18n="langSub">N-Toki follows your device language when it can. Choose another here.</p>
-  <ul class="langs" id="langList"></ul>
+  <h3 id="settingsTitle" data-i18n="settings">Settings</h3>
+  <p class="sub" data-i18n="settingsSub">Everything stays on this device.</p>
+  <h4 data-i18n="placeH">Place</h4>
+  <div class="row-btns" style="margin-top:0"><button class="btn" type="button" id="placeFromSettings"><span id="placeLbl2">Tokyo</span> · <span data-i18n="change">Change</span></button></div>
   <h4 data-i18n="appearance">Appearance</h4>
   <ul class="themes" id="themeList"></ul>
+  <h4 data-i18n="showAs">Show toki as</h4>
+  <div class="seg-ctl seg-ctl--settings" role="radiogroup" aria-label="Show toki as" data-i18n-aria="showAs">
+    <button type="button" role="radio" data-label="kanji"><span lang="ja">漢字</span> Kanji</button>
+    <button type="button" role="radio" data-label="en">Animal</button>
+    <button type="button" role="radio" data-label="bell">Bells</button>
+  </div>
+  <h4 data-i18n="accessibility">Accessibility</h4>
+  <ul class="themes" id="a11yList"></ul>
+  <h4 data-i18n="langTitle">Language</h4>
+  <p class="sub" data-i18n="langSub">N-Toki follows your device language when it can. Choose another here.</p>
+  <ul class="langs" id="langList"></ul>
+  <p class="note" style="margin-top:18px"><a id="aboutLink" href="https://github.com/intimate-avocado/n-toki" target="_blank" rel="noopener" data-i18n="about">About N-Toki · open source</a></p>
+</div>
+
+<div class="sheet" id="sheetWelcome" role="dialog" aria-modal="true" aria-labelledby="wTitle" hidden>
+  <div class="cd-k" style="float:none;font-size:40px;margin:0 0 6px" lang="ja">時</div>
+  <h3 id="wTitle">N-Toki</h3>
+  <p class="sub" data-i18n="wTag">Time never runs out. Time runs through us.</p>
+  <ol class="welcome" id="wList">
+    <li data-i18n="w1">Your day has twelve toki: six of daylight, six of night. They follow the real sun, so they stretch in summer and shrink in winter.</li>
+    <li data-i18n="w2">Each toki has an animal and a color. The sky on screen changes as the sun moves.</li>
+    <li data-i18n="w3">Hold anywhere to see clock time. Swipe for the day ring and the 72 seasons of the year.</li>
+  </ol>
+  <div class="row-btns">
+    <button class="btn primary" type="button" id="wGeo" data-i18n="myLoc">Use my location</button>
+    <button class="btn" type="button" id="wCity" data-i18n="pickCity">Pick a city</button>
+    <button class="btn" type="button" id="wStart" data-i18n="start">Start</button>
+  </div>
+  <p class="note" id="wMsg" hidden></p>
+  <p class="note" data-i18n="wNote">Location stays on this device and is used only to calculate your sunrise and sunset.</p>
 </div>
 
 <script>
@@ -569,9 +609,10 @@ const TOKI = [
 ];
 
 const CITIES = [
-  { id: 'austin', name: 'Austin', sub: 'Texas', lat: 30.2672, lng: -97.7431, tz: 'America/Chicago' },
+  { id: 'tokyo', name: 'Tokyo', sub: 'Japan · old Edo', lat: 35.6762, lng: 139.6503, tz: 'Asia/Tokyo' },
   { id: 'sanantonio', name: 'San Antonio', sub: 'Texas', lat: 29.4241, lng: -98.4936, tz: 'America/Chicago' },
   { id: 'houston', name: 'Houston', sub: 'Texas', lat: 29.7604, lng: -95.3698, tz: 'America/Chicago' },
+  { id: 'austin', name: 'Austin', sub: 'Texas', lat: 30.2672, lng: -97.7431, tz: 'America/Chicago' },
   { id: 'dallas', name: 'Dallas', sub: 'Texas', lat: 32.7767, lng: -96.797, tz: 'America/Chicago' },
   { id: 'nyc', name: 'New York', sub: 'United States', lat: 40.7128, lng: -74.006, tz: 'America/New_York' },
   { id: 'la', name: 'Los Angeles', sub: 'United States', lat: 34.0522, lng: -118.2437, tz: 'America/Los_Angeles' },
@@ -583,7 +624,6 @@ const CITIES = [
   { id: 'tromso', name: 'Tromsø', sub: 'Norway · Arctic', lat: 69.6492, lng: 18.9553, tz: 'Europe/Oslo' },
   { id: 'nairobi', name: 'Nairobi', sub: 'Kenya · equator', lat: -1.2921, lng: 36.8219, tz: 'Africa/Nairobi' },
   { id: 'kyoto', name: 'Kyoto', sub: 'Japan', lat: 35.0116, lng: 135.7681, tz: 'Asia/Tokyo' },
-  { id: 'tokyo', name: 'Tokyo', sub: 'Japan · old Edo', lat: 35.6762, lng: 139.6503, tz: 'Asia/Tokyo' },
   { id: 'sydney', name: 'Sydney', sub: 'Australia', lat: -33.8688, lng: 151.2093, tz: 'Australia/Sydney' }
 ];
 
@@ -624,7 +664,10 @@ const state = {
   place: store.get('ntoki.place') || CITIES[0],
   override: null, playing: false, cyc: null, p: 0, revealMode: null, lastIdx: -1, trackKey: ''
 };
-const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+const reducedMQ = matchMedia('(prefers-reduced-motion: reduce)');
+state.a11y = Object.assign({ reduceMotion: false, bigText: false }, store.get('ntoki.a11y') || {});
+const reduced = { get matches() { return state.a11y.reduceMotion || reducedMQ.matches; } };
+function applyA11y() { document.documentElement.classList.toggle('bigtext', !!state.a11y.bigText); }
 const BELLN = { Ninth: 9, Eighth: 8, Seventh: 7, Sixth: 6, Fifth: 5, Fourth: 4 };
 state.label = ['kanji', 'en', 'bell'].includes(store.get('ntoki.label')) ? store.get('ntoki.label') : 'kanji';
 const glyph = i => (state.label === 'en' ? tokiAnimal(i) : state.label === 'bell' ? String(BELLN[TOKI[i].bell]) : TOKI[i].k);
@@ -704,6 +747,7 @@ const STR = {
     date: 'Date', timeOfDay: 'Time of day', play: 'Play the whole day', stop: 'Stop', backNow: 'Back to now', playNote: 'Play the whole day runs one twelve-toki cycle in about 45 seconds. Play the year runs all 72 seasons in about 72 seconds.',
     ttToki: (n, p, d) => `${n} toki, ${p}% through · daylight toki ${d}`,
     appearance: 'Appearance', thSky: 'Sky', thSkyD: 'Full color, changing with the sun', thDark: 'Dark', thDarkD: 'Night background; the toki color glows', thSun: 'Follow the sun', thSunD: 'Sky by day, dark from sunset to sunrise', thDevice: 'Match device', thDeviceD: "Uses your device's light or dark setting",
+    settings: 'Settings', settingsSub: 'Everything stays on this device.', placeH: 'Place', change: 'Change', accessibility: 'Accessibility', reduceMotion: 'Reduce motion', reduceMotionD: 'Still sky, no slow drift', bigText: 'Larger text', bigTextD: 'Bigger names and labels', about: 'About N-Toki · open source', pickCity: 'Pick a city', start: 'Start', wTag: 'Time never runs out. Time runs through us.', w1: 'Your day has twelve toki: six of daylight, six of night. They follow the real sun, so they stretch in summer and shrink in winter.', w2: 'Each toki has an animal and a color. The sky on screen changes as the sun moves.', w3: 'Hold anywhere to see clock time. Swipe for the day ring and the 72 seasons of the year.', wNote: 'Location stays on this device and is used only to calculate your sunrise and sunset.',
     langTitle: 'Language', langSub: 'N-Toki follows your device language when it can. Choose another here.',
     views: 'Views', livingClock: 'Living clock', fullCycle: 'Full cycle', showAs: 'Show toki as', dialAria: 'The twelve toki of this cycle', previewAria: 'Previewing another time. Return to now', travelAria: 'Time travel',
     seasons: 'Seasons', yearTitle: 'The 72 seasons', yearAria: 'The 72 seasons of this year',
@@ -742,6 +786,7 @@ const STR = {
     date: '日付', timeOfDay: '時刻', play: '一日を再生', stop: '停止', backNow: '今に戻る', playNote: '「一日を再生」は十二刻の一巡りを約45秒で、「一年を再生」は七十二候を約72秒で再生します。',
     ttToki: (n, p, d) => `${n}、${p}%経過 · 昼の一刻 ${d}`,
     appearance: '表示', thSky: '空', thSkyD: '太陽とともに変わるフルカラー', thDark: 'ダーク', thDarkD: '夜の背景に、刻の色が灯ります', thSun: '太陽に合わせる', thSunD: '昼は空、日の入りから日の出まではダーク', thDevice: '端末に合わせる', thDeviceD: '端末のライト／ダーク設定を使います',
+    settings: '設定', settingsSub: 'すべてこの端末の中に保存されます。', placeH: '場所', change: '変更', accessibility: 'アクセシビリティ', reduceMotion: '動きを減らす', reduceMotionD: '空の揺らぎを止めます', bigText: '文字を大きく', bigTextD: '名前やラベルを大きく表示', about: 'N-Toki について · オープンソース', pickCity: '都市を選ぶ', start: 'はじめる', wTag: '時は尽きない。時は私たちを流れる。', w1: '一日は十二の刻。昼に六つ、夜に六つ。本物の太陽に合わせるので、夏は長く冬は短くなります。', w2: 'それぞれの刻には動物と色があり、太陽とともに画面の空が変わります。', w3: '長押しで時計の時刻。スワイプで一日の巡りと七十二候へ。', wNote: '位置情報はこの端末の中だけで、日の出と日の入りの計算にのみ使います。',
     langTitle: '言語', langSub: 'N-Toki はできるだけ端末の言語に合わせます。ここで変更できます。',
     views: '表示', livingClock: '生きた時計', fullCycle: '一日の巡り', showAs: '刻の表し方', dialAria: 'この巡りの十二刻', previewAria: '別の時刻を表示中。今に戻る', travelAria: '時の旅',
     seasons: '七十二候', yearTitle: '七十二候', yearAria: '今年の七十二候',
@@ -780,6 +825,7 @@ const STR = {
     date: '日期', timeOfDay: '时间', play: '播放一整天', stop: '停止', backNow: '回到现在', playNote: '“播放一整天”约45秒播完十二时辰；“播放一整年”约72秒播完七十二候。',
     ttToki: (n, p, d) => `${n}，已过${p}% · 白天时辰 ${d}`,
     appearance: '外观', thSky: '天空', thSkyD: '随太阳变化的全彩', thDark: '深色', thDarkD: '夜色背景上，时辰之色发光', thSun: '跟随太阳', thSunD: '白天显示天空，日落到日出为深色', thDevice: '跟随设备', thDeviceD: '使用设备的浅色或深色设置',
+    settings: '设置', settingsSub: '一切都只保存在本设备上。', placeH: '地点', change: '更改', accessibility: '辅助功能', reduceMotion: '减少动态效果', reduceMotionD: '天空保持静止', bigText: '更大的文字', bigTextD: '放大名称和标签', about: '关于 N-Toki · 开源', pickCity: '选择城市', start: '开始', wTag: '时间不会用尽。时间流经我们。', w1: '一天有十二个时辰：白天六个，夜晚六个。它们跟随真实的太阳，夏天变长，冬天变短。', w2: '每个时辰都有一种动物和一种颜色，屏幕上的天空随太阳而变。', w3: '长按查看钟表时间。滑动查看一天的圆环和一年的七十二候。', wNote: '位置信息只保存在本设备上，仅用于计算日出和日落。',
     langTitle: '语言', langSub: 'N-Toki 会尽量跟随设备语言，也可以在这里更改。',
     views: '视图', livingClock: '活的时钟', fullCycle: '完整周期', showAs: '时辰显示方式', dialAria: '本周期的十二时辰', previewAria: '正在预览其他时间。回到现在', travelAria: '穿越时间',
     seasons: '七十二候', yearTitle: '七十二候', yearAria: '今年的七十二候',
@@ -835,7 +881,6 @@ function applyStatic() {
   document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', tr(el.dataset.i18nAria)));
   const mode = { kanji: 'mKanji', en: 'mAnimal', bell: 'mBell' };
   document.querySelectorAll('.seg-ctl button').forEach(b => { b.innerHTML = tr(mode[b.dataset.label]); });
-  $('langLbl').textContent = state.lang.toUpperCase();
   $('cityLbl').textContent = placeName(state.place);
 }
 function setLang(l) {
@@ -1318,7 +1363,7 @@ function openSheet(id) {
 }
 function closeSheets() {
   const was = sheetOpen();
-  ['sheetCompanion', 'sheetCity', 'sheetTravel', 'sheetLang', 'sheetKo'].forEach(s => ($(s).hidden = true));
+  ['sheetCompanion', 'sheetCity', 'sheetTravel', 'sheetLang', 'sheetKo', 'sheetWelcome'].forEach(s => ($(s).hidden = true));
   $('scrim').hidden = true;
   if (was && lastFocus) lastFocus.focus({ preventScroll: true });
 }
@@ -1377,26 +1422,44 @@ $('customForm').addEventListener('submit', e => {
   closeSheets();
 });
 $('cityBtn').addEventListener('click', () => { renderCities(); $('geoMsg').hidden = true; openSheet('sheetCity'); });
-$('geoBtn').addEventListener('click', () => {
-  const msg = $('geoMsg');
-  const fail = () => { msg.hidden = false; msg.textContent = tr('locErr'); };
+$('geoBtn').addEventListener('click', () => locate(closeSheets, $('geoMsg')));
+function renderA11y() {
+  const items = [['reduceMotion', 'reduceMotion', 'reduceMotionD'], ['bigText', 'bigText', 'bigTextD']];
+  $('a11yList').innerHTML = items.map(([k, n, d]) => `<li><button type="button" data-a11y="${k}" aria-pressed="${!!state.a11y[k]}">${tr(n)}<small>${tr(d)}</small></button></li>`).join('');
+  $('a11yList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    state.a11y[b.dataset.a11y] = !state.a11y[b.dataset.a11y]; store.set('ntoki.a11y', state.a11y);
+    applyA11y(); renderA11y(); tick(); drawSky(performance.now());
+  }));
+}
+function openSettings() {
+  $('langList').innerHTML = LANGS.map(([k, n]) => `<li><button type="button" data-lang="${k}" lang="${k}" aria-pressed="${state.lang === k}">${n}</button></li>`).join('');
+  $('langList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { setLang(b.dataset.lang); openSettings(); }));
+  $('placeLbl2').textContent = placeName(state.place);
+  renderThemes(); renderA11y();
+  document.querySelectorAll('.seg-ctl button').forEach(b => b.setAttribute('aria-checked', b.dataset.label === state.label ? 'true' : 'false'));
+  openSheet('sheetLang');
+}
+$('settingsBtn').addEventListener('click', openSettings);
+$('placeFromSettings').addEventListener('click', () => { renderCities(); $('geoMsg').hidden = true; openSheet('sheetCity'); });
+
+/* first open */
+function locate(onDone, msgEl) {
+  const fail = () => { msgEl.hidden = false; msgEl.textContent = tr('locErr'); };
   if (!navigator.geolocation) return fail();
-  msg.hidden = false; msg.textContent = tr('locWait');
+  msgEl.hidden = false; msgEl.textContent = tr('locWait');
   try {
     navigator.geolocation.getCurrentPosition(pos => {
       const lat = +pos.coords.latitude.toFixed(4), lng = +pos.coords.longitude.toFixed(4);
-      msg.hidden = true;
+      msgEl.hidden = true;
       setPlace({ id: 'geo', name: 'My location', sub: `${lat.toFixed(2)}, ${lng.toFixed(2)}`, lat, lng, tz: deviceTz });
-      closeSheets();
+      onDone();
     }, fail, { timeout: 10000, maximumAge: 3600e3 });
   } catch (e) { fail(); }
-});
-$('langBtn').addEventListener('click', () => {
-  $('langList').innerHTML = LANGS.map(([k, n]) => `<li><button type="button" data-lang="${k}" lang="${k}" aria-pressed="${state.lang === k}">${n}</button></li>`).join('');
-  $('langList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { setLang(b.dataset.lang); closeSheets(); }));
-  renderThemes();
-  openSheet('sheetLang');
-});
+}
+function finishWelcome() { store.set('ntoki.seen', 1); closeSheets(); }
+$('wStart').addEventListener('click', finishWelcome);
+$('wGeo').addEventListener('click', () => locate(finishWelcome, $('wMsg')));
+$('wCity').addEventListener('click', () => { store.set('ntoki.seen', 1); renderCities(); $('geoMsg').hidden = true; openSheet('sheetCity'); });
 
 /* time travel */
 function syncTravelInputs() {
@@ -1467,10 +1530,17 @@ function tick() {
 }
 
 if (window.NTOKI_MODE === 'wall' || /[?&]wall/.test(location.search)) $('app').classList.add('wall');
+applyA11y();
 applyStatic();
 setReveal(null);
 tick();
 onPage();
+(() => {
+  const wall = $('app').classList.contains('wall');
+  const opens = (store.get('ntoki.opens') || 0) + 1; store.set('ntoki.opens', opens);
+  if (opens > 6) $('hint').hidden = true;
+  if (!wall && !store.get('ntoki.seen')) setTimeout(() => openSheet('sheetWelcome'), 600);
+})();
 drawSky(0);
 requestAnimationFrame(loop);
 setInterval(() => { if (!state.playing) tick(); }, 1000);

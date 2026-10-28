@@ -1,5 +1,5 @@
 // N-Toki service worker: keeps the clock working offline. Bump VERSION on every release.
-const VERSION = 'n-toki-v2.1.0';
+const VERSION = 'n-toki-v2.2.0';
 const SHELL = ['./', 'index.html', 'wallpaper.html', 'wallpaper-dark.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {

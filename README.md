@@ -4,6 +4,10 @@
 
 > Time became something they could sell. Time to take it back.
 
+## In plain words
+
+Open N-Toki and you don't see 4:12 PM. You see a warm orange sky, the kanji 申, and the word Monkey. That is the toki you are in. It began when the afternoon light started to lean and ends about two hours later, a little earlier in winter and later in summer, because toki follow the real sun where you are, not the clock. Hold the screen and clock time appears; let go and the sky returns.
+
 ## Why
 
 The equal hour made time countable, and anything countable can be bought and sold. Clocks became the meter on our lives: shifts, billable hours, countdowns. Japan kept time by the sun until 1873 and traded it for the industrial clock. N-Toki returns to that point.
@@ -31,6 +35,7 @@ N is pronounced *en*: 円 (circle, and yen), 縁 (the bond between people), 時 
 - **The 72 seasons:** the year as a ring of 72, summer solstice at the top, winter solstice at the bottom.
 - **Time travel:** jump to any date, play a whole day in 45 seconds, or the whole year in 72.
 - **Languages:** English, 日本語, 简体中文, chosen from your device.
+- **Settings in one place:** place, appearance, labels, accessibility (reduce motion, larger text) and language.
 - **Appearance:** Sky (full color), Dark (night background with the toki color glowing), Follow the sun (sky by day, dark after sunset), or Match device.
 - **Anywhere on Earth:** pick a city, use your location, or enter coordinates. Polar day and night fall back to clearly labeled equal toki.
 - **Private by design:** no account, no tracking, no server. Everything is calculated on your device and it works offline once installed.
@@ -48,9 +53,9 @@ N is pronounced *en*: 円 (circle, and yen), 縁 (the bond between people), 時 
 
 ```js
 import { NT, SKY, TOKI, KO } from './engine/ntoki-engine.js';
-const c = NT.cycle(Date.now(), { lat: 30.27, lng: -97.74, tz: 'America/Chicago' });
+const c = NT.cycle(Date.now(), { lat: 35.68, lng: 139.65, tz: 'Asia/Tokyo' });
 console.log(TOKI[c.idx].en, Math.round(c.progress * 100) + '%');   // e.g. "Horse 50%"
-const y = SKY.year(Date.now(), 30.27);
+const y = SKY.year(Date.now(), 35.68);
 console.log(KO[y.k][0], KO[y.k][2]);                                // e.g. "霜始降 First frost"
 ```
 
@@ -67,7 +72,7 @@ The app (`index.html`) is a single self-contained file that inlines the same eng
 
 - Micro-season names: [Japan's 72 Microseasons, nippon.com](https://www.nippon.com/en/features/h00124/), following court astronomer Shibukawa Shunkai's 1685 revision.
 - Solar position: low-precision formulas after Jean Meeus, *Astronomical Algorithms*, and the SunCalc sunrise method.
-- The micro-seasons were suggested by the author of the post that inspired N-Toki. Thank you.
+- N-Toki began as a reply to a post by [@ReiOfJapan7](https://x.com/ReiOfJapan7) on Japanese timekeeping, who also suggested adding the 72 micro-seasons. Thank you.
 
 ## License
 

@@ -2,7 +2,7 @@
 
 *A seasonal clock, a shared language of time, and the case for time sovereignty*
 
-Working paper, draft 1 · Gabriel · 26 October 2026
+Working paper, draft 1 · intimate-avocado · 26 October 2026
 
 ---
 
@@ -18,7 +18,7 @@ We define the centered toki system formally, describe a working prototype, and s
 
 Time became something people could sell when it became something that could be counted in identical units. Once every hour was the same length everywhere and in every season, an hour of a person's life could be priced, bought, and audited. N-Toki starts from a simple proposition: *time became something they could sell; it is time to sell it back.*
 
-Most people now experience their day mainly as a countdown. The clock tells them how much time remains, how late they are, and what is due. Meanwhile the day itself, its light, its length, the way it shifts across the year, has dropped out of view. A 12:00 on the screen is not noon in the sky. In Austin on 26 October 2026, the sun reached its highest point at 1:16 PM.
+Most people now experience their day mainly as a countdown. The clock tells them how much time remains, how late they are, and what is due. Meanwhile the day itself, its light, its length, the way it shifts across the year, has dropped out of view. A 12:00 on the screen is not noon in the sky. In Tokyo on 26 October 2026, the sun reached its highest point at 11:26 AM; in Austin, Texas, the same day, at 1:16 PM.
 
 N-Toki proposes an additional layer, not a replacement. It gives people a clock that follows the sun, divides daylight and darkness into six toki each, and lets conventional time appear only when precision is actually needed. The long-term aim is cultural: a shared, felt language of time that makes it thinkable to organize life and work around something other than the billable hour.
 
@@ -96,42 +96,42 @@ In practice the cycle opens half a night toki before sunrise, steps by D through
 
 ### 3.2 The twelve toki, with a worked example
 
-The table gives each toki's traditional name and bell, and its actual window in Austin, Texas, on 26 October 2026 (sunrise 7:41 AM, sunset 6:50 PM, local time). That day each daylight toki lasted 1 h 51 min and each night toki 2 h 9 min.
+The table gives each toki's traditional name and bell, and its actual window in Tokyo on 26 October 2026 (sunrise 5:58 AM, sunset 4:54 PM, local time). That day each daylight toki lasted 1 h 49 min and each night toki 2 h 11 min.
 
-| Toki | Kanji | Reading | Bell | Centered on | Austin, 26 Oct 2026 |
+| Toki | Kanji | Reading | Bell | Centered on | Tokyo, 26 Oct 2026 |
 | --- | --- | --- | --- | --- | --- |
-| Rabbit | 卯 | U | Sixth (明け六つ) | Sunrise, 7:41 AM | 6:37 – 8:37 AM |
-| Dragon | 辰 | Tatsu | Fifth | | 8:37 – 10:28 AM |
-| Snake | 巳 | Mi | Fourth | | 10:28 AM – 12:20 PM |
-| Horse | 午 | Uma | Ninth (昼九つ) | Sun at its height, 1:16 PM | 12:20 – 2:11 PM |
-| Sheep | 未 | Hitsuji | Eighth | | 2:11 – 4:03 PM |
-| Monkey | 申 | Saru | Seventh | | 4:03 – 5:54 PM |
-| Rooster | 酉 | Tori | Sixth (暮れ六つ) | Sunset, 6:50 PM | 5:54 – 7:54 PM |
-| Dog | 戌 | Inu | Fifth | | 7:54 – 10:03 PM |
-| Boar | 亥 | I | Fourth | | 10:03 PM – 12:12 AM |
-| Rat | 子 | Ne | Ninth (夜九つ) | Middle of the night, 1:16 AM | 12:12 – 2:20 AM |
-| Ox | 丑 | Ushi | Eighth | | 2:20 – 4:29 AM |
-| Tiger | 寅 | Tora | Seventh | | 4:29 – 6:38 AM |
+| Rabbit | 卯 | U | Sixth (明け六つ) | Sunrise, 5:58 AM | 4:53 – 6:52 AM |
+| Dragon | 辰 | Tatsu | Fifth | | 6:52 – 8:42 AM |
+| Snake | 巳 | Mi | Fourth | | 8:42 – 10:31 AM |
+| Horse | 午 | Uma | Ninth (昼九つ) | Sun at its height, 11:26 AM | 10:31 AM – 12:21 PM |
+| Sheep | 未 | Hitsuji | Eighth | | 12:21 – 2:10 PM |
+| Monkey | 申 | Saru | Seventh | | 2:10 – 4:00 PM |
+| Rooster | 酉 | Tori | Sixth (暮れ六つ) | Sunset, 4:54 PM | 4:00 – 6:00 PM |
+| Dog | 戌 | Inu | Fifth | | 6:00 – 8:11 PM |
+| Boar | 亥 | I | Fourth | | 8:11 – 10:21 PM |
+| Rat | 子 | Ne | Ninth (夜九つ) | Middle of the night, 11:27 PM | 10:21 PM – 12:32 AM |
+| Ox | 丑 | Ushi | Eighth | | 12:32 – 2:43 AM |
+| Tiger | 寅 | Tora | Seventh | | 2:43 – 4:53 AM |
 
-By the sun, noon in Austin that day was 1:16 PM and midnight 1:16 AM. Austin lies west of its time zone's reference meridian, daylight saving time adds an hour, and the equation of time shifts the result by about a quarter hour in late October.
+By the sun, noon in Tokyo that day was 11:26 AM and midnight 11:27 PM: Tokyo lies east of its time zone's reference meridian, and the equation of time adds about a quarter hour in late October. In Austin, Texas, the same day, solar noon fell at 1:16 PM, pushed the other way by longitude and daylight saving time.
 
 ### 3.3 Toki follow the seasons
 
-Because D and N are recomputed every day, toki stretch and shrink through the year. Near the equator they barely change; at high latitudes the swing is large. In Austin, one daylight toki runs from 1 h 42 min at the winter solstice to 2 h 21 min at the summer solstice. Tokyo, the old Edo, swings further.
+Because D and N are recomputed every day, toki stretch and shrink through the year. Near the equator they barely change; at high latitudes the swing is large. In Tokyo, one daylight toki runs from 1 h 37 min at the winter solstice to 2 h 26 min at the summer solstice. Austin, further south, swings a little less.
 
 Length of one daylight toki on the 21st of each month (minutes, calculated by the N-Toki engine):
 
 | City | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Austin | 105 | 113 | 122 | 131 | 138 | 141 | 138 | 131 | 122 | 113 | 105 | 102 |
 | Tokyo | 101 | 111 | 121 | 133 | 142 | 146 | 142 | 133 | 122 | 111 | 102 | 97 |
+| Austin | 105 | 113 | 122 | 131 | 138 | 141 | 138 | 131 | 122 | 113 | 105 | 102 |
 
 ### 3.4 Edge cases
 
-- **Daylight saving time.** All arithmetic uses absolute timestamps, so a clock change does not move a toki boundary. On the night US clocks fell back in 2026, Austin's night toki still ran from 6:46 PM to 6:46 AM local time, as the sun dictates.
+- **Daylight saving time.** All arithmetic uses absolute timestamps, so a clock change does not move a toki boundary. On the night US clocks fell back in 2026, a Texas night toki still ran exactly as the sun dictated; only the labels on the clock changed.
 - **Polar day and polar night.** Where the sun does not rise or set, there is no anchor. N-Toki shows a clearly labeled fallback of equal two-hour toki, still centered on local noon and midnight, and never invents a sunrise.
 - **Historical fidelity.** Edo practice defined dawn and dusk by observable twilight rather than astronomical sunrise, and several conventions coexisted [4]. N-Toki is a modern system inspired by that practice, not a reconstruction of an Edo clock. A historical twilight mode is a possible later option.
-- **Validation.** The prototype engine was scanned across all of 2026 for Austin at 5-minute steps. It produced no skipped or repeated toki and needed no fallback.
+- **Validation.** The prototype engine was scanned across all of 2026 at 5-minute steps. It produced no skipped or repeated toki and needed no fallback.
 
 ---
 
@@ -327,6 +327,8 @@ The equal hour was a tool that made time countable, and therefore saleable. It w
 N-Toki offers a second reading of the day: one that follows the sun, changes with the seasons, and asks nothing of a person after dark. If people come to feel time this way, and then to speak it with each other, the old question can be asked again with a constituency behind it: who owns our time?
 
 Time never runs out. Time runs through us.
+
+*Acknowledgment.* N-Toki began as a reply to a post by [@ReiOfJapan7](https://x.com/ReiOfJapan7) on Japanese timekeeping, who also suggested adding the 72 micro-seasons.
 
 ---
 

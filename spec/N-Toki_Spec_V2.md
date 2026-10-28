@@ -1,9 +1,23 @@
 # N-TOKI — Product & Build Specification V2.0
 
-Draft · 27 October 2026 · Gabriel
+Draft · 27 October 2026 · intimate-avocado
 
 **Tagline:** Time never runs out. Time runs through us.
 **Name:** N-Toki, pronounced *en-toki*: 円 (circle, and yen), 縁 (the bond between people), 時 (time). Final name subject to a trademark search (Section 17).
+
+---
+
+## What is N-Toki, in plain words
+
+Open N-Toki and you don't see 4:12 PM. You see a warm orange sky, the kanji 申, and the word Monkey. That is the toki you are in. It began when the afternoon light started to lean, and it ends about two hours later: a little earlier in winter, a little later in summer, because toki follow the real sun where you are, not the clock.
+
+A day has twelve toki, six of daylight and six of night, each named for a zodiac animal and each centered on a moment of the sun. Horse sits on the sun's highest point. Rat sits on the middle of the night. Rabbit and Rooster straddle sunrise and sunset. Japan kept time this way until 1873, when it adopted the equal hours the industrial world runs on.
+
+The year works the same way. Under the toki line sits the current micro-season, one of 72 that last about five days each, with names like *first frost* and *rainbows hide*. They are calculated from the sun's position, so they are right every year.
+
+Clock time is always one press away. Hold the screen and it appears; let go and the sky returns. N-Toki never asks you to come back: no streaks, no feed, no notifications unless you turn a bell on. It runs entirely on your device, needs no account, and works offline.
+
+Why build it? Because the equal hour is what made time something that could be sold, and a different way of reading the day is the first step toward a different relationship with it. First people experience time by the sky. Then they start to speak it with each other. Only then does it make sense to ask how work and value might be organized around it. The clock is step one.
 
 ---
 
@@ -88,7 +102,7 @@ Rabbit and Rooster straddle the horizon: half night-length, half day-length.
 
 - All math uses absolute timestamps, so daylight saving changes never move a boundary.
 - **Polar day/night:** where the sun does not rise or set, show a clearly labeled fallback of equal two-hour toki centered on local noon and midnight. Never invent a sunrise.
-- **Validation:** a full-year scan at 5-minute steps must produce no skipped or repeated toki (passed for Austin, 2026).
+- **Validation:** a full-year scan at 5-minute steps must produce no skipped or repeated toki (passed for 2026).
 
 ### 3.3 The twelve toki
 
@@ -113,7 +127,7 @@ Rabbit and Rooster straddle the horizon: half night-length, half day-length.
 
 The day is divided by the sun into twelve toki; the year is divided by the sun into 24 solar terms (二十四節気, *sekki*) and 72 micro-seasons (*kō*) of about five days each. Each kō has a short poetic name, such as 霜始降 *shimo hajimete furu*, "first frost." The names came from China and were revised for Japan's climate by court astronomer Shibukawa Shunkai in 1685.
 
-*Origin of this feature:* suggested by the author of the post that inspired N-Toki. Credit them in the release notes and tag them when it ships.
+*Origin of this feature:* suggested by [@ReiOfJapan7](https://x.com/ReiOfJapan7), whose post on Japanese timekeeping inspired N-Toki. Credit them in the release notes.
 
 ### 4.1 Definition (astronomical, not calendar dates)
 
