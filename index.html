@@ -343,7 +343,7 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
       <div class="cycle">
         <h2 id="cycleTitle" class="ct">Today's twelve toki</h2>
         <div class="lens" id="lens"></div>
-        <p class="lede" data-i18n="lede">Read it like the sky facing south: the sun rises on the left, peaks at the top in Horse, and sets on the right. Rat sits at the bottom, around the middle of the night. Tap any toki.</p>
+        <p class="lede" data-i18n="lede" id="dialLede">Read it like the sky facing south: the sun rises on the left, peaks at the top in Horse, and sets on the right. Rat sits at the bottom, around the middle of the night. Tap any toki.</p>
         <div class="seg-ctl" role="radiogroup" aria-label="Show toki as" data-i18n-aria="showAs">
           <button type="button" role="radio" data-label="kanji"><span lang="ja">漢字</span> Kanji</button>
           <button type="button" role="radio" data-label="en">English</button>
@@ -722,12 +722,12 @@ const STR = {
   en: {
     hint: 'Hold anywhere for clock time · Swipe for the full cycle', clockTime: 'Clock time', hideClock: 'Hide clock time', cycle: 'Cycle', clock: 'Clock', travel: 'Travel', language: 'Language',
     quiet: 'The sun has set. The day asks nothing more of you.',
-    lede: 'Read it like the sky facing south: the sun rises on the left, peaks at the top, and sets on the right. The middle of the night sits at the bottom. Tap any toki.',
+    lede: 'Read it like the sky facing south: the sun rises on the left, peaks at the top, and sets on the right. The middle of the night sits at the bottom. A toki day runs from sunrise to sunrise. Tap any toki.',
     mKanji: '<span lang="ja">漢字</span> Kanji', mAnimal: 'Animal', mBell: 'Bells',
     whyT: 'Why the bells count down',
     whyP1: 'A common explanation: temple bells struck in multiples of nine (9, 18, 27, 36, 45, 54), and only the last digit was kept. Either way, the count ran nine, eight, seven, six, five, four, then began again at noon and at midnight.',
     whyP2: "In N-Toki each bell sits at the middle of its toki, so the ninth bell at the sun's height is the exact middle of Horse. Japan kept time this way until 1873, when it adopted equal Western hours.",
-    todayTitle: "Today's twelve toki", dayTitle: d => `Twelve toki of ${d}`, eachDay: 'Each daylight toki', eachNight: 'Each night toki',
+    todayTitle: "Today's twelve toki", spanTitle: (a, b) => `Twelve toki · ${a} → ${b}`, dayTitle: d => `Twelve toki of ${d}`, eachDay: 'Each daylight toki', eachNight: 'Each night toki',
     sunrise: 'Sunrise', sunHeight: 'Sun at its height', sunset: 'Sunset', midnight: 'Middle of the night', noonF: 'Noon', midnightF: 'Midnight',
     tokiWin: n => `${n} toki`, left: 'Left in this toki', dayToki: 'Daylight toki', nightToki: 'Night toki',
     nowPct: p => `Now · ${p}%`, beginsIn: d => `Begins in ${d}`, ended: d => `Ended ${d} ago`, showCurrent: 'Show the current toki',
@@ -766,7 +766,7 @@ const STR = {
     whyT: '鐘の数が減っていくわけ',
     whyP1: 'よく知られた説では、鐘は九の倍数（9・18・27・36・45・54）で打たれ、下一桁だけが残ったといいます。いずれにせよ九・八・七・六・五・四と数え、正午と真夜中にまた九から始まりました。',
     whyP2: 'N-Toki では各刻のまんなかに鐘を置くので、太陽が最も高い九つの鐘は午の刻のちょうど中央です。日本は1873年に西洋の定時法を採用するまで、この方法で時を刻んでいました。',
-    todayTitle: '今日の十二刻', dayTitle: d => `${d}の十二刻`, eachDay: '昼の一刻', eachNight: '夜の一刻',
+    todayTitle: '今日の十二刻', spanTitle: (a, b) => `${a}〜${b}の十二刻`, dayTitle: d => `${d}の十二刻`, eachDay: '昼の一刻', eachNight: '夜の一刻',
     sunrise: '日の出', sunHeight: '南中', sunset: '日の入り', midnight: '夜半', noonF: '正午', midnightF: '真夜中',
     tokiWin: n => n, left: 'この刻の残り', dayToki: '昼の一刻', nightToki: '夜の一刻',
     nowPct: p => `今 · ${p}%`, beginsIn: d => `あと${d}`, ended: d => `${d}前に終了`, showCurrent: '今の刻を表示',
@@ -805,7 +805,7 @@ const STR = {
     whyT: '钟声为什么倒数',
     whyP1: '一种常见说法是：寺钟按九的倍数（9、18、27、36、45、54）敲击，只保留个位数。无论如何，钟声依次为九、八、七、六、五、四，并在正午和半夜重新从九开始。',
     whyP2: '在 N-Toki 中，每一响都位于其时辰的正中，所以太阳最高时的九响正是午时的中心。日本一直这样计时，直到1873年采用西方的等长小时。',
-    todayTitle: '今天的十二时辰', dayTitle: d => `${d}的十二时辰`, eachDay: '白天每个时辰', eachNight: '夜晚每个时辰',
+    todayTitle: '今天的十二时辰', spanTitle: (a, b) => `${a}至${b}的十二时辰`, dayTitle: d => `${d}的十二时辰`, eachDay: '白天每个时辰', eachNight: '夜晚每个时辰',
     sunrise: '日出', sunHeight: '太阳最高', sunset: '日落', midnight: '夜半', noonF: '中午', midnightF: '午夜',
     tokiWin: n => n, left: '本时辰剩余', dayToki: '白天时辰', nightToki: '夜晚时辰',
     nowPct: p => `现在 · ${p}%`, beginsIn: d => `${d}后开始`, ended: d => `${d}前结束`, showCurrent: '显示当前时辰',
@@ -1011,9 +1011,11 @@ function buildTrack() {
     g.addEventListener('click', pick);
     g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
   });
-  const p = NT.partsOf(c.noon, state.place.tz), today = NT.partsOf(Date.now(), state.place.tz);
+  const p = NT.partsOf(c.noon, state.place.tz), now = NT.partsOf(c.t, state.place.tz), today = NT.partsOf(Date.now(), state.place.tz);
   const sameDay = p.year === today.year && p.month === today.month && p.day === today.day;
-  $('cycleTitle').textContent = sameDay && state.override == null ? tr('todayTitle') : tr('dayTitle', fmt(c.noon, { month: 'long', day: 'numeric' }));
+  const afterMidnight = !(now.year === p.year && now.month === p.month && now.day === p.day);
+  const d1 = fmt(c.noon, { month: 'short', day: 'numeric' }), d2 = fmt(c.b[12] - 3600e3, { month: 'short', day: 'numeric' });
+  $('cycleTitle').textContent = afterMidnight ? tr('spanTitle', d1, d2) : sameDay && state.override == null ? tr('todayTitle') : tr('dayTitle', fmt(c.noon, { month: 'long', day: 'numeric' }));
   $('lens').innerHTML = `<span>${tr('eachDay')} <b>${dur(c.dayToki)}</b></span><span>${tr('eachNight')} <b>${dur(c.nightToki)}</b></span>`;
 }
 
