@@ -20,12 +20,20 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://intimate-avocado.github.io/n-toki/social-card.png">
 <style>:root{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui}[hidden]{display:none!important}</style>
+<style>
+@font-face{font-family:"Shippori Mincho";font-weight:500;font-display:swap;src:url(fonts/shippori-mincho-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Shippori Mincho";font-weight:700;font-display:swap;src:url(fonts/shippori-mincho-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Shippori Mincho";font-weight:500;font-display:swap;src:url(fonts/shippori-mincho-cjk-500.woff2) format("woff2");unicode-range:U+3000-30FF,U+4E00-9FFF,U+FF00-FFEF}
+@font-face{font-family:"Shippori Mincho";font-weight:700;font-display:swap;src:url(fonts/shippori-mincho-cjk-700.woff2) format("woff2");unicode-range:U+3000-30FF,U+4E00-9FFF,U+FF00-FFEF}
+@font-face{font-family:"Zen Kaku Gothic New";font-weight:400;font-display:swap;src:url(fonts/zen-kaku-gothic-new-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Zen Kaku Gothic New";font-weight:500;font-display:swap;src:url(fonts/zen-kaku-gothic-new-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Zen Kaku Gothic New";font-weight:700;font-display:swap;src:url(fonts/zen-kaku-gothic-new-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-weight:400;font-display:swap;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-weight:500;font-display:swap;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2")}
+</style>
 <script>window.NTOKI_MODE='wall';window.NTOKI_THEME='dark'</script></head><body>
 <title>N-Toki</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&display=swap">
 <style>
 /* Layout: one fixed atmospheric sky drawn from the sun's real position; a two-page swipe pager (Living Clock | Cycle) floats over it; details rise from the bottom as paper slips. Deliberately single-world: the sky is the theme. */
 :root{
@@ -218,6 +226,10 @@ html.dark .sheet{box-shadow:0 -10px 40px rgba(0,0,0,.6)}
 .themes button small{color:var(--paper-muted);font-size:12px;font-weight:400}
 .themes button[aria-pressed="true"]{border-color:var(--paper-ink);box-shadow:inset 0 0 0 1px var(--paper-ink)}
 .sheet h4{font-family:var(--f-display);font-weight:500;font-size:17px;margin:20px 0 8px}
+.lore p{margin:0 0 10px;max-width:60ch}
+.lore h4{margin-top:22px}
+.lore .lore-end{margin-top:22px;font-size:15px}
+a.btn{text-decoration:none;display:inline-block}
 .seg-ctl--settings{margin:0}
 .welcome{margin:0 0 6px;padding-left:20px;line-height:1.55}
 .welcome li{margin-bottom:8px}
@@ -366,7 +378,6 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
       <div class="cycle">
         <h2 id="yTitle" data-i18n="yearTitle">The 72 seasons</h2>
         <p class="lede" data-i18n="yearLede">The year read by the sun.</p>
-        <p class="lede" id="ySouth" data-i18n="southNote" hidden></p>
         <div class="dial-wrap">
           <svg id="yearDial" viewBox="0 0 400 400" role="group" aria-label="The 72 seasons of this year" data-i18n-aria="yearAria"></svg>
           <div class="dial-center" id="yCenter" aria-live="polite"></div>
@@ -467,7 +478,36 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
   <h4 data-i18n="langTitle">Language</h4>
   <p class="sub" data-i18n="langSub">N-Toki follows your device language when it can. Choose another here.</p>
   <ul class="langs" id="langList"></ul>
-  <p class="note" style="margin-top:18px"><a id="aboutLink" href="https://github.com/intimate-avocado/n-toki" target="_blank" rel="noopener" data-i18n="about">About N-Toki · open source</a></p>
+  <div class="row-btns" style="margin-top:18px"><button class="btn" type="button" id="aboutBtn" data-i18n="about">About N-Toki</button><a class="btn" href="https://github.com/intimate-avocado/n-toki" target="_blank" rel="noopener" data-i18n="source">Source code</a></div>
+</div>
+
+<div class="sheet lore" id="sheetAbout" role="dialog" aria-modal="true" aria-labelledby="loreTitle" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <h3 id="loreTitle"><span lang="zh">关于</span> · About</h3>
+  <h4><span lang="zh">他们拿走了</span> · They took it</h4>
+  <p>Once, noon was when the sun was highest, where <em>you</em> were. Every town had its own noon. Then came the railways and the telegraph, and on 18 November 1883 noon was voted into zones so the trains could keep a schedule.</p>
+  <p>That was the first taking. Time stopped belonging to the sky and started belonging to the timetable.</p>
+  <h4><span lang="zh">他们卖了回来</span> · They sold it back</h4>
+  <p>Then came the whistle, the punch clock, the timesheet. Time became something you sell by the hour. Then it became something you <em>manage</em>: planners, apps, systems, courses.</p>
+  <p>The trick is old: take something, then sell it back. The more you optimize the day, the less of it you have. The more you track the hours, the faster they go. You are not behind. You were put behind.</p>
+  <h4><span lang="zh">兔子</span> · The Rabbit</h4>
+  <p>The White Rabbit is late. He checks his watch. He runs. Alice follows him down and everything gets strange.</p>
+  <p>But there is another rabbit. <span lang="ja">卯</span>: sunrise, spring, east, the hour that <em>begins</em> the day. Not the hour you are behind on. The one that opens.</p>
+  <p>Same animal. Different story. One you chase. One that marks where you already are.</p>
+  <h4><span lang="zh">环</span> · The Loop</h4>
+  <p>Time is not a line with a start and an end. You cannot lose your place on a line that never had one.</p>
+  <p>It is a loop. A spiral that comes back around and is never quite the same. A wave that collapses into <em>now</em>, and now is the only place time is ever actually measured.</p>
+  <p>Yesterday was a dream. Tomorrow never came. Only this, and this, and this.</p>
+  <h4><span lang="zh">玻璃盒</span> · The Glass Box</h4>
+  <p>You can try to trap a moment. Build a box, freeze it, keep it. But what you trap is a photograph of the moment, and the moment is already gone.</p>
+  <p>Some moments don't need a box. They stay on their own. You don't have to hold them. They hold you.</p>
+  <h4><span lang="zh">这里不是什么</span> · What this is not</h4>
+  <p>No account. No tracking. No notifications telling you that you are late. No streaks. No premium tier that unlocks <em>more time</em>.</p>
+  <p>Nothing here is measured against a deadline, because there is no deadline. There is a sun, and there is you, and there is now.</p>
+  <h4><span lang="zh">为什么免费</span> · Why it is free</h4>
+  <p>N-Toki is free and open source because a timekeeper should be auditable, and because the alternative is selling you back the day you already earned.</p>
+  <p class="lore-end"><strong lang="zh">时间不会用尽。时间流经我们。</strong><br><em>Time doesn't run out. It flows through us.</em></p>
+  <p class="note">A modern system inspired by Edo-period timekeeping. Micro-season names after Shibukawa Shunkai (1685). Sparked by a post from @ReiOfJapan7.</p>
 </div>
 
 <div class="sheet" id="sheetWelcome" role="dialog" aria-modal="true" aria-labelledby="wTitle" hidden>
@@ -722,7 +762,7 @@ const STR = {
   en: {
     hint: 'Hold anywhere for clock time · Swipe for the full cycle', clockTime: 'Clock time', hideClock: 'Hide clock time', cycle: 'Cycle', clock: 'Clock', travel: 'Travel', language: 'Language',
     quiet: 'The sun has set. The day asks nothing more of you.',
-    lede: 'Read it like the sky facing south: the sun rises on the left, peaks at the top, and sets on the right. The middle of the night sits at the bottom. A toki day runs from sunrise to sunrise. Tap any toki.',
+    lede: 'Face south and this is your sky: sunrise on the left, the sun at its height at the top, sunset on the right, the middle of the night below. A toki day runs sunrise to sunrise. Tap any toki.',
     mKanji: '<span lang="ja">漢字</span> Kanji', mAnimal: 'Animal', mBell: 'Bells',
     whyT: 'Why the bells count down',
     whyP1: 'A common explanation: temple bells struck in multiples of nine (9, 18, 27, 36, 45, 54), and only the last digit was kept. Either way, the count ran nine, eight, seven, six, five, four, then began again at noon and at midnight.',
@@ -730,7 +770,7 @@ const STR = {
     todayTitle: "Today's twelve toki", spanTitle: (a, b) => `Twelve toki · ${a} → ${b}`, dayTitle: d => `Twelve toki of ${d}`, eachDay: 'Each daylight toki', eachNight: 'Each night toki',
     sunrise: 'Sunrise', sunHeight: 'Sun at its height', sunset: 'Sunset', midnight: 'Middle of the night', noonF: 'Noon', midnightF: 'Midnight',
     tokiWin: n => `${n} toki`, left: 'Left in this toki', dayToki: 'Daylight toki', nightToki: 'Night toki',
-    nowPct: p => `Now · ${p}%`, beginsIn: d => `Begins in ${d}`, ended: d => `Ended ${d} ago`, showCurrent: 'Show the current toki',
+    nowPct: () => 'Now · you are here', beginsIn: d => `Begins in ${d}`, ended: d => `Ended ${d} ago`, showCurrent: 'Show the current toki',
     bell: 'Bell', place: 'Place in the day', daylight: 'Daylight', night: 'Night',
     cSunrise: x => `Centered on sunrise (${x})`, cHeight: x => `Centered on the sun at its height (${x})`, cSunset: x => `Centered on sunset (${x})`, cMid: x => `Centered on the middle of the night (${x})`,
     cF6: 'Centered on 6:00', cFnoon: 'Centered on noon', cF18: 'Centered on 18:00', cFmid: 'Centered on midnight',
@@ -738,20 +778,20 @@ const STR = {
     polarDay: 'Midnight sun: the sun never sets here today, so N-Toki is using equal two-hour toki.',
     polarNight: 'Polar night: the sun never rises here today, so N-Toki is using equal two-hour toki.',
     polarOther: 'No clear sunrise today, so N-Toki is using equal two-hour toki.',
-    sealAria: (n, p) => `${n}, ${p} percent through. Open details.`, close: 'Close',
+    sealAria: n => `${n}. Open details.`, close: 'Close',
     cdNote: 'N-Toki is a modern system inspired by Edo-period timekeeping. Like the original, each toki is centered on a moment of the sun, calculated for where you are.',
     cityTitle: 'Where is your sky?', citySub: 'Sunrise and sunset are calculated on this device from the place you choose. Nothing is sent anywhere.',
     myLoc: 'Use my location', myLocName: 'My location', locErr: 'Location is not available here. Pick a city or enter coordinates.', locWait: 'Finding your location…',
     lat: 'Latitude', lng: 'Longitude', tz: 'Time zone', useCoords: 'Use these coordinates', coordErr: 'Latitude must be between -90 and 90, and longitude between -180 and 180.', custom: 'Custom',
     ttTitle: 'Travel through the day', ttSub: 'Pick any date and time to see its toki. Try a day in June and one in December to see the lengths change.',
     date: 'Date', timeOfDay: 'Time of day', play: 'Play the whole day', stop: 'Stop', backNow: 'Back to now', playNote: 'Play the whole day runs one twelve-toki cycle in about 45 seconds. Play the year runs all 72 seasons in about 72 seconds.',
-    ttToki: (n, p, d) => `${n} toki, ${p}% through · daylight toki ${d}`,
+    ttToki: (n, p, d) => `${n} toki · daylight toki ${d}`,
     appearance: 'Appearance', thSky: 'Sky', thSkyD: 'Full color, changing with the sun', thDark: 'Dark', thDarkD: 'Night background; the toki color glows', thSun: 'Follow the sun', thSunD: 'Sky by day, dark from sunset to sunrise', thDevice: 'Match device', thDeviceD: "Uses your device's light or dark setting",
-    settings: 'Settings', settingsSub: 'Everything stays on this device.', placeH: 'Place', change: 'Change', accessibility: 'Accessibility', reduceMotion: 'Reduce motion', reduceMotionD: 'Still sky, no slow drift', bigText: 'Larger text', bigTextD: 'Bigger names and labels', about: 'About N-Toki · open source', pickCity: 'Pick a city', start: 'Start', wTag: 'Time never runs out. Time runs through us.', w1: 'Your day has twelve toki: six of daylight, six of night. They follow the real sun, so they stretch in summer and shrink in winter.', w2: 'Each toki has an animal and a color. The sky on screen changes as the sun moves.', w3: 'Hold anywhere to see clock time. Swipe for the day ring and the 72 seasons of the year.', wNote: 'Location stays on this device and is used only to calculate your sunrise and sunset.',
+    settings: 'Settings', settingsSub: 'Everything stays on this device.', placeH: 'Place', change: 'Change', accessibility: 'Accessibility', reduceMotion: 'Reduce motion', reduceMotionD: 'Still sky, no slow drift', bigText: 'Larger text', bigTextD: 'Bigger names and labels', about: 'About N-Toki', source: 'Source code', pickCity: 'Pick a city', start: 'Start', wTag: 'Time never runs out. Time runs through us.', w1: 'This is sunlight, not a deadline. The day is a ring of twelve toki, and you are already on it.', w2: 'No account. No tracking. No "you are behind." Everything stays on your device.', w3: 'Free and open source. Hold anywhere for clock time; swipe for the day ring and the 72 seasons.', wNote: 'Location stays on this device and is used only to calculate your sunrise and sunset.',
     langTitle: 'Language', langSub: 'N-Toki follows your device language when it can. Choose another here.',
     views: 'Views', livingClock: 'Living clock', fullCycle: 'Full cycle', showAs: 'Show toki as', dialAria: 'The twelve toki of this cycle', previewAria: 'Previewing another time. Return to now', travelAria: 'Time travel',
     seasons: 'Seasons', yearTitle: 'The 72 seasons', yearAria: 'The 72 seasons of this year',
-    yearLede: 'The year read by the sun: 24 solar terms, each split into three micro-seasons of about five days. Summer solstice at the top, winter solstice at the bottom. Tap any season.',
+    yearLede: 'The year, read by the sun. Twenty-four solar terms, each split into three seasons of about five days. Summer solstice at the top, winter solstice at the bottom. Tap any season.',
     koNote: "The 72 kō came from China and were revised for Japan's climate by court astronomer Shibukawa Shunkai in 1685. N-Toki calculates them from the sun's position, so the dates are right every year.",
     southNote: 'Seasons are shifted six months for the southern hemisphere.', sekki: 'Solar term', dates: 'Dates', koOf: k => `Season ${k} of 72`,
     koNow: (d, n) => `Now · day ${d} of ${n}`, days: n => (n === 1 ? '1 day' : `${n} days`), showCurrentKo: 'Show the current season',
@@ -769,7 +809,7 @@ const STR = {
     todayTitle: '今日の十二刻', spanTitle: (a, b) => `${a}〜${b}の十二刻`, dayTitle: d => `${d}の十二刻`, eachDay: '昼の一刻', eachNight: '夜の一刻',
     sunrise: '日の出', sunHeight: '南中', sunset: '日の入り', midnight: '夜半', noonF: '正午', midnightF: '真夜中',
     tokiWin: n => n, left: 'この刻の残り', dayToki: '昼の一刻', nightToki: '夜の一刻',
-    nowPct: p => `今 · ${p}%`, beginsIn: d => `あと${d}`, ended: d => `${d}前に終了`, showCurrent: '今の刻を表示',
+    nowPct: () => '今 · ここにいます', beginsIn: d => `あと${d}`, ended: d => `${d}前に終了`, showCurrent: '今の刻を表示',
     bell: '鐘', place: '一日の中の位置', daylight: '昼', night: '夜',
     cSunrise: x => `日の出が中心（${x}）`, cHeight: x => `南中が中心（${x}）`, cSunset: x => `日の入りが中心（${x}）`, cMid: x => `夜半が中心（${x}）`,
     cF6: '6:00が中心', cFnoon: '正午が中心', cF18: '18:00が中心', cFmid: '真夜中が中心',
@@ -777,16 +817,16 @@ const STR = {
     polarDay: '白夜：今日は日が沈まないため、2時間ずつの均等な刻を使っています。',
     polarNight: '極夜：今日は日が昇らないため、2時間ずつの均等な刻を使っています。',
     polarOther: '今日ははっきりした日の出がないため、2時間ずつの均等な刻を使っています。',
-    sealAria: (n, p) => `${n}、${p}%経過。詳細を開く。`, close: '閉じる',
+    sealAria: n => `${n}。詳細を開く。`, close: '閉じる',
     cdNote: 'N-Toki は江戸時代の時の数え方に着想を得た現代の仕組みです。もとの方法と同じく、各刻はあなたの場所で計算した太陽の瞬間を中心にしています。',
     cityTitle: 'あなたの空はどこ？', citySub: '日の出と日の入りは、選んだ場所をもとにこの端末で計算します。どこにも送信しません。',
     myLoc: '現在地を使う', myLocName: '現在地', locErr: 'ここでは位置情報を使えません。都市を選ぶか座標を入力してください。', locWait: '現在地を探しています…',
     lat: '緯度', lng: '経度', tz: 'タイムゾーン', useCoords: 'この座標を使う', coordErr: '緯度は-90〜90、経度は-180〜180の範囲で入力してください。', custom: 'カスタム',
     ttTitle: '一日を旅する', ttSub: '好きな日付と時刻を選ぶと、その刻が見られます。6月と12月で長さの違いを比べてみてください。',
     date: '日付', timeOfDay: '時刻', play: '一日を再生', stop: '停止', backNow: '今に戻る', playNote: '「一日を再生」は十二刻の一巡りを約45秒で、「一年を再生」は七十二候を約72秒で再生します。',
-    ttToki: (n, p, d) => `${n}、${p}%経過 · 昼の一刻 ${d}`,
+    ttToki: (n, p, d) => `${n} · 昼の一刻 ${d}`,
     appearance: '表示', thSky: '空', thSkyD: '太陽とともに変わるフルカラー', thDark: 'ダーク', thDarkD: '夜の背景に、刻の色が灯ります', thSun: '太陽に合わせる', thSunD: '昼は空、日の入りから日の出まではダーク', thDevice: '端末に合わせる', thDeviceD: '端末のライト／ダーク設定を使います',
-    settings: '設定', settingsSub: 'すべてこの端末の中に保存されます。', placeH: '場所', change: '変更', accessibility: 'アクセシビリティ', reduceMotion: '動きを減らす', reduceMotionD: '空の揺らぎを止めます', bigText: '文字を大きく', bigTextD: '名前やラベルを大きく表示', about: 'N-Toki について · オープンソース', pickCity: '都市を選ぶ', start: 'はじめる', wTag: '時は尽きない。時は私たちを流れる。', w1: '一日は十二の刻。昼に六つ、夜に六つ。本物の太陽に合わせるので、夏は長く冬は短くなります。', w2: 'それぞれの刻には動物と色があり、太陽とともに画面の空が変わります。', w3: '長押しで時計の時刻。スワイプで一日の巡りと七十二候へ。', wNote: '位置情報はこの端末の中だけで、日の出と日の入りの計算にのみ使います。',
+    settings: '設定', settingsSub: 'すべてこの端末の中に保存されます。', placeH: '場所', change: '変更', accessibility: 'アクセシビリティ', reduceMotion: '動きを減らす', reduceMotionD: '空の揺らぎを止めます', bigText: '文字を大きく', bigTextD: '名前やラベルを大きく表示', about: 'N-Toki について', source: 'ソースコード', pickCity: '都市を選ぶ', start: 'はじめる', wTag: '時は尽きない。時は私たちを流れる。', w1: 'これは日の光であって、締め切りではありません。一日は十二の刻の輪で、あなたはもうその上にいます。', w2: 'アカウントなし。追跡なし。「遅れている」もなし。すべて端末の中に。', w3: '無料でオープンソース。長押しで時計の時刻、スワイプで一日の輪と七十二候へ。', wNote: '位置情報はこの端末の中だけで、日の出と日の入りの計算にのみ使います。',
     langTitle: '言語', langSub: 'N-Toki はできるだけ端末の言語に合わせます。ここで変更できます。',
     views: '表示', livingClock: '生きた時計', fullCycle: '一日の巡り', showAs: '刻の表し方', dialAria: 'この巡りの十二刻', previewAria: '別の時刻を表示中。今に戻る', travelAria: '時の旅',
     seasons: '七十二候', yearTitle: '七十二候', yearAria: '今年の七十二候',
@@ -808,7 +848,7 @@ const STR = {
     todayTitle: '今天的十二时辰', spanTitle: (a, b) => `${a}至${b}的十二时辰`, dayTitle: d => `${d}的十二时辰`, eachDay: '白天每个时辰', eachNight: '夜晚每个时辰',
     sunrise: '日出', sunHeight: '太阳最高', sunset: '日落', midnight: '夜半', noonF: '中午', midnightF: '午夜',
     tokiWin: n => n, left: '本时辰剩余', dayToki: '白天时辰', nightToki: '夜晚时辰',
-    nowPct: p => `现在 · ${p}%`, beginsIn: d => `${d}后开始`, ended: d => `${d}前结束`, showCurrent: '显示当前时辰',
+    nowPct: () => '现在 · 你在这里', beginsIn: d => `${d}后开始`, ended: d => `${d}前结束`, showCurrent: '显示当前时辰',
     bell: '钟声', place: '在一天中的位置', daylight: '白天', night: '夜晚',
     cSunrise: x => `以日出为中心（${x}）`, cHeight: x => `以太阳最高点为中心（${x}）`, cSunset: x => `以日落为中心（${x}）`, cMid: x => `以夜半为中心（${x}）`,
     cF6: '以6:00为中心', cFnoon: '以中午为中心', cF18: '以18:00为中心', cFmid: '以午夜为中心',
@@ -816,16 +856,16 @@ const STR = {
     polarDay: '极昼：今天这里太阳不落，N-Toki 改用每个两小时的等长时辰。',
     polarNight: '极夜：今天这里太阳不升，N-Toki 改用每个两小时的等长时辰。',
     polarOther: '今天没有明确的日出，N-Toki 改用每个两小时的等长时辰。',
-    sealAria: (n, p) => `${n}，已过${p}%。打开详情。`, close: '关闭',
+    sealAria: n => `${n}。打开详情。`, close: '关闭',
     cdNote: 'N-Toki 是受日本江户时代计时方式启发的现代系统。和原来一样，每个时辰都以你所在地点计算出的太阳时刻为中心。',
     cityTitle: '你的天空在哪里？', citySub: '日出和日落根据你选择的地点在本设备上计算，不会发送到任何地方。',
     myLoc: '使用我的位置', myLocName: '我的位置', locErr: '此处无法使用定位。请选择城市或输入坐标。', locWait: '正在获取位置…',
     lat: '纬度', lng: '经度', tz: '时区', useCoords: '使用这些坐标', coordErr: '纬度须在-90到90之间，经度须在-180到180之间。', custom: '自定义',
     ttTitle: '穿越一天', ttSub: '选择任意日期和时间，查看对应的时辰。试试六月和十二月的一天，看看长度的变化。',
     date: '日期', timeOfDay: '时间', play: '播放一整天', stop: '停止', backNow: '回到现在', playNote: '“播放一整天”约45秒播完十二时辰；“播放一整年”约72秒播完七十二候。',
-    ttToki: (n, p, d) => `${n}，已过${p}% · 白天时辰 ${d}`,
+    ttToki: (n, p, d) => `${n} · 白天时辰 ${d}`,
     appearance: '外观', thSky: '天空', thSkyD: '随太阳变化的全彩', thDark: '深色', thDarkD: '夜色背景上，时辰之色发光', thSun: '跟随太阳', thSunD: '白天显示天空，日落到日出为深色', thDevice: '跟随设备', thDeviceD: '使用设备的浅色或深色设置',
-    settings: '设置', settingsSub: '一切都只保存在本设备上。', placeH: '地点', change: '更改', accessibility: '辅助功能', reduceMotion: '减少动态效果', reduceMotionD: '天空保持静止', bigText: '更大的文字', bigTextD: '放大名称和标签', about: '关于 N-Toki · 开源', pickCity: '选择城市', start: '开始', wTag: '时间不会用尽。时间流经我们。', w1: '一天有十二个时辰：白天六个，夜晚六个。它们跟随真实的太阳，夏天变长，冬天变短。', w2: '每个时辰都有一种动物和一种颜色，屏幕上的天空随太阳而变。', w3: '长按查看钟表时间。滑动查看一天的圆环和一年的七十二候。', wNote: '位置信息只保存在本设备上，仅用于计算日出和日落。',
+    settings: '设置', settingsSub: '一切都只保存在本设备上。', placeH: '地点', change: '更改', accessibility: '辅助功能', reduceMotion: '减少动态效果', reduceMotionD: '天空保持静止', bigText: '更大的文字', bigTextD: '放大名称和标签', about: '关于 N-Toki', source: '源代码', pickCity: '选择城市', start: '开始', wTag: '时间不会用尽。时间流经我们。', w1: '这是阳光，不是截止时间。一天是十二个时辰组成的环，你已经在环上了。', w2: '没有账户。没有追踪。没有“你落后了”。一切都留在你的设备上。', w3: '免费且开源。长按查看钟表时间，滑动查看一天的环和七十二候。', wNote: '位置信息只保存在本设备上，仅用于计算日出和日落。',
     langTitle: '语言', langSub: 'N-Toki 会尽量跟随设备语言，也可以在这里更改。',
     views: '视图', livingClock: '活的时钟', fullCycle: '完整周期', showAs: '时辰显示方式', dialAria: '本周期的十二时辰', previewAria: '正在预览其他时间。回到现在', travelAria: '穿越时间',
     seasons: '七十二候', yearTitle: '七十二候', yearAria: '今年的七十二候',
@@ -916,7 +956,7 @@ function updateClock() {
   const ang = c.progress * 2 * Math.PI - Math.PI / 2;
   $('ringDot').setAttribute('cx', (100 + 97 * Math.cos(ang)).toFixed(2));
   $('ringDot').setAttribute('cy', (100 + 97 * Math.sin(ang)).toFixed(2));
-  $('seal').setAttribute('aria-label', tr('sealAria', tokiName(c.idx), Math.round(c.progress * 100)));
+  $('seal').setAttribute('aria-label', tr('sealAria', tokiName(c.idx)));
   $('quiet').hidden = !(c.mode === 'solar' && c.t >= c.set);
   const pn = $('polarNote');
   if (c.mode === 'fixed') {
@@ -940,7 +980,6 @@ function updateReveal() {
     [tr('sunHeight'), c.mode === 'solar' ? tStr(c.noon) : '—'],
     [tr('sunset'), c.mode === 'solar' ? tStr(c.set) : '—'],
     [tr('tokiWin', tokiName(c.idx)), `${tStr(c.b[c.idx])} – ${tStr(c.b[c.idx + 1])}`],
-    [tr('left'), dur(c.b[c.idx + 1] - t)],
     [tr('dayToki'), dur(c.dayToki)],
     [tr('nightToki'), dur(c.nightToki)]
   ];
@@ -1248,7 +1287,6 @@ function buildYear() {
   $('yearDial').querySelectorAll('.yseg').forEach(g => g.addEventListener('click', () => { const k = +g.dataset.k; state.ysel = state.ysel === k || k === state.yr.k ? null : k; updateYear(); }));
   const names = [tr('sprEq'), tr('sumSol'), tr('autEq'), tr('winSol')];
   $('yLegend').innerHTML = y.marks.map((m, i) => `<span>${names[i]}<b>${dShort(m)}</b></span>`).join('');
-  $('ySouth').hidden = !y.flip;
 }
 function updateYear() {
   const y = state.yr, t = nowMs();
@@ -1365,7 +1403,7 @@ function openSheet(id) {
 }
 function closeSheets() {
   const was = sheetOpen();
-  ['sheetCompanion', 'sheetCity', 'sheetTravel', 'sheetLang', 'sheetKo', 'sheetWelcome'].forEach(s => ($(s).hidden = true));
+  ['sheetCompanion', 'sheetCity', 'sheetTravel', 'sheetLang', 'sheetKo', 'sheetWelcome', 'sheetAbout'].forEach(s => ($(s).hidden = true));
   $('scrim').hidden = true;
   if (was && lastFocus) lastFocus.focus({ preventScroll: true });
 }
@@ -1442,6 +1480,7 @@ function openSettings() {
   openSheet('sheetLang');
 }
 $('settingsBtn').addEventListener('click', openSettings);
+$('aboutBtn').addEventListener('click', () => openSheet('sheetAbout'));
 $('placeFromSettings').addEventListener('click', () => { renderCities(); $('geoMsg').hidden = true; openSheet('sheetCity'); });
 
 /* first open */

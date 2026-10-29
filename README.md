@@ -4,76 +4,62 @@
 
 > Time became something they could sell. Time to take it back.
 
-## In plain words
+## What it is
 
-Open N-Toki and you don't see 4:12 PM. You see a warm orange sky, the kanji 申, and the word Monkey. That is the toki you are in. It began when the afternoon light started to lean and ends about two hours later, a little earlier in winter and later in summer, because toki follow the real sun where you are, not the clock. Hold the screen and clock time appears; let go and the sky returns.
+A living clock that follows the real sun where you are. The day is twelve *toki*, six of daylight and six of night, each named for a zodiac animal and centered on a moment of the sun: Rabbit on sunrise, Horse on the sun's highest point, Rooster on sunset, Rat on the middle of the night. The year is 72 micro-seasons of about five days, with names like *first frost* and *rainbows hide*. Japan kept time this way until 1873.
 
-## Why
+Open it and you don't see 4:12 PM. You see a warm orange sky, the kanji 申, and the word Monkey. Hold the screen and clock time appears; let go and the sky returns.
 
-The equal hour made time countable, and anything countable can be bought and sold. Clocks became the meter on our lives: shifts, billable hours, countdowns. Japan kept time by the sun until 1873 and traded it for the industrial clock. N-Toki returns to that point.
+## What it isn't
 
-N-Toki is built for **time sovereignty**: your right to experience, measure and spend your own time.
+No account. No tracking. No ads. No streaks, countdowns or "you're late." No premium tier. See [VALUES.md](VALUES.md): those are constraints, not marketing. If a future version breaks one, it is no longer N-Toki.
 
-- **Nourish the body.** Live in step with the real sun where you are, not a number set by commerce.
-- **Protect the mind.** No streaks, no feeds, no pull notifications. The clock knows when to leave you alone.
-- **Elevate the spirit.** The zodiac toki, the temple bells and the 72 seasons: a heritage of noticing.
+## The idea
 
-The path is cultural first. People **experience** time by the sky, then **speak** it with each other ("coffee during Monkey toki"), and once enough people live this way, they can **reshape how work and value are organized** around it. The clock is step one.
+The equal hour is what made time countable, and anything countable can be sold. N-Toki is step one toward taking it back: experience time by the sky, then speak it with each other, then rethink how work fits around it. The full argument is in the app under Settings → About ([LORE.md](LORE.md)) and in the [working paper](spec/N-Toki_Research_Paper.md).
 
-N-Toki is a living clock that follows the real sun where you are. It brings back two ways of keeping time that Japan set aside in its 1872–73 calendar reform:
+## Privacy
 
-- **The twelve toki of the day.** Daylight and darkness are each divided by six, so the "hours" stretch and shrink with the seasons. Every toki is centered on a moment of the sun: Rabbit 卯 on sunrise, Horse 午 on the sun's highest point, Rooster 酉 on sunset, Rat 子 on the middle of the night.
-- **The 72 micro-seasons of the year (七十二候).** About five days each, with names like 霜始降, "first frost," calculated from the sun's position so the dates are right every year.
+**Nothing leaves your device.** The page makes no network requests after it loads: fonts ship with the app, sunrise and sunset are calculated locally, and your location (if you share it) is used on-device and never transmitted. It works offline once installed. Deleting it deletes everything.
 
-N is pronounced *en*: 円 (circle, and yen), 縁 (the bond between people), 時 (time).
-
-## What it does
-
-- **Living clock:** a sky that changes color with the sun; the current toki's kanji in a seal ring that fills as it passes; the current micro-season underneath.
-- **Hold anywhere** to see conventional clock time. Let go and the sky returns.
-- **Cycle dial:** the day as a ring of 12 toki at their true lengths, read like the sky facing south.
-- **The 72 seasons:** the year as a ring of 72, summer solstice at the top, winter solstice at the bottom.
-- **Time travel:** jump to any date, play a whole day in 45 seconds, or the whole year in 72.
-- **Languages:** English, 日本語, 简体中文, chosen from your device.
-- **Settings in one place:** place, appearance, labels, accessibility (reduce motion, larger text) and language.
-- **Appearance:** Sky (full color), Dark (night background with the toki color glowing), Follow the sun (sky by day, dark after sunset), or Match device.
-- **Anywhere on Earth:** pick a city, use your location, or enter coordinates. Polar day and night fall back to clearly labeled equal toki.
-- **Private by design:** no account, no tracking, no server. Everything is calculated on your device and it works offline once installed.
-
-## Install it
-
-- **Phone:** open the live link, then *Share → Add to Home Screen* (iPhone) or *Install app* (Android).
-- **Desktop:** in Chrome or Edge, use the install icon in the address bar.
-- **Windows window:** double-click `desktop/Open N-Toki (online).bat` for a clean window with no browser bars.
-- **Live wallpaper (Windows):** install the free, open-source [Lively Wallpaper](https://github.com/rocksdanister/lively), click *+*, and add `wallpaper.html` or `wallpaper-dark.html` (or their live links).
-
-## The engine
+## How the sun math works
 
 `engine/ntoki-engine.js` is a dependency-free module anyone can build on:
 
 ```js
 import { NT, SKY, TOKI, KO } from './engine/ntoki-engine.js';
 const c = NT.cycle(Date.now(), { lat: 35.68, lng: 139.65, tz: 'Asia/Tokyo' });
-console.log(TOKI[c.idx].en, Math.round(c.progress * 100) + '%');   // e.g. "Horse 50%"
+console.log(TOKI[c.idx].en);                 // e.g. "Horse"
 const y = SKY.year(Date.now(), 35.68);
-console.log(KO[y.k][0], KO[y.k][2]);                                // e.g. "霜始降 First frost"
+console.log(KO[y.k][0], KO[y.k][2]);         // e.g. "霜始降 First frost"
 ```
 
-Run the checks with `node engine/test.mjs`: a full-year scan, mid-Horse at solar noon, and 2026 equinoxes and solstices within 30 minutes of published times.
+Sunrise and sunset use the SunCalc method; the sun's longitude for the 72 seasons uses Meeus. `node engine/test.mjs` runs a full-year scan, checks that Horse is centered on solar noon, and checks the 2026 equinoxes and solstices against published times. The formal definition is in [spec/N-Toki_Spec_V2.md](spec/N-Toki_Spec_V2.md).
 
-The app (`index.html`) is a single self-contained file that inlines the same engine.
+## Self-host
 
-## Read more
+It's one HTML file plus fonts and icons. Copy the repo to any static host, or open `index.html` from disk. No build step, no server.
 
-- [N-Toki V2 specification](spec/N-Toki_Spec_V2.md)
-- [N-Toki: Reclaiming Lived Time (working paper)](spec/N-Toki_Research_Paper.md)
+- **Phone:** open the live link, then *Add to Home Screen* (iPhone) or *Install app* (Android).
+- **Windows window:** `desktop/Open N-Toki (online).bat` opens it with no browser bars.
+- **Live wallpaper:** add `wallpaper.html` or `wallpaper-dark.html` to [Lively Wallpaper](https://github.com/rocksdanister/lively) (free, open source).
+
+## Using it
+
+- **Living clock:** the sky changes with the sun; the current toki's kanji sits in a seal ring; the micro-season reads underneath.
+- **Day ring:** twelve toki at their true lengths, read facing south. **Year ring:** the 72 seasons.
+- **Settings:** place, appearance (Sky, Dark, Follow the sun), labels (kanji, animal, bells), accessibility (reduce motion, larger text), language (English, 日本語, 简体中文).
+- **Time travel:** any date; play a day in 45 seconds or a year in 72.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Translations, cities and accessibility fixes welcome.
 
 ## Credits
 
-- Micro-season names: [Japan's 72 Microseasons, nippon.com](https://www.nippon.com/en/features/h00124/), following court astronomer Shibukawa Shunkai's 1685 revision.
-- Solar position: low-precision formulas after Jean Meeus, *Astronomical Algorithms*, and the SunCalc sunrise method.
-- N-Toki began as a reply to a post by [@ReiOfJapan7](https://x.com/ReiOfJapan7) on Japanese timekeeping, who also suggested adding the 72 micro-seasons. Thank you.
+- Micro-season names: [Japan's 72 Microseasons, nippon.com](https://www.nippon.com/en/features/h00124/), after Shibukawa Shunkai's 1685 revision.
+- N-Toki began as a reply to a post by [@ReiOfJapan7](https://x.com/ReiOfJapan7) on Japanese timekeeping, who also suggested the 72 micro-seasons. Thank you.
 
 ## License
 
-Code: MIT. The N-Toki name, logo and companion art are not licensed for others' branding.
+Code: [MIT](LICENSE), so the toki standard can spread to watch faces, lamps and calendars. Text and lore: [CC BY-SA 4.0](LICENSE-CONTENT). Fonts: SIL OFL 1.1. The N-Toki name, logo and companion art are not licensed for others' branding.
