@@ -62,4 +62,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Translations, cities and accessibility f
 
 ## License
 
-Code: [MIT](LICENSE), so the toki standard can spread to watch faces, lamps and calendars. Text and lore: [CC BY-SA 4.0](LICENSE-CONTENT). Fonts: SIL OFL 1.1. The N-Toki name, logo and companion art are not licensed for others' branding.
+Code: [MIT](LICENSE), so the toki standard can spread to watch faces, lamps and calendars. Name and logo: see [TRADEMARK.md](TRADEMARK.md). Text and lore: [CC BY-SA 4.0](LICENSE-CONTENT). Fonts: SIL OFL 1.1. The N-Toki name, logo and companion art are not licensed for others' branding.
