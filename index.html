@@ -198,6 +198,27 @@ button{font:inherit;color:inherit}
 .seal[data-mode="en"] .k{font-size:min(12vw,8vh,50px);font-weight:500}
 .seal[data-mode="bell"] .k{font-weight:500}
 
+/* sun path page */
+.cycle.sun{max-width:760px}
+.sun .seg-ctl{margin:6px auto 14px}
+.sun-stage{position:relative;width:100%;max-width:100%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#14131b;box-shadow:0 18px 40px -26px rgba(8,10,22,.7);touch-action:pan-y;-webkit-user-select:none;user-select:none}
+@media (min-width:720px){.sun-stage{aspect-ratio:16/10}}
+.sp-view{position:absolute;inset:0}
+.sp-view canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sp-lbls{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sp-lb{position:absolute;left:0;top:0;will-change:transform;white-space:nowrap;font-family:var(--f-display);font-weight:700;line-height:1;color:#f7f2e8;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.sp-lb.tile{font-size:13px;text-shadow:none}
+.sp-lb.tile.cur{font-size:16px}
+.sp-lb.pil{font-size:14px}
+.sp-lb.pil.cur{font-size:19px}
+.sp-lb.dim{opacity:.6}
+.sp-hud{position:absolute;left:16px;top:14px;pointer-events:none;display:flex;flex-direction:column;gap:3px}
+.sp-hud b{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1}
+.sp-hud span{font-size:13px;font-weight:700}
+.sp-err{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:20px;text-align:center;color:#f7f2e8;font-size:14px}
+#sunLegend span{white-space:nowrap}
+#sunNote{margin:4px 0 0}
+
 html[lang|="zh"]{--f-display:"Noto Serif SC","Songti SC","SimSun",serif;--f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif}
 .langs{display:grid;gap:6px;margin:0;padding:0;list-style:none}
 .langs button{width:100%;text-align:left;padding:12px 14px;border-radius:10px;border:1px solid var(--paper-line);background:var(--btn-bg);color:var(--paper-ink);cursor:pointer;font:500 15px var(--f-body)}
@@ -348,7 +369,27 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
           <dl id="rvList"></dl>
         </div>
       </div>
-      <div class="hint" id="hint" data-i18n="hint">Hold anywhere for clock time · Swipe for the full cycle</div>
+      <div class="hint" id="hint" data-i18n="hint">Hold anywhere for clock time · Swipe for the sun's path</div>
+    </section>
+
+    <section class="page cycle-page" id="sunPage" aria-label="The sun's path" data-i18n-aria="sunAria">
+      <div class="cycle sun">
+        <h2 data-i18n="sunTitle">The sun's path</h2>
+        <div class="lens" id="sunLens"></div>
+        <p class="lede" data-i18n="sunLede">Where the sun is now, and the path it takes through today's twelve toki.</p>
+        <div class="seg-ctl" id="sunViews" role="radiogroup" aria-label="Show the sun as" data-i18n-aria="sunShowAs">
+          <button type="button" role="radio" data-sv="arc" aria-checked="true"><span lang="ja">弧</span> Arc</button>
+          <button type="button" role="radio" data-sv="window" aria-checked="false"><span lang="ja">窓</span> Window</button>
+          <button type="button" role="radio" data-sv="steps" aria-checked="false"><span lang="ja">段</span> Steps</button>
+        </div>
+        <div class="sun-stage" id="sunStage"></div>
+        <div class="legend" id="sunLegend"></div>
+        <div class="dial-info"><p id="sunNote"></p></div>
+        <div class="why">
+          <h3 data-i18n="sunWhyT">Why winter toki are short</h3>
+          <p data-i18n="sunWhyP"></p>
+        </div>
+      </div>
     </section>
 
     <section class="page cycle-page" id="cyclePage" aria-label="Toki cycle" data-i18n-aria="fullCycle">
@@ -393,10 +434,11 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
     <button class="pill" id="revealBtn" type="button" aria-pressed="false">Clock time</button>
     <nav class="dots" aria-label="Views" data-i18n-aria="views">
       <button type="button" id="dot0" aria-label="Living clock" data-i18n-aria="livingClock" aria-current="true"></button>
-      <button type="button" id="dot1" aria-label="Full cycle" data-i18n-aria="fullCycle" aria-current="false"></button>
-      <button type="button" id="dot2" aria-label="The 72 seasons" data-i18n-aria="yearAria" aria-current="false"></button>
+      <button type="button" id="dot1" aria-label="The sun's path" data-i18n-aria="sunAria" aria-current="false"></button>
+      <button type="button" id="dot2" aria-label="Full cycle" data-i18n-aria="fullCycle" aria-current="false"></button>
+      <button type="button" id="dot3" aria-label="The 72 seasons" data-i18n-aria="yearAria" aria-current="false"></button>
     </nav>
-    <button class="pill" id="switchBtn" type="button">Cycle</button>
+    <button class="pill" id="switchBtn" type="button">Sun</button>
   </footer>
 </div>
 
@@ -528,6 +570,7 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
   <p class="note" data-i18n="wNote">Location stays on this device and is used only to calculate your sunrise and sunset.</p>
 </div>
 
+<script src="vendor/three/three.min.js"></script>
 <script>
 // ==ENGINE START==
 const NT = (() => {
@@ -760,7 +803,7 @@ const TL = {
 };
 const STR = {
   en: {
-    hint: 'Hold anywhere for clock time · Swipe for the full cycle', clockTime: 'Clock time', hideClock: 'Hide clock time', cycle: 'Cycle', clock: 'Clock', travel: 'Travel', language: 'Language',
+    hint: "Hold anywhere for clock time · Swipe for the sun's path", clockTime: 'Clock time', hideClock: 'Hide clock time', cycle: 'Cycle', clock: 'Clock', travel: 'Travel', language: 'Language',
     quiet: 'The sun has set. The day asks nothing more of you.',
     lede: 'Face south and this is your sky: sunrise on the left, the sun at its height at the top, sunset on the right, the middle of the night below. A toki day runs sunrise to sunrise. Tap any toki.',
     mKanji: '<span lang="ja">漢字</span> Kanji', mAnimal: 'Animal', mBell: 'Bells',
@@ -796,10 +839,21 @@ const STR = {
     southNote: 'Seasons are shifted six months for the southern hemisphere.', sekki: 'Solar term', dates: 'Dates', koOf: k => `Season ${k} of 72`,
     koNow: (d, n) => `Now · day ${d} of ${n}`, days: n => (n === 1 ? '1 day' : `${n} days`), showCurrentKo: 'Show the current season',
     sprEq: 'Spring equinox', sumSol: 'Summer solstice', autEq: 'Autumn equinox', winSol: 'Winter solstice', playYear: 'Play the year',
-    durH: (h, m) => `${h} h ${m} min`, durM: m => `${m} min`
+    durH: (h, m) => `${h} h ${m} min`, durM: m => `${m} min`,
+    sunTab: 'Sun', sunTitle: "The sun's path", sunAria: "The sun's path", sunShowAs: 'Show the sun as',
+    sunLede: "Where the sun is now, and the path it takes through today's twelve toki.",
+    vArc: '<span lang="ja">弧</span> Arc', vWindow: '<span lang="ja">窓</span> Window', vSteps: '<span lang="ja">段</span> Steps',
+    sunUp: (a, k, n) => `Sun ${a}° high, toward ${k} ${n}`, sunDown: (a, k, n) => `Sun ${a}° below the horizon, under ${k} ${n}`,
+    arcNote: "Today's path, toki by toki. The night half runs under the glass floor.",
+    windowNoteS: "Facing south. Far hills fade into the toki's color, and the sun sets behind them.",
+    windowNoteN: "Facing north, toward the sun. Far hills fade into the toki's color, and the sun sets behind them.",
+    stepsNote: (k, n, a, b, lo, hi) => `This step is ${k} ${n}, ${a} – ${b}. The sun goes from ${lo} to ${hi}.`,
+    sunWhyT: 'Why winter toki are short',
+    sunWhyP: 'Daylight is always six toki, so a short, low arc means short toki. In winter the sun rises late, climbs only partway and sets early. In summer the arc is long and high, and each daylight toki stretches with it.',
+    dir0: 'north', dir90: 'east', dir180: 'south', dir270: 'west', sunNo3d: 'This view needs 3D graphics, which are turned off in this browser. Try Window.'
   },
   ja: {
-    hint: '長押しで時計の時刻 · スワイプで一日の巡り', clockTime: '時刻', hideClock: '時刻を隠す', cycle: '巡り', clock: '時計', travel: '時の旅', language: '言語',
+    hint: '長押しで時計の時刻 · スワイプで太陽の道', clockTime: '時刻', hideClock: '時刻を隠す', cycle: '巡り', clock: '時計', travel: '時の旅', language: '言語',
     quiet: '日が沈みました。今日はもう、何も求めません。',
     lede: '南を向いて空を見るように読みます。日は左から昇り、上で最も高くなり、右へ沈みます。夜半は下。好きな刻をタップしてください。',
     mKanji: '漢字', mAnimal: '動物', mBell: '鐘',
@@ -835,10 +889,21 @@ const STR = {
     southNote: '南半球のため、季節を半年ずらしています。', sekki: '節気', dates: '期間', koOf: k => `七十二候の第${k}候`,
     koNow: (d, n) => `今 · ${n}日のうち${d}日目`, days: n => `${n}日`, showCurrentKo: '今の候を表示',
     sprEq: '春分', sumSol: '夏至', autEq: '秋分', winSol: '冬至', playYear: '一年を再生',
-    durH: (h, m) => `${h}時間${m}分`, durM: m => `${m}分`
+    durH: (h, m) => `${h}時間${m}分`, durM: m => `${m}分`,
+    sunTab: '太陽', sunTitle: '太陽の道', sunAria: '太陽の道', sunShowAs: '太陽の表示',
+    sunLede: 'いまの太陽の位置と、今日の十二刻をめぐる道。',
+    vArc: '<span lang="ja">弧</span>', vWindow: '<span lang="ja">窓</span>', vSteps: '<span lang="ja">段</span>',
+    sunUp: (a, k) => `太陽の高さ ${a}°・${k}の方角`, sunDown: (a, k) => `太陽は地平線の下 ${a}°・${k}の方角`,
+    arcNote: '今日の道を刻ごとに。夜の半分はガラスの床の下を通ります。',
+    windowNoteS: '南を向いた空。遠くの山は刻の色に溶け、太陽はその向こうに沈みます。',
+    windowNoteN: '北を向いた空。遠くの山は刻の色に溶け、太陽はその向こうに沈みます。',
+    stepsNote: (k, n, a, b, lo, hi) => `この段は${n}、${a}〜${b}。太陽は${lo}から${hi}まで。`,
+    sunWhyT: '冬の刻が短いわけ',
+    sunWhyP: '昼はいつも六つの刻。弧が低く短ければ、刻も短くなります。冬の太陽は遅く昇り、高くは上がらず、早く沈みます。夏は弧が長く高く、昼の刻もそれに合わせて伸びます。',
+    dir0: '北', dir90: '東', dir180: '南', dir270: '西', sunNo3d: 'この表示には3D描画が必要ですが、このブラウザでは無効です。「窓」をお試しください。'
   },
   zh: {
-    hint: '长按查看钟表时间 · 滑动查看完整周期', clockTime: '钟表时间', hideClock: '隐藏钟表时间', cycle: '周期', clock: '时钟', travel: '穿越', language: '语言',
+    hint: '长按查看钟表时间 · 滑动查看太阳的轨迹', clockTime: '钟表时间', hideClock: '隐藏钟表时间', cycle: '周期', clock: '时钟', travel: '穿越', language: '语言',
     quiet: '太阳已经落下。今天不再向你索取什么。',
     lede: '像面朝南方看天空那样阅读：太阳从左边升起，在顶端最高，向右边落下。夜半在最下方。点按任意时辰。',
     mKanji: '汉字', mAnimal: '生肖', mBell: '钟声',
@@ -874,7 +939,18 @@ const STR = {
     southNote: '因位于南半球，季节已平移半年。', sekki: '节气', dates: '日期', koOf: k => `第${k}候（共72候）`,
     koNow: (d, n) => `现在 · 第${d}天（共${n}天）`, days: n => `${n}天`, showCurrentKo: '显示当前一候',
     sprEq: '春分', sumSol: '夏至', autEq: '秋分', winSol: '冬至', playYear: '播放一整年',
-    durH: (h, m) => `${h}小时${m}分`, durM: m => `${m}分钟`
+    durH: (h, m) => `${h}小时${m}分`, durM: m => `${m}分钟`,
+    sunTab: '太阳', sunTitle: '太阳的轨迹', sunAria: '太阳的轨迹', sunShowAs: '太阳的显示方式',
+    sunLede: '太阳此刻的位置，以及它穿过今日十二时辰的轨迹。',
+    vArc: '<span lang="ja">弧</span> 弧线', vWindow: '<span lang="ja">窓</span> 窗景', vSteps: '<span lang="ja">段</span> 阶梯',
+    sunUp: (a, k) => `太阳高度 ${a}°，在${k}方`, sunDown: (a, k) => `太阳在地平线下 ${a}°，在${k}方`,
+    arcNote: '今日的轨迹，按时辰着色。夜间的一半在玻璃地面之下。',
+    windowNoteS: '面向南方。远山融入时辰的颜色，太阳在山后落下。',
+    windowNoteN: '面向北方。远山融入时辰的颜色，太阳在山后落下。',
+    stepsNote: (k, n, a, b, lo, hi) => `此阶为${n}，${a}–${b}。太阳高度从${lo}到${hi}。`,
+    sunWhyT: '冬季的时辰为何较短',
+    sunWhyP: '白昼总是六个时辰。弧线又低又短，时辰也就短。冬天太阳升得晚、升得低、落得早；夏天弧线又长又高，白昼的每个时辰也随之拉长。',
+    dir0: '北', dir90: '东', dir180: '南', dir270: '西', sunNo3d: '此视图需要3D图形，但此浏览器已将其关闭。请试试“窗景”。'
   }
 };
 function pickLang() {
@@ -920,7 +996,9 @@ function applyStatic() {
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = tr(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', tr(el.dataset.i18nAria)));
   const mode = { kanji: 'mKanji', en: 'mAnimal', bell: 'mBell' };
-  document.querySelectorAll('.seg-ctl button').forEach(b => { b.innerHTML = tr(mode[b.dataset.label]); });
+  document.querySelectorAll('.seg-ctl button[data-label]').forEach(b => { b.innerHTML = tr(mode[b.dataset.label]); });
+  const sv = { arc: 'vArc', window: 'vWindow', steps: 'vSteps' };
+  document.querySelectorAll('#sunViews button').forEach(b => { b.innerHTML = tr(sv[b.dataset.sv]); });
   $('cityLbl').textContent = placeName(state.place);
 }
 function setLang(l) {
@@ -1325,17 +1403,18 @@ function goPage(n) { pager.scrollTo({ left: n * pager.clientWidth, behavior: red
 const curPage = () => Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth));
 function onPage() {
   const n = curPage();
-  ['dot0', 'dot1', 'dot2'].forEach((d, i) => $(d).setAttribute('aria-current', n === i ? 'true' : 'false'));
-  $('switchBtn').textContent = n === 0 ? tr('cycle') : n === 1 ? tr('seasons') : tr('clock');
+  ['dot0', 'dot1', 'dot2', 'dot3'].forEach((d, i) => $(d).setAttribute('aria-current', n === i ? 'true' : 'false'));
+  $('switchBtn').textContent = [tr('sunTab'), tr('cycle'), tr('seasons'), tr('clock')][Math.min(3, n)];
   if (n !== 0 && state.revealMode) setReveal(null);
 }
 pager.addEventListener('scroll', () => requestAnimationFrame(onPage), { passive: true });
 $('dot0').addEventListener('click', () => goPage(0));
 $('dot1').addEventListener('click', () => goPage(1));
 $('dot2').addEventListener('click', () => goPage(2));
-$('switchBtn').addEventListener('click', () => goPage((curPage() + 1) % 3));
+$('dot3').addEventListener('click', () => goPage(3));
+$('switchBtn').addEventListener('click', () => goPage((curPage() + 1) % 4));
 addEventListener('keydown', e => {
-  if (!sheetOpen() && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.target.closest('input,select')) goPage(Math.max(0, Math.min(2, curPage() + (e.key === 'ArrowRight' ? 1 : -1))));
+  if (!sheetOpen() && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.target.closest('input,select')) goPage(Math.max(0, Math.min(3, curPage() + (e.key === 'ArrowRight' ? 1 : -1))));
 });
 addEventListener('resize', () => goPage(Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth))));
 
@@ -1387,6 +1466,7 @@ function drawSky(ts) {
 }
 let lastDraw = 0;
 function loop(ts) {
+  SUN.frame(ts);
   if (!document.hidden && (ts - lastDraw > (reduced.matches ? 5000 : 45) || state.playing)) { lastDraw = ts; drawSky(ts); }
   requestAnimationFrame(loop);
 }
@@ -1546,7 +1626,7 @@ $('playYearBtn').addEventListener('click', () => {
   if (state.playing) { state.playing = false; updateTravelOut(); return; }
   const base = nowMs(), y = SKY.year(base, state.place.lat), from = y.b[0], days = Math.round((y.b[72] - from) / 864e5);
   const tod = (((base - from) % 864e5) + 864e5) % 864e5, span = 72000, t0 = performance.now();
-  state.playing = 'year'; closeSheets(); setReveal(null); goPage(2);
+  state.playing = 'year'; closeSheets(); setReveal(null); goPage(3);
   const step = ts => {
     if (state.playing !== 'year') return;
     const k = Math.min(1, (ts - t0) / span);
@@ -1557,13 +1637,393 @@ $('playYearBtn').addEventListener('click', () => {
   requestAnimationFrame(step);
 });
 
+/* ---------- sun path page: Arc, Window, Steps ---------- */
+const SUN = (() => {
+  const PI = Math.PI, rad = PI / 180, H = 3600e3, HORIZON = -0.833 * rad;
+  const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const mixLab = (a, b, w) => [a[0] + (b[0] - a[0]) * w, a[1] + (b[1] - a[1]) * w, a[2] + (b[2] - a[2]) * w];
+  const lift = c => { const k = c[0] < 0.6 ? 1.6 : 1.15; return [Math.max(0.76, c[0]), c[1] * k, c[2] * k]; };
+  const css = lab => `rgb(${labToRgb(...lab).join(',')})`;
+  const rgba = (lab, a) => `rgba(${labToRgb(...lab).join(',')},${a})`;
+  const inkOn = lab => (lab[0] > 0.62 ? '#1c1a29' : '#f7f2e8');
+  const setCol = (col, lab) => { const [r, g, b] = labToRgb(...lab); return col.setRGB(r / 255, g / 255, b / 255); };
+  const WHITE = [1, 0, 0], SUN_LOW = hexToLab('#FF9F5A'), SUN_HIGH = hexToLab('#FFF7E0');
+  const DIRK = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+  const DIRN = ['north', 'north-northeast', 'east-northeast', 'east', 'east-southeast', 'south-southeast', 'south', 'south-southwest', 'west-southwest', 'west', 'west-northwest', 'north-northwest'];
+  const tGlyph = k => (state.label === 'bell' ? String(bellNum(k)) : TOKI[k].k);
+
+  // The sun's altitude and azimuth (SunCalc model, as the engine uses for sunrise and sunset).
+  const OBL = rad * 23.4397, J1970 = 2440588, J2000 = 2451545, DAYMS = 864e5;
+  function sunPos(ms, lat, lng) {
+    const lw = rad * -lng, phi = rad * lat, d = ms / DAYMS - 0.5 + J1970 - J2000;
+    const M = rad * (357.5291 + 0.98560028 * d), C = rad * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M));
+    const L = M + C + rad * 102.9372 + PI, dec = Math.asin(Math.sin(OBL) * Math.sin(L)), ra = Math.atan2(Math.sin(L) * Math.cos(OBL), Math.cos(L));
+    const Hh = rad * (280.16 + 360.9856235 * d) - lw - ra;
+    return { alt: Math.asin(Math.sin(phi) * Math.sin(dec) + Math.cos(phi) * Math.cos(dec) * Math.cos(Hh)), az: Math.atan2(Math.sin(Hh), Math.cos(Hh) * Math.sin(phi) - Math.tan(dec) * Math.cos(phi)) + PI };
+  }
+  const altAt = t => sunPos(t, state.place.lat, state.place.lng).alt;
+  function tokiRange(c, k) { let lo = Infinity, hi = -Infinity; for (let i = 0; i <= 12; i++) { const a = altAt(c.b[k] + ((c.b[k + 1] - c.b[k]) * i) / 12); lo = Math.min(lo, a); hi = Math.max(hi, a); } return [lo, hi]; }
+  const deg = a => Math.round(a / rad);
+  const fmtA = a => (a >= 0 ? `${deg(a)}°` : `−${-deg(a)}°`);
+
+  function compute() {
+    const pl = state.place, t = nowMs(), c = state.cyc, p = state.p, sp = sunPos(t, pl.lat, pl.lng);
+    let maxA = 12 * rad; for (let i = 0; i <= 48; i++) maxA = Math.max(maxA, Math.abs(altAt(c.b[0] + ((c.b[12] - c.b[0]) * i) / 48)));
+    const up = sp.alt > HORIZON, b = up ? Math.sqrt(Math.max(0, Math.sin(Math.max(sp.alt, 0.5 * rad)))) : 0;
+    const base = lut(p);
+    return {
+      t, c, p, sp, up, b, maxA, sunLab: mixLab(SUN_LOW, SUN_HIGH, smooth(0, 0.85, b)), accent: lift(base), night: smooth(-3 * rad, -13 * rad, sp.alt),
+      sky: { hor: [Math.min(0.97, base[0] + 0.05), base[1] * 0.92, base[2] * 0.92], zen: [base[0] * 0.8 - 0.035, base[1] * 1.08, base[2] * 1.08 - 0.03], ground: [Math.min(0.2, base[0] * 0.26), base[1] * 0.3, base[2] * 0.3] }
+    };
+  }
+
+  /* shared three.js pieces */
+  let GLOW, RING;
+  function radialTex(stops, size = 256) {
+    const cv = document.createElement('canvas'); cv.width = cv.height = size; const g = cv.getContext('2d');
+    const gr = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2); for (const [o, c] of stops) gr.addColorStop(o, c);
+    g.fillStyle = gr; g.fillRect(0, 0, size, size); return new THREE.CanvasTexture(cv);
+  }
+  function texInit() {
+    if (GLOW) return;
+    GLOW = radialTex([[0, 'rgba(255,255,255,1)'], [0.12, 'rgba(255,255,255,.85)'], [0.3, 'rgba(255,255,255,.3)'], [0.6, 'rgba(255,255,255,.07)'], [1, 'rgba(255,255,255,0)']]);
+    RING = radialTex([[0, 'rgba(255,255,255,0)'], [0.6, 'rgba(255,255,255,0)'], [0.72, 'rgba(255,255,255,.9)'], [0.82, 'rgba(255,255,255,0)'], [1, 'rgba(255,255,255,0)']]);
+  }
+  function makeSun(scene) {
+    const core = new THREE.Mesh(new THREE.SphereGeometry(0.26, 32, 18), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true }));
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+    const ring = new THREE.Sprite(new THREE.SpriteMaterial({ map: RING, transparent: true, depthWrite: false, depthTest: false }));
+    core.renderOrder = 8; glow.renderOrder = 9; halo.renderOrder = 9; ring.renderOrder = 9;
+    scene.add(halo, glow, core, ring);
+    return {
+      set(pos, D, k = 1) {
+        for (const o of [core, glow, halo, ring]) o.position.copy(pos);
+        const { up, b, sunLab, accent } = D;
+        setCol(core.material.color, up ? sunLab : [0.5, accent[1] * 0.3, accent[2] * 0.3]);
+        core.material.opacity = up ? 1 : 0.5; core.scale.setScalar((up ? 1 + 0.45 * b : 0.8) * k);
+        setCol(glow.material.color, mixLab(sunLab, accent, 0.25)); glow.scale.setScalar((up ? 1.8 + 4.2 * b : 0.6) * k); glow.material.opacity = up ? 0.6 + 0.4 * b : 0.1;
+        setCol(halo.material.color, mixLab(sunLab, accent, 0.5)); halo.scale.setScalar((up ? 3 + 8 * b * b : 0.01) * k); halo.material.opacity = up ? 0.14 + 0.26 * b : 0;
+        ring.visible = !up; ring.scale.setScalar(1.1 * k); setCol(ring.material.color, accent); ring.material.opacity = 0.8;
+      }
+    };
+  }
+  function makeLabels(el) {
+    const box = document.createElement('div'); box.className = 'sp-lbls'; el.appendChild(box);
+    const list = [], v = new THREE.Vector3();
+    return {
+      add(cls) { const d = document.createElement('div'); d.className = 'sp-lb ' + cls; box.appendChild(d); const L = { el: d, pos: new THREE.Vector3(), show: true }; list.push(L); return L; },
+      place(camera, w, h) {
+        for (const L of list) {
+          if (!L.show) { L.el.hidden = true; continue; }
+          v.copy(L.pos).project(camera); if (v.z > 1) { L.el.hidden = true; continue; }
+          L.el.hidden = false; L.el.style.transform = `translate3d(${(((v.x + 1) / 2) * w).toFixed(1)}px,${(((1 - v.y) / 2) * h).toFixed(1)}px,0) translate(-50%,-50%)`;
+        }
+      }
+    };
+  }
+  // Hover tilts the view a little; on touch, a sideways drag does the same.
+  function makeLook(el, azR, elR) {
+    const L = { az: 0, el: 0, taz: 0, tel: 0, drag: null };
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect();
+      if (e.pointerType === 'mouse') { L.taz = ((e.clientX - r.left) / r.width - 0.5) * 2 * azR; L.tel = ((e.clientY - r.top) / r.height - 0.5) * 2 * elR; }
+      else if (L.drag) { L.taz = clamp(L.taz + (e.clientX - L.drag[0]) * 0.004 * (azR > 0.9 ? 2 : 1), -azR, azR); L.tel = clamp(L.tel + (e.clientY - L.drag[1]) * 0.003, -elR, elR); L.drag = [e.clientX, e.clientY]; }
+    });
+    el.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') L.drag = [e.clientX, e.clientY]; });
+    const end = () => { L.drag = null; }; el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+    el.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') { L.taz = 0; L.tel = 0; } });
+    L.step = () => { if (reduced.matches) { L.az = L.taz; L.el = L.tel; return false; } const da = L.taz - L.az, de = L.tel - L.el; L.az += da * 0.08; L.el += de * 0.08; return Math.abs(da) + Math.abs(de) > 1e-4; };
+    return L;
+  }
+  function sizeTo(renderer, camera, el) { const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return null; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); return [w, h]; }
+  function clearGroup(g) { for (const o of [...g.children]) { g.remove(o); if (o.geometry) o.geometry.dispose(); if (o.material && !o.material.keep) o.material.dispose(); } }
+
+  /* Arc: the day's curve as a small stage */
+  function ArcView(el) {
+    texInit();
+    const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1)); el.prepend(renderer.domElement);
+    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, 1.6, 0.1, 400);
+    const XW = 8, AMP = 4.0;
+    const U = { uHor: { value: new THREE.Color() }, uZen: { value: new THREE.Color() }, uGround: { value: new THREE.Color() }, uGlow: { value: new THREE.Color() }, uSun: { value: new THREE.Vector2() }, uAmt: { value: 0 } };
+    const wall = new THREE.Mesh(new THREE.PlaneGeometry(120, 44), new THREE.ShaderMaterial({ uniforms: U,
+      vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+      fragmentShader: `uniform vec3 uHor, uZen, uGround, uGlow; uniform vec2 uSun; uniform float uAmt; varying vec3 vW;
+        void main(){ float y = vW.y;
+          vec3 hi = mix(uHor, uZen, smoothstep(0.0, 9.0, y));
+          vec3 lo = mix(uGround * 1.35, uGround * 0.55, smoothstep(0.0, 5.0, -y));
+          vec3 col = y >= 0.0 ? hi : lo;
+          float d = distance(vW.xy, uSun);
+          col += uGlow * uAmt * (0.5 * exp(-d * d / 2.2) + 0.28 * exp(-d * d / 16.0)) * (y >= 0.0 ? 1.0 : 0.35);
+          gl_FragColor = vec4(col, 1.0); }` }));
+    wall.position.set(0, 4, -0.9); scene.add(wall);
+    const sg = new THREE.BufferGeometry(); { const n = 260, p = new Float32Array(n * 3); let s = 5; const r = () => (s = (s * 16807) % 2147483647) / 2147483647; for (let i = 0; i < n; i++) { p[i * 3] = (r() - 0.5) * 50; p[i * 3 + 1] = 0.4 + r() * 13; p[i * 3 + 2] = -0.85; } sg.setAttribute('position', new THREE.BufferAttribute(p, 3)); }
+    const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 1.6 * Math.min(2, devicePixelRatio || 1), sizeAttenuation: false, transparent: true, opacity: 0, depthWrite: false });
+    scene.add(new THREE.Points(sg, starMat));
+    const FU = { uNear: { value: new THREE.Color() }, uFar: { value: new THREE.Color() }, uGlow: { value: new THREE.Color() }, uSunX: { value: 0 }, uAmt: { value: 0 } };
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(120, 60), new THREE.ShaderMaterial({ uniforms: FU, transparent: true,
+      vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+      fragmentShader: `uniform vec3 uNear, uFar, uGlow; uniform float uSunX, uAmt; varying vec3 vW;
+        void main(){ float z = vW.z; vec3 col = mix(uNear, uFar, smoothstep(-0.9, 14.0, z));
+          float dx = vW.x - uSunX; col += uGlow * uAmt * 0.42 * exp(-dx * dx / (2.5 + max(z, 0.0) * 0.9)) * exp(-max(z, 0.0) / 6.0);
+          gl_FragColor = vec4(col, 0.84); }` }));
+    floor.rotation.x = -PI / 2; floor.position.set(0, 0, 29.1); floor.renderOrder = 2; scene.add(floor);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+    const key = new THREE.DirectionalLight(0xffffff, 0.75); key.position.set(-3, 8, 10); scene.add(key);
+    const day = new THREE.Group(); scene.add(day);
+    const ink = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25, depthWrite: false }); ink.keep = true;
+    const floorInk = new THREE.LineBasicMaterial({ color: 0xf7f2e8, transparent: true, opacity: 0.16, depthWrite: false }); floorInk.keep = true;
+    const halo = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.2, depthWrite: false }); halo.keep = true;
+    const sun = makeSun(scene), labels = makeLabels(el), look = makeLook(el, 14 * rad, 6 * rad);
+    const tileLabels = TOKI.map(() => labels.add('tile'));
+    let size = null, dirty = true, X = () => 0, Y = () => 0;
+    function build(D) {
+      clearGroup(day);
+      const c = D.c; X = t => -XW + (2 * XW * (t - c.b[0])) / (c.b[12] - c.b[0]); Y = a => (a / D.maxA) * AMP;
+      const N = 240, pts = [];
+      for (let i = 0; i <= N; i++) { const t = c.b[0] + ((c.b[12] - c.b[0]) * i) / N; pts.push(new THREE.Vector3(X(t), Y(altAt(t)), 0)); }
+      const curve = new THREE.CatmullRomCurve3(pts), RS = 8, tube = new THREE.TubeGeometry(curve, N, 0.065, RS, false), cc = new Float32Array((N + 1) * (RS + 1) * 3);
+      for (let i = 0; i <= N; i++) { const t = c.b[0] + ((c.b[12] - c.b[0]) * i) / N; let k = 0; for (let j = 0; j < 12; j++) if (t >= c.b[j]) k = j; const [r, g, b] = labToRgb(...mixLab(lift(PAL[k]), WHITE, 0.12)); for (let j = 0; j <= RS; j++) { const o = (i * (RS + 1) + j) * 3; cc[o] = r / 255; cc[o + 1] = g / 255; cc[o + 2] = b / 255; } }
+      tube.setAttribute('color', new THREE.BufferAttribute(cc, 3));
+      const core = new THREE.Mesh(tube, new THREE.MeshBasicMaterial({ vertexColors: true })); core.renderOrder = 5;
+      const hm = new THREE.Mesh(new THREE.TubeGeometry(curve, N, 0.15, RS, false), halo); hm.renderOrder = 4;
+      day.add(hm, core);
+      const posts = [], lines = [], bead = new THREE.SphereGeometry(0.075, 12, 8);
+      for (let k = 0; k <= 12; k++) {
+        const x = X(c.b[k]), y = Y(altAt(c.b[k]));
+        if (k > 0 && k < 12) { const m = new THREE.Mesh(bead.clone(), new THREE.MeshBasicMaterial({ color: 0xfffaf0, transparent: true, opacity: y > 0 ? 0.95 : 0.55 })); m.position.set(x, y, 0); m.renderOrder = y > 0 ? 6 : 1; day.add(m); if (y > 0) posts.push(new THREE.Vector3(x, 0, 0), new THREE.Vector3(x, y, 0)); }
+        lines.push(new THREE.Vector3(x, 0.01, -0.9), new THREE.Vector3(x, 0.01, 3.2));
+      }
+      bead.dispose();
+      const pl = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(posts), ink); pl.renderOrder = 4; day.add(pl);
+      const fl = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(lines), floorInk); fl.renderOrder = 3; day.add(fl);
+      for (let k = 0; k < 12; k++) {
+        const x0 = X(c.b[k]) + 0.05, x1 = X(c.b[k + 1]) - 0.05, cur = k === c.idx, h = cur ? 0.5 : 0.22;
+        const m = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, h, 1.5), new THREE.MeshLambertMaterial({ color: 0xffffff, emissive: 0x000000 }));
+        setCol(m.material.color, PAL[k]); if (cur) setCol(m.material.emissive, mixLab(PAL[k], [0, 0, 0], 0.55));
+        m.position.set((x0 + x1) / 2, h / 2, 2.4); m.renderOrder = 4; day.add(m);
+        const L = tileLabels[k]; L.el.textContent = tGlyph(k); L.pos.set((x0 + x1) / 2, h + 0.02, 2.4); L.el.classList.toggle('cur', cur); L.el.style.color = inkOn(PAL[k]);
+      }
+    }
+    return {
+      update(D, changed) {
+        if (changed) build(D);
+        const pos = new THREE.Vector3(X(D.t), Y(D.sp.alt), 0.02);
+        sun.set(pos, D);
+        setCol(U.uHor.value, D.sky.hor); setCol(U.uZen.value, D.sky.zen); setCol(U.uGround.value, D.sky.ground); setCol(U.uGlow.value, mixLab(D.sunLab, D.accent, 0.35));
+        U.uSun.value.set(pos.x, pos.y); U.uAmt.value = D.up ? 0.4 + 0.6 * D.b : 0.25 * smooth(-12 * rad, 0, D.sp.alt);
+        setCol(FU.uNear.value, mixLab(D.sky.ground, D.sky.hor, 0.3)); setCol(FU.uFar.value, mixLab(D.sky.ground, [0, 0, 0], 0.25));
+        setCol(FU.uGlow.value, mixLab(D.sunLab, D.accent, 0.3)); FU.uSunX.value = pos.x; FU.uAmt.value = D.up ? 0.3 + 0.7 * D.b : 0.12 * smooth(-12 * rad, 0, D.sp.alt);
+        starMat.opacity = 0.85 * D.night;
+        const light = mixLab(D.sky.hor, D.sky.zen, 0.5)[0] > 0.62;
+        ink.color.set(light ? 0x1c1a29 : 0xf7f2e8); halo.color.set(light ? 0x2a2433 : 0x000000); halo.opacity = light ? 0.22 : 0.35;
+        key.intensity = 0.35 + 0.6 * D.b;
+        dirty = true;
+      },
+      render(force) {
+        const moving = look.step();
+        if (!size || force) size = sizeTo(renderer, camera, el);
+        if (!size || !(dirty || moving || force)) return;
+        const tf = Math.tan((camera.fov / 2) * rad), asp = camera.aspect, dist = Math.max(5.0 / tf, (asp < 1.5 ? 8.4 : 9.0) / (tf * asp));
+        const az = look.az, elv = 11 * rad + look.el, tg = new THREE.Vector3(0, asp < 1.5 ? 0.55 : 0.9, 1);
+        camera.position.set(tg.x + dist * Math.cos(elv) * Math.sin(az), tg.y + dist * Math.sin(elv), tg.z + dist * Math.cos(elv) * Math.cos(az)); camera.lookAt(tg);
+        renderer.render(scene, camera); labels.place(camera, size[0], size[1]); dirty = false;
+      },
+      resize() { size = null; dirty = true; }
+    };
+  }
+
+  /* Window: the sky facing the equator, over layered hills (2D canvas, no WebGL) */
+  function WindowView(el) {
+    const cv = document.createElement('canvas'); el.prepend(cv); const g = cv.getContext('2d');
+    const hud = document.createElement('div'); hud.className = 'sp-hud'; hud.innerHTML = '<b></b><span></span>'; el.appendChild(hud);
+    const look = makeLook(el, 1, 1);
+    const layers = [0, 1, 2, 3].map(d => { let s = 101 + d * 53; const r = () => (s = (s * 16807) % 2147483647) / 2147483647; return { d, waves: Array.from({ length: 4 }, (_, i) => ({ f: (0.5 + i * 0.85 + r() * 0.5) * (1 + d * 0.22), a: (0.7 / Math.pow(i + 1, 1.5)) * (0.7 + r() * 0.6), ph: r() * 6.283 })), base: [0.7, 0.77, 0.85, 0.95][d], amp: [0.08, 0.09, 0.09, 0.07][d], mix: [0.3, 0.5, 0.7, 0.9][d], par: [6, 14, 26, 44][d] }; });
+    const STARS = (() => { let s = 17; const r = () => (s = (s * 16807) % 2147483647) / 2147483647; return Array.from({ length: 90 }, () => [r(), r() * 0.62, 0.4 + r() * 1.2, r()]); })();
+    const CLOUDS = [[0.15, 0.2, 0.34, 0.05, 0.004], [0.62, 0.32, 0.42, 0.045, 0.0028], [1.05, 0.13, 0.28, 0.035, 0.0036]];
+    let D = null, W = 0, Hh = 0, dpr = 1, dirty = true, last = 0;
+    const ridge = (L, u) => { let y = 0; for (const w of L.waves) y += w.a * Math.sin(w.f * u * 6.283 + w.ph); return L.base - L.amp * (0.5 + y / 2.2); };
+    function resize() { const w = el.clientWidth, h = el.clientHeight; dpr = Math.min(2, devicePixelRatio || 1); W = w; Hh = h; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); dirty = true; }
+    function draw(now) {
+      if (!D || !W) return;
+      const { c, sp, up, b, sky, sunLab, night } = D, south = state.place.lat >= 0, face = south ? 180 : 0, hy = Hh * 0.7;
+      const ax = az => W / 2 + ((((az - face + 540) % 360) - 180) / 115) * W * 0.48;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const sx = ax(sp.az / rad), sy = hy - (sp.alt / (90 * rad)) * hy * 0.94, pxo = look.az, pyo = look.el;
+      let gr = g.createLinearGradient(0, 0, 0, hy); gr.addColorStop(0, css(sky.zen)); gr.addColorStop(1, css(sky.hor)); g.fillStyle = gr; g.fillRect(0, 0, W, Hh);
+      const glowLab = mixLab(sunLab, D.accent, 0.3);
+      if (up || sp.alt > -14 * rad) {
+        const gy = up ? sy : hy, R = W * (up ? 0.22 + 0.42 * b : 0.45), a = up ? 0.28 + 0.4 * b : 0.45 * smooth(-14 * rad, 0, sp.alt);
+        gr = g.createRadialGradient(sx, gy, 0, sx, gy, R); gr.addColorStop(0, rgba(glowLab, a)); gr.addColorStop(0.4, rgba(glowLab, a * 0.35)); gr.addColorStop(1, rgba(glowLab, 0));
+        g.globalCompositeOperation = 'screen'; g.fillStyle = gr; g.fillRect(0, 0, W, Hh); g.globalCompositeOperation = 'source-over';
+      }
+      if (night > 0.01) { g.fillStyle = '#fff'; for (const [u, v, r, a] of STARS) { g.globalAlpha = night * (0.3 + 0.65 * a); g.beginPath(); g.arc(u * W - pxo * 3, v * Hh - pyo * 2, r, 0, 2 * PI); g.fill(); } g.globalAlpha = 1; }
+      if (c.mode === 'solar') { g.beginPath(); for (let i = 0; i <= 48; i++) { const s = sunPos(c.rise + ((c.set - c.rise) * i) / 48, state.place.lat, state.place.lng), x = ax(s.az / rad), y = hy - (s.alt / (90 * rad)) * hy * 0.94; i ? g.lineTo(x, y) : g.moveTo(x, y); } g.setLineDash([1.5, 7]); g.lineCap = 'round'; g.lineWidth = 1.6; g.strokeStyle = inkOn(mixLab(sky.hor, sky.zen, 0.5)) === '#1c1a29' ? 'rgba(28,26,41,.32)' : 'rgba(247,242,232,.32)'; g.stroke(); g.setLineDash([]); }
+      const T = reduced.matches ? 0 : now / 1000;
+      for (const [u0, v, w, h, sp2] of CLOUDS) {
+        const x = ((((u0 + T * sp2) % 1.5) + 1.5) % 1.5 - 0.25) * W - pxo * 8, y = v * Hh - pyo * 4, cw = w * W, ch = h * Hh * 2.2;
+        const lit = mixLab(mixLab(sky.hor, WHITE, 0.3), sunLab, up ? 0.3 * (1 - Math.min(1, Math.abs(x - sx) / W)) : 0);
+        for (let i = 0; i < 4; i++) { const ox = x + (i - 1.5) * cw * 0.22, oy = y + (i % 2 ? -ch * 0.12 : ch * 0.08); gr = g.createRadialGradient(ox, oy, 0, ox, oy, cw * 0.32); gr.addColorStop(0, rgba(lit, (0.22 - 0.12 * night) * (up ? 1 : 0.6))); gr.addColorStop(1, rgba(lit, 0)); g.fillStyle = gr; g.beginPath(); g.ellipse(ox, oy, cw * 0.32, ch * 0.5, 0, 0, 2 * PI); g.fill(); }
+      }
+      if (up) {
+        const r = Math.max(7, W * (0.012 + 0.01 * b));
+        gr = g.createRadialGradient(sx, sy, 0, sx, sy, r * 3.4); gr.addColorStop(0, rgba(sunLab, 1)); gr.addColorStop(0.3, rgba(sunLab, 0.9)); gr.addColorStop(0.45, rgba(sunLab, 0.25)); gr.addColorStop(1, rgba(sunLab, 0));
+        g.fillStyle = gr; g.beginPath(); g.arc(sx, sy, r * 3.4, 0, 2 * PI); g.fill();
+        g.fillStyle = css(mixLab(sunLab, WHITE, 0.25)); g.beginPath(); g.arc(sx, sy, r, 0, 2 * PI); g.fill();
+      }
+      for (const L of layers) {
+        const off = pxo * L.par, voff = pyo * L.par * 0.35, base = mixLab(sky.hor, sky.ground, L.mix), sunSide = mixLab(base, glowLab, up ? (0.22 - L.d * 0.04) * (0.4 + b) : 0);
+        g.beginPath(); g.moveTo(-60, Hh + 10);
+        for (let x = -60; x <= W + 60; x += 6) g.lineTo(x, ridge(L, (x - off + 400) / W) * Hh + voff);
+        g.lineTo(W + 60, Hh + 10); g.closePath();
+        gr = g.createLinearGradient(sx - W, 0, sx + W, 0); gr.addColorStop(0, css(base)); gr.addColorStop(0.5, css(sunSide)); gr.addColorStop(1, css(base)); g.fillStyle = gr; g.fill();
+        if (up && L.d < 3) {
+          g.beginPath(); for (let x = -60; x <= W + 60; x += 6) { const y = ridge(L, (x - off + 400) / W) * Hh + voff; x === -60 ? g.moveTo(x, y) : g.lineTo(x, y); }
+          gr = g.createLinearGradient(sx - W * 0.6, 0, sx + W * 0.6, 0); const rimA = (0.55 - L.d * 0.12) * (0.3 + 0.7 * b);
+          gr.addColorStop(0, rgba(sunLab, 0)); gr.addColorStop(0.5, rgba(mixLab(sunLab, WHITE, 0.2), rimA)); gr.addColorStop(1, rgba(sunLab, 0));
+          g.strokeStyle = gr; g.lineWidth = 1.6; g.stroke();
+        }
+        if (L.d < 3) { const top = (L.base - L.amp) * Hh + voff; gr = g.createLinearGradient(0, top, 0, Hh); gr.addColorStop(0, rgba(sky.hor, 0)); gr.addColorStop(0.55, rgba(sky.hor, 0.12 * (1 - night * 0.6))); gr.addColorStop(1, rgba(sky.hor, 0)); g.fillStyle = gr; g.fillRect(0, top, W, Hh - top); }
+      }
+      g.font = `700 ${W < 500 ? 11 : 12.5}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`; g.textAlign = 'center'; g.fillStyle = 'rgba(247,242,232,.58)';
+      for (const az of south ? [90, 180, 270] : [270, 0, 90]) g.fillText(`${DIRK[Math.round(az / 30) % 12]} ${tr('dir' + az)}`, ax(az) - pxo * 44, Hh - 14);
+      hud.style.color = inkOn(sky.zen);
+    }
+    return {
+      update(d) { D = d; hud.firstChild.textContent = tGlyph(d.c.idx); hud.lastChild.textContent = tokiName(d.c.idx); dirty = true; },
+      render(force, now) {
+        if (!W || force) resize();
+        const moving = look.step(), drift = !reduced.matches && now - last > 66;
+        if (!(dirty || moving || drift || force)) return;
+        last = now; draw(now); dirty = false;
+      },
+      resize() { W = 0; }
+    };
+  }
+
+  /* Steps: each toki a lit pillar on a glass slab */
+  function StepsView(el) {
+    texInit();
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; el.prepend(renderer.domElement);
+    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(28, 1.6, 0.1, 400);
+    const XW = 8, AMP = 3.4, DEP = 1.5;
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x222033, 0.65); scene.add(hemi);
+    const sunL = new THREE.DirectionalLight(0xffffff, 1); sunL.castShadow = true; sunL.shadow.mapSize.set(1024, 1024);
+    Object.assign(sunL.shadow.camera, { left: -11, right: 11, top: 8, bottom: -8, near: 0.5, far: 40 }); sunL.shadow.bias = -0.0008; scene.add(sunL, sunL.target);
+    const glowL = new THREE.PointLight(0xffffff, 0, 7, 2); scene.add(glowL);
+    const slabMat = new THREE.MeshStandardMaterial({ color: 0x1a1824, transparent: true, opacity: 0.55, roughness: 0.2, metalness: 0.1 });
+    const slab = new THREE.Mesh(new THREE.BoxGeometry(2 * XW + 1.4, 0.12, DEP + 1.8), slabMat); slab.position.y = -0.06; slab.renderOrder = 3; scene.add(slab);
+    const catcher = new THREE.Mesh(new THREE.PlaneGeometry(2 * XW + 1.4, DEP + 1.8), new THREE.ShadowMaterial({ opacity: 0.32 })); catcher.rotation.x = -PI / 2; catcher.position.y = 0.005; catcher.receiveShadow = true; catcher.renderOrder = 4; scene.add(catcher);
+    const edge = new THREE.LineSegments(new THREE.EdgesGeometry(slab.geometry), new THREE.LineBasicMaterial({ color: 0xf7f2e8, transparent: true, opacity: 0.18 })); edge.position.copy(slab.position); scene.add(edge);
+    const pillars = new THREE.Group(); scene.add(pillars);
+    const sun = makeSun(scene), labels = makeLabels(el), look = makeLook(el, 22 * rad, 9 * rad);
+    const pLabels = TOKI.map(() => labels.add('pil'));
+    let size = null, dirty = true, X = () => 0, Y = () => 0, ranges = [];
+    function build(D) {
+      clearGroup(pillars);
+      const c = D.c; X = t => -XW + (2 * XW * (t - c.b[0])) / (c.b[12] - c.b[0]); Y = a => (a / D.maxA) * AMP;
+      ranges = [];
+      for (let k = 0; k < 12; k++) {
+        const [lo, hi] = tokiRange(c, k); ranges.push([lo, hi]);
+        const x0 = X(c.b[k]) + 0.07, x1 = X(c.b[k + 1]) - 0.07, w = x1 - x0, cx = (x0 + x1) / 2, cur = k === c.idx;
+        const mk = (y0, y1, lab, lit) => {
+          const m = new THREE.Mesh(new THREE.BoxGeometry(w, Math.max(0.06, y1 - y0), DEP), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.62, metalness: 0, emissive: 0x000000 }));
+          setCol(m.material.color, lab); if (cur || !lit) setCol(m.material.emissive, mixLab(lab, [0, 0, 0], cur ? 0.5 : 0.68));
+          m.position.set(cx, (y0 + y1) / 2, 0); m.castShadow = lit; m.receiveShadow = lit; m.renderOrder = lit ? 5 : 1; pillars.add(m);
+        };
+        if (hi > 0) mk(0, Y(hi), PAL[k], true);
+        if (lo < 0) mk(Y(lo), 0, mixLab(lift(PAL[k]), [0.25, 0, 0], 0.25), false);
+        const L = pLabels[k]; L.el.textContent = tGlyph(k); L.el.classList.toggle('cur', cur); L.el.classList.toggle('dim', hi <= 0);
+        L.pos.set(cx, hi > 0 ? Y(hi) + 0.42 : Y(lo) - 0.42, DEP / 2);
+      }
+    }
+    return {
+      update(D, changed) {
+        if (changed) build(D);
+        const x = X(D.t), y = Y(D.sp.alt), pos = new THREE.Vector3(x, y, DEP / 2 + 0.55);
+        sun.set(pos, D, 0.85);
+        const { up, b } = D;
+        sunL.position.set(x * 0.9, Math.max(1.2, y) + 6, 7); sunL.target.position.set(x * 0.25, 0, 0);
+        setCol(sunL.color, mixLab(D.sunLab, WHITE, 0.3)); sunL.intensity = up ? 0.35 + 0.85 * b : 0.06; sunL.castShadow = up;
+        setCol(hemi.color, mixLab(D.sky.hor, WHITE, up ? 0.35 : 0.55)); setCol(hemi.groundColor, D.sky.ground); hemi.intensity = up ? 0.55 + 0.25 * b : 0.9;
+        glowL.position.copy(pos); setCol(glowL.color, D.sunLab); glowL.intensity = up ? 0.6 + 1.2 * b : 0;
+        setCol(slabMat.color, mixLab(D.sky.ground, D.sky.hor, 0.1));
+        el.style.background = `linear-gradient(180deg, ${css(D.sky.zen)} 0%, ${css(D.sky.hor)} 52%, ${css(mixLab(D.sky.ground, D.sky.hor, 0.18))} 78%, ${css(D.sky.ground)} 100%)`;
+        const upInk = mixLab(D.sky.hor, D.sky.zen, 0.5)[0] > 0.62 ? '#1c1a29' : '#f7f2e8';
+        for (let k = 0; k < 12; k++) pLabels[k].el.style.color = ranges[k] && ranges[k][1] > 0 ? upInk : '';
+        dirty = true;
+      },
+      render(force) {
+        const moving = look.step();
+        if (!size || force) size = sizeTo(renderer, camera, el);
+        if (!size || !(dirty || moving || force)) return;
+        const tf = Math.tan((camera.fov / 2) * rad), asp = camera.aspect, dist = Math.max(4.4 / tf, (asp < 1.5 ? 8.8 : 9.6) / (tf * asp));
+        const az = (asp < 1.5 ? -15 : -22) * rad + look.az, elv = 19 * rad + look.el, tg = new THREE.Vector3(0, 0.45, 0);
+        camera.position.set(dist * Math.cos(elv) * Math.sin(az), tg.y + dist * Math.sin(elv), dist * Math.cos(elv) * Math.cos(az)); camera.lookAt(tg);
+        renderer.render(scene, camera); labels.place(camera, size[0], size[1]); dirty = false;
+      },
+      resize() { size = null; dirty = true; }
+    };
+  }
+
+  /* page wiring */
+  const MAKERS = { arc: ArcView, window: WindowView, steps: StepsView }, NEEDS3D = { arc: true, window: false, steps: true };
+  const stage = $('sunStage'), boxes = {}, views = {};
+  let cur = ['arc', 'window', 'steps'].includes(store.get('ntoki.sunView')) ? store.get('ntoki.sunView') : 'arc';
+  let visible = false, D = null, key = '';
+  function ensure(v) {
+    if (v in views) return views[v];
+    const box = document.createElement('div'); box.className = 'sp-view'; stage.appendChild(box); boxes[v] = box;
+    if (NEEDS3D[v] && !window.THREE) { views[v] = null; box.innerHTML = `<p class="sp-err">${tr('sunNo3d')}</p>`; return null; }
+    try { views[v] = MAKERS[v](box); views[v].key = ''; } catch (e) { views[v] = null; box.innerHTML = `<p class="sp-err">${tr('sunNo3d')}</p>`; }
+    return views[v];
+  }
+  function show() {
+    const V = ensure(cur);
+    for (const v in boxes) boxes[v].hidden = v !== cur;
+    document.querySelectorAll('#sunViews button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.sv === cur)));
+    if (V && D) { V.update(D, V.key !== key); V.key = key; V.resize(); }
+    writeText();
+  }
+  function writeText() {
+    if (!D) return;
+    const c = D.c, d = ((Math.round(D.sp.az / rad / 30) % 12) + 12) % 12, a = Math.abs(deg(D.sp.alt));
+    $('sunLens').textContent = D.up ? tr('sunUp', a, DIRK[d], DIRN[d]) : tr('sunDown', a, DIRK[d], DIRN[d]);
+    $('sunLegend').innerHTML = c.mode === 'solar'
+      ? `<span>${tr('sunrise')}<b>${tStr(c.rise)}</b></span><span>${tr('sunHeight')}<b>${tStr(c.noon)} · ${deg(altAt(c.noon))}°</b></span><span>${tr('sunset')}<b>${tStr(c.set)}</b></span>`
+      : `<span>${tr('sunHeight')}<b>${deg(altAt(c.noon))}°</b></span>`;
+    let note;
+    if (cur === 'arc') note = tr('arcNote');
+    else if (cur === 'window') note = tr(state.place.lat >= 0 ? 'windowNoteS' : 'windowNoteN');
+    else { const [lo, hi] = tokiRange(c, c.idx); note = tr('stepsNote', tGlyph(c.idx), tokiName(c.idx), tStr(c.b[c.idx]), tStr(c.b[c.idx + 1]), fmtA(lo), fmtA(hi)); }
+    $('sunNote').textContent = note;
+  }
+  document.querySelectorAll('#sunViews button').forEach(b => b.addEventListener('click', () => { cur = b.dataset.sv; store.set('ntoki.sunView', cur); show(); }));
+  const io = new IntersectionObserver(es => es.forEach(e => { const was = visible; visible = e.isIntersecting; if (visible && !was) { update(); show(); } }), { root: $('pager'), threshold: 0.01 });
+  io.observe($('sunPage'));
+  new ResizeObserver(() => { for (const v in views) if (views[v]) views[v].resize(); }).observe(stage);
+  function update() {
+    if (!state.cyc) return;
+    D = compute();
+    key = state.place.id + ':' + Math.round(D.c.b[0] / 6e4) + ':' + state.label + ':' + state.lang;
+    if (!visible) return;
+    const V = ensure(cur);
+    if (V) { V.update(D, V.key !== key); V.key = key; }
+    writeText();
+  }
+  function frame(ts) { if (!visible || document.hidden) return; const V = views[cur]; if (V) V.render(false, ts); }
+  return { update, frame, show };
+})();
+
 /* ---------- tick ---------- */
 function tick() {
   const t = nowMs();
   state.cyc = NT.cycle(t, state.place);
   state.p = state.cyc.idx + state.cyc.progress;
   state.yr = SKY.year(t, state.place.lat);
-  updateClock(); updateKoLine(); updateReveal(); updateTrack(); updateYear(); updateInk();
+  updateClock(); updateKoLine(); updateReveal(); updateTrack(); updateYear(); updateInk(); SUN.update();
   const prev = state.override != null;
   $('app').classList.toggle('previewing', prev);
   $('previewLbl').textContent = tStr(t);
