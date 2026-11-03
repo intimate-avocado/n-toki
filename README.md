@@ -50,6 +50,7 @@ It's one HTML file plus fonts and icons. Copy the repo to any static host, or op
 - **Day ring:** twelve toki at their true lengths, read facing south. **Year ring:** the 72 seasons.
 - **Settings:** place, appearance (Sky, Dark, Follow the sun), labels (kanji, animal, bells), accessibility (reduce motion, larger text), language (English, 日本語, 简体中文).
 - **Time travel:** any date; play a day in 45 seconds or a year in 72.
+- **Sun path** (`sun-path.html`): the day's sun drawn three ways, with depth. *Sun arc* is the weather-app chart as a small stage, with the night half under a glass floor and the twelve toki as tiles. *Window* is the sky facing south over layered hills. *Twelve steps* turns each toki into a lit pillar on a glass slab, as wide as it lasts and as tall as the sun climbs in it. Uses a local copy of [three.js](https://threejs.org) r128 (MIT, in `vendor/three/`).
 
 ## Contributing
 
