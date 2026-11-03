@@ -214,8 +214,8 @@ button{font:inherit;color:inherit}
 .sp-hud b{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1}
 .sp-hud span{font-size:13px;font-weight:700}
 .sp-err{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:20px;text-align:center;color:#f7f2e8;font-size:14px}
-#sunLegend span{white-space:nowrap}
-#sunNote{margin:4px 0 0}
+#arcLegend span{white-space:nowrap}
+#arcNote,#winNote{margin:4px 0 0}
 #sunScenes{flex-wrap:wrap;justify-content:center;margin:12px auto 0;border-radius:18px}
 
 html[lang|="zh"]{--f-display:"Noto Serif SC","Songti SC","SimSun",serif;--f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif}
@@ -251,6 +251,17 @@ html.dark .sheet{box-shadow:0 -10px 40px rgba(0,0,0,.6)}
 .lore .lore-end{margin-top:22px;font-size:15px}
 a.btn{text-decoration:none;display:inline-block}
 .seg-ctl--settings{margin:0}
+.screens{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.scr{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 8px 7px 12px;border:1px solid var(--paper-line);border-radius:10px;background:var(--btn-bg)}
+.scr.off{background:transparent;border-style:dashed}
+.scr.off .scr-k,.scr.off .scr-n{opacity:.55}
+.scr-k{font-family:var(--f-display);font-weight:700;font-size:20px;text-align:center;line-height:1}
+.scr-n{display:flex;flex-direction:column;font-weight:500;font-size:15px;min-width:0}
+.scr-n small{color:var(--paper-muted);font-size:12px;font-weight:400}
+.scr-b{display:flex;gap:4px}
+.scr-b button{width:34px;height:34px;border-radius:8px;border:1px solid var(--paper-line);background:var(--paper);color:var(--paper-ink);cursor:pointer;display:grid;place-items:center;padding:0}
+.scr-b button:disabled{opacity:.28;cursor:default}
+.scr-b svg{width:14px;height:14px}
 .welcome{margin:0 0 6px;padding-left:20px;line-height:1.55}
 .welcome li{margin-bottom:8px}
 .sheet a{color:var(--paper-ink)}
@@ -368,32 +379,38 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
           <dl id="rvList"></dl>
         </div>
       </div>
-      <div class="hint" id="hint" data-i18n="hint">Hold anywhere for clock time · Swipe for the sun's path</div>
+      <div class="hint" id="hint" data-i18n="hint">Hold anywhere for clock time · Swipe for more screens</div>
     </section>
 
-    <section class="page cycle-page" id="sunPage" aria-label="The sun's path" data-i18n-aria="sunAria">
+    <section class="page cycle-page" id="arcPage" aria-label="The sun's path" data-i18n-aria="sunAria">
       <div class="cycle sun">
         <h2 data-i18n="sunTitle">The sun's path</h2>
-        <div class="lens" id="sunLens"></div>
-        <p class="lede" data-i18n="sunLede">Where the sun is now, and the path it takes through today's twelve toki.</p>
-        <div class="seg-ctl" id="sunViews" role="radiogroup" aria-label="Show the sun as" data-i18n-aria="sunShowAs">
-          <button type="button" role="radio" data-sv="arc" aria-checked="true"><span lang="ja">弧</span> Arc</button>
-          <button type="button" role="radio" data-sv="window" aria-checked="false"><span lang="ja">窓</span> Window</button>
+        <div class="lens" id="arcLens"></div>
+        <p class="lede" data-i18n="arcLede">Today's path of the sun, toki by toki.</p>
+        <div class="sun-stage" id="arcStage"></div>
+        <div class="legend" id="arcLegend"></div>
+        <div class="dial-info"><p id="arcNote"></p></div>
+        <div class="why">
+          <h3 data-i18n="sunWhyT">Why winter toki are short</h3>
+          <p data-i18n="sunWhyP"></p>
         </div>
-        <div class="sun-stage" id="sunStage"></div>
-        <div class="seg-ctl" id="sunScenes" role="radiogroup" aria-label="Scenery" data-i18n-aria="sceneAria" hidden>
+      </div>
+    </section>
+
+    <section class="page cycle-page" id="windowPage" aria-label="The sky outside" data-i18n-aria="windowAria">
+      <div class="cycle sun">
+        <h2 data-i18n="windowTitle">The sky outside</h2>
+        <div class="lens" id="winLens"></div>
+        <p class="lede" data-i18n="windowLede">The sky over this place right now, facing the sun's side.</p>
+        <div class="sun-stage" id="winStage"></div>
+        <div class="seg-ctl" id="sunScenes" role="radiogroup" aria-label="Scenery" data-i18n-aria="sceneAria">
           <button type="button" role="radio" data-scene="here" aria-checked="true">Here</button>
           <button type="button" role="radio" data-scene="mountains" aria-checked="false">Mountains</button>
           <button type="button" role="radio" data-scene="beach" aria-checked="false">Beach</button>
           <button type="button" role="radio" data-scene="hills" aria-checked="false">Hills</button>
           <button type="button" role="radio" data-scene="desert" aria-checked="false">Desert</button>
         </div>
-        <div class="legend" id="sunLegend"></div>
-        <div class="dial-info"><p id="sunNote"></p></div>
-        <div class="why">
-          <h3 data-i18n="sunWhyT">Why winter toki are short</h3>
-          <p data-i18n="sunWhyP"></p>
-        </div>
+        <div class="dial-info"><p id="winNote"></p></div>
       </div>
     </section>
 
@@ -437,12 +454,7 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
 
   <footer class="bar-bottom">
     <button class="pill" id="revealBtn" type="button" aria-pressed="false">Clock time</button>
-    <nav class="dots" aria-label="Views" data-i18n-aria="views">
-      <button type="button" id="dot0" aria-label="Living clock" data-i18n-aria="livingClock" aria-current="true"></button>
-      <button type="button" id="dot1" aria-label="The sun's path" data-i18n-aria="sunAria" aria-current="false"></button>
-      <button type="button" id="dot2" aria-label="Full cycle" data-i18n-aria="fullCycle" aria-current="false"></button>
-      <button type="button" id="dot3" aria-label="The 72 seasons" data-i18n-aria="yearAria" aria-current="false"></button>
-    </nav>
+    <nav class="dots" id="dots" aria-label="Views" data-i18n-aria="views"></nav>
     <button class="pill" id="switchBtn" type="button">Sun</button>
   </footer>
 </div>
@@ -520,6 +532,9 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
     <button type="button" role="radio" data-label="en">Animal</button>
     <button type="button" role="radio" data-label="bell">Bells</button>
   </div>
+  <h4 data-i18n="screensH">Screens</h4>
+  <p class="sub" data-i18n="screensSub">The living clock always comes first. Add, remove and reorder the rest.</p>
+  <ul class="screens" id="screenList"></ul>
   <h4 data-i18n="accessibility">Accessibility</h4>
   <ul class="themes" id="a11yList"></ul>
   <h4 data-i18n="langTitle">Language</h4>
@@ -813,7 +828,7 @@ const TL = {
 };
 const STR = {
   en: {
-    hint: "Hold anywhere for clock time · Swipe for the sun's path", clockTime: 'Clock time', hideClock: 'Hide clock time', cycle: 'Cycle', clock: 'Clock', travel: 'Travel', language: 'Language',
+    hint: 'Hold anywhere for clock time · Swipe for more screens', clockTime: 'Clock time', hideClock: 'Hide clock time', cycle: 'Cycle', clock: 'Clock', travel: 'Travel', language: 'Language',
     quiet: 'The sun has set. The day asks nothing more of you.',
     lede: 'Face south and this is your sky: sunrise on the left, the sun at its height at the top, sunset on the right, the middle of the night below. A toki day runs sunrise to sunrise. Tap any toki.',
     mKanji: '<span lang="ja">漢字</span> Kanji', mAnimal: 'Animal', mBell: 'Bells',
@@ -858,13 +873,19 @@ const STR = {
     windowNoteS: "Facing south. Far land fades into the toki's color, and the sun sets behind it. Each place is a portrait, not a literal view.",
     windowNoteN: "Facing north, toward the sun. Far land fades into the toki's color. Each place is a portrait, not a literal view.",
     sc_mountains: 'Mountains', sc_beach: 'Beach', sc_hills: 'Hills', sc_desert: 'Desert', sceneAria: 'Scenery',
+    arcTab: 'Arc', windowTab: 'Window', windowTitle: 'The sky outside', windowAria: 'The sky outside',
+    arcLede: "Today's path of the sun, toki by toki.", windowLede: "The sky over this place right now, facing the sun's side.",
+    screensH: 'Screens', screensSub: 'The living clock always comes first. Add, remove and reorder the rest.', scrFixed: 'Always first',
+    scrArc: "The sun's path", scrArcD: 'Lantern steps on the arc of the day', scrWindow: 'The sky outside', scrWindowD: 'Your place, its land and skyline',
+    scrCycleD: 'Twelve toki at their true lengths', scrYearD: 'The year read by the sun',
+    moveUp: 'Move up', moveDown: 'Move down', addScr: 'Add', removeScr: 'Remove',
     stepsNote: (k, n, a, b, lo, hi) => `Now: ${k} ${n}, ${a} – ${b}, the sun between ${lo} and ${hi}.`,
     sunWhyT: 'Why winter toki are short',
     sunWhyP: 'Daylight is always six toki, so a short, low arc means short toki. In winter the sun rises late, climbs only partway and sets early. In summer the arc is long and high, and each daylight toki stretches with it.',
     dir0: 'north', dir90: 'east', dir180: 'south', dir270: 'west', sunNo3d: 'This view needs 3D graphics, which are turned off in this browser. Try Window.'
   },
   ja: {
-    hint: '長押しで時計の時刻 · スワイプで太陽の道', clockTime: '時刻', hideClock: '時刻を隠す', cycle: '巡り', clock: '時計', travel: '時の旅', language: '言語',
+    hint: '長押しで時計の時刻 · スワイプでほかの画面', clockTime: '時刻', hideClock: '時刻を隠す', cycle: '巡り', clock: '時計', travel: '時の旅', language: '言語',
     quiet: '日が沈みました。今日はもう、何も求めません。',
     lede: '南を向いて空を見るように読みます。日は左から昇り、上で最も高くなり、右へ沈みます。夜半は下。好きな刻をタップしてください。',
     mKanji: '漢字', mAnimal: '動物', mBell: '鐘',
@@ -909,13 +930,19 @@ const STR = {
     windowNoteS: '南を向いた空。遠くの景色は刻の色に溶け、太陽はその向こうに沈みます。街の姿は写生ではなく、その土地の面影です。',
     windowNoteN: '北を向いた空。遠くの景色は刻の色に溶けていきます。街の姿は写生ではなく、その土地の面影です。',
     sc_mountains: '山', sc_beach: '海辺', sc_hills: '丘', sc_desert: '砂漠', sceneAria: '景色',
+    arcTab: '弧', windowTab: '窓', windowTitle: '窓の外の空', windowAria: '窓の外の空',
+    arcLede: '今日の太陽の道を、刻ごとに。', windowLede: 'いまのこの土地の空。太陽の側を向いて。',
+    screensH: '画面', screensSub: '生きた時計はいつも最初。ほかの画面は追加・削除・並べ替えができます。', scrFixed: 'いつも最初',
+    scrArc: '太陽の道', scrArcD: '一日の弧に浮かぶ灯りの段', scrWindow: '窓の外の空', scrWindowD: 'この土地の景色と街並み',
+    scrCycleD: '本当の長さの十二刻', scrYearD: '太陽で読む一年',
+    moveUp: '上へ', moveDown: '下へ', addScr: '追加', removeScr: '外す',
     stepsNote: (k, n, a, b, lo, hi) => `いまは${n}、${a}〜${b}。太陽は${lo}から${hi}のあいだ。`,
     sunWhyT: '冬の刻が短いわけ',
     sunWhyP: '昼はいつも六つの刻。弧が低く短ければ、刻も短くなります。冬の太陽は遅く昇り、高くは上がらず、早く沈みます。夏は弧が長く高く、昼の刻もそれに合わせて伸びます。',
     dir0: '北', dir90: '東', dir180: '南', dir270: '西', sunNo3d: 'この表示には3D描画が必要ですが、このブラウザでは無効です。「窓」をお試しください。'
   },
   zh: {
-    hint: '长按查看钟表时间 · 滑动查看太阳的轨迹', clockTime: '钟表时间', hideClock: '隐藏钟表时间', cycle: '周期', clock: '时钟', travel: '穿越', language: '语言',
+    hint: '长按查看钟表时间 · 滑动查看更多画面', clockTime: '钟表时间', hideClock: '隐藏钟表时间', cycle: '周期', clock: '时钟', travel: '穿越', language: '语言',
     quiet: '太阳已经落下。今天不再向你索取什么。',
     lede: '像面朝南方看天空那样阅读：太阳从左边升起，在顶端最高，向右边落下。夜半在最下方。点按任意时辰。',
     mKanji: '汉字', mAnimal: '生肖', mBell: '钟声',
@@ -960,6 +987,12 @@ const STR = {
     windowNoteS: '面向南方。远景融入时辰的颜色，太阳在其后落下。每座城市都是一幅写意，而非实景。',
     windowNoteN: '面向北方。远景融入时辰的颜色。每座城市都是一幅写意，而非实景。',
     sc_mountains: '山', sc_beach: '海滩', sc_hills: '丘陵', sc_desert: '沙漠', sceneAria: '景色',
+    arcTab: '弧线', windowTab: '窗景', windowTitle: '窗外的天空', windowAria: '窗外的天空',
+    arcLede: '今日太阳的轨迹，按时辰展开。', windowLede: '此刻此地的天空，面向太阳的一侧。',
+    screensH: '画面', screensSub: '活的时钟始终在最前。其余画面可添加、移除和重新排序。', scrFixed: '始终在最前',
+    scrArc: '太阳的轨迹', scrArcD: '一日弧线上的灯笼台阶', scrWindow: '窗外的天空', scrWindowD: '此地的风景与天际线',
+    scrCycleD: '真实长度的十二时辰', scrYearD: '用太阳读一年',
+    moveUp: '上移', moveDown: '下移', addScr: '添加', removeScr: '移除',
     stepsNote: (k, n, a, b, lo, hi) => `现在是${n}，${a}–${b}，太阳高度在${lo}到${hi}之间。`,
     sunWhyT: '冬季的时辰为何较短',
     sunWhyP: '白昼总是六个时辰。弧线又低又短，时辰也就短。冬天太阳升得晚、升得低、落得早；夏天弧线又长又高，白昼的每个时辰也随之拉长。',
@@ -1010,8 +1043,6 @@ function applyStatic() {
   document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', tr(el.dataset.i18nAria)));
   const mode = { kanji: 'mKanji', en: 'mAnimal', bell: 'mBell' };
   document.querySelectorAll('.seg-ctl button[data-label]').forEach(b => { b.innerHTML = tr(mode[b.dataset.label]); });
-  const sv = { arc: 'vArc', window: 'vWindow', steps: 'vSteps' };
-  document.querySelectorAll('#sunViews button').forEach(b => { b.innerHTML = tr(sv[b.dataset.sv]); });
   document.querySelectorAll('#sunScenes button').forEach(b => { b.textContent = b.dataset.scene === 'here' ? placeName(state.place) : tr('sc_' + b.dataset.scene); });
   $('cityLbl').textContent = placeName(state.place);
 }
@@ -1020,7 +1051,7 @@ function setLang(l) {
   for (const k in fmtCache) delete fmtCache[k];
   applyStatic();
   state.trackKey = ''; infoKey = ''; state.lastIdx = -1;
-  setReveal(state.revealMode); onPage(); tick();
+  setReveal(state.revealMode); applyScreens(visiblePages()[curPage()]); tick();
 }
 
 
@@ -1191,12 +1222,12 @@ function updateTrack() {
 
 function setLabel(m) {
   state.label = m; store.set('ntoki.label', m);
-  document.querySelectorAll('.seg-ctl button').forEach(b => b.setAttribute('aria-checked', b.dataset.label === m ? 'true' : 'false'));
+  document.querySelectorAll('.seg-ctl button[data-label]').forEach(b => b.setAttribute('aria-checked', b.dataset.label === m ? 'true' : 'false'));
   state.trackKey = ''; infoKey = '';
   tick();
 }
-document.querySelectorAll('.seg-ctl button').forEach(b => b.addEventListener('click', () => setLabel(b.dataset.label)));
-document.querySelectorAll('.seg-ctl button').forEach(b => b.setAttribute('aria-checked', b.dataset.label === state.label ? 'true' : 'false'));
+document.querySelectorAll('.seg-ctl button[data-label]').forEach(b => b.addEventListener('click', () => setLabel(b.dataset.label)));
+document.querySelectorAll('.seg-ctl button[data-label]').forEach(b => b.setAttribute('aria-checked', b.dataset.label === state.label ? 'true' : 'false'));
 
 /* ---------- the year: 24 sekki and 72 kō, from the sun's ecliptic longitude ---------- */
 // Source of names: nippon.com "Japan's 72 Microseasons" (Shibukawa Shunkai's 1685 Japanese set).
@@ -1415,20 +1446,70 @@ function updateYear() {
 const pager = $('pager');
 function goPage(n) { pager.scrollTo({ left: n * pager.clientWidth, behavior: reduced.matches ? 'auto' : 'smooth' }); }
 const curPage = () => Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth));
+/* screens: the living clock first, then the person's own list, in their order */
+const SCREENS = {
+  arc: { page: 'arcPage', k: '弧', name: 'scrArc', d: 'scrArcD', tab: 'arcTab', aria: 'sunAria' },
+  window: { page: 'windowPage', k: '窓', name: 'scrWindow', d: 'scrWindowD', tab: 'windowTab', aria: 'windowAria' },
+  cycle: { page: 'cyclePage', k: '刻', name: 'fullCycle', d: 'scrCycleD', tab: 'cycle', aria: 'fullCycle' },
+  year: { page: 'yearPage', k: '候', name: 'yearTitle', d: 'scrYearD', tab: 'seasons', aria: 'yearAria' }
+};
+state.screens = (() => {
+  const s = store.get('ntoki.screens'), ids = Object.keys(SCREENS);
+  if (!s || !Array.isArray(s.order)) return { order: ids.slice(), off: [] };
+  const order = s.order.filter(id => ids.includes(id)); for (const id of ids) if (!order.includes(id)) order.push(id);
+  return { order, off: (s.off || []).filter(id => ids.includes(id)) };
+})();
+const visiblePages = () => ['clock', ...state.screens.order.filter(id => !state.screens.off.includes(id))];
+const tabOf = id => (id === 'clock' ? tr('clock') : tr(SCREENS[id].tab));
+function applyScreens(keepId) {
+  const here = keepId || 'clock';
+  for (const id of state.screens.order) { const el = $(SCREENS[id].page); pager.appendChild(el); el.hidden = state.screens.off.includes(id); }
+  const pages = visiblePages();
+  $('dots').innerHTML = pages.map((id, i) => `<button type="button" data-i="${i}" aria-label="${id === 'clock' ? tr('livingClock') : tr(SCREENS[id].aria)}" aria-current="false"></button>`).join('');
+  $('dots').querySelectorAll('button').forEach(b => b.addEventListener('click', () => goPage(+b.dataset.i)));
+  const n = Math.max(0, pages.indexOf(here));
+  pager.scrollTo({ left: n * pager.clientWidth, behavior: 'auto' });
+  onPage();
+}
 function onPage() {
-  const n = curPage();
-  ['dot0', 'dot1', 'dot2', 'dot3'].forEach((d, i) => $(d).setAttribute('aria-current', n === i ? 'true' : 'false'));
-  $('switchBtn').textContent = [tr('sunTab'), tr('cycle'), tr('seasons'), tr('clock')][Math.min(3, n)];
-  if (n !== 0 && state.revealMode) setReveal(null);
+  const n = curPage(), pages = visiblePages();
+  $('dots').querySelectorAll('button').forEach((b, i) => b.setAttribute('aria-current', n === i ? 'true' : 'false'));
+  $('switchBtn').textContent = tabOf(pages[(n + 1) % pages.length]);
+  $('switchBtn').hidden = pages.length < 2;
+  if (pages[n] !== 'clock' && state.revealMode) setReveal(null);
+}
+const ICON = {
+  up: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4-4 4 4"/></svg>',
+  down: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>',
+  minus: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.5 8h9"/></svg>',
+  plus: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.5 8h9M8 3.5v9"/></svg>'
+};
+function renderScreens() {
+  const { order, off } = state.screens, on = order.filter(id => !off.includes(id)), rest = order.filter(id => off.includes(id));
+  const row = (id, i) => {
+    const S = SCREENS[id], isOn = !off.includes(id), name = tr(S.name);
+    const btns = isOn
+      ? `<button type="button" data-act="up" data-id="${id}" aria-label="${tr('moveUp')}: ${name}" ${i === 0 ? 'disabled' : ''}>${ICON.up}</button><button type="button" data-act="down" data-id="${id}" aria-label="${tr('moveDown')}: ${name}" ${i === on.length - 1 ? 'disabled' : ''}>${ICON.down}</button><button type="button" data-act="off" data-id="${id}" aria-label="${tr('removeScr')}: ${name}">${ICON.minus}</button>`
+      : `<button type="button" data-act="on" data-id="${id}" aria-label="${tr('addScr')}: ${name}">${ICON.plus}</button>`;
+    return `<li class="scr${isOn ? '' : ' off'}"><span class="scr-k" lang="ja">${S.k}</span><span class="scr-n">${name}<small>${tr(S.d)}</small></span><span class="scr-b">${btns}</span></li>`;
+  };
+  $('screenList').innerHTML = `<li class="scr"><span class="scr-k" lang="ja">時</span><span class="scr-n">${tr('livingClock')}<small>${tr('scrFixed')}</small></span><span class="scr-b"></span></li>` + on.map(row).join('') + rest.map(id => row(id, -1)).join('');
+  $('screenList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    const id = b.dataset.id, act = b.dataset.act, S = state.screens, at = visiblePages()[curPage()];
+    if (act === 'off') S.off.push(id);
+    else if (act === 'on') { S.off = S.off.filter(x => x !== id); S.order = S.order.filter(x => x !== id); const lastOn = S.order.map((x, i) => (S.off.includes(x) ? -1 : i)).reduce((m, v) => Math.max(m, v), -1); S.order.splice(lastOn + 1, 0, id); }
+    else {
+      const vis = S.order.filter(x => !S.off.includes(x)), i = vis.indexOf(id), j = act === 'up' ? i - 1 : i + 1;
+      if (j >= 0 && j < vis.length) { const other = vis[j], a = S.order.indexOf(id), z = S.order.indexOf(other); S.order[a] = other; S.order[z] = id; }
+    }
+    store.set('ntoki.screens', S); applyScreens(S.off.includes(at) ? 'clock' : at); renderScreens();
+    const again = $('screenList').querySelector(`button[data-id="${id}"][data-act="${act}"]:not([disabled])`) || $('screenList').querySelector(`button[data-id="${id}"]`); if (again) again.focus();
+  }));
 }
 pager.addEventListener('scroll', () => requestAnimationFrame(onPage), { passive: true });
-$('dot0').addEventListener('click', () => goPage(0));
-$('dot1').addEventListener('click', () => goPage(1));
-$('dot2').addEventListener('click', () => goPage(2));
-$('dot3').addEventListener('click', () => goPage(3));
-$('switchBtn').addEventListener('click', () => goPage((curPage() + 1) % 4));
+$('switchBtn').addEventListener('click', () => goPage((curPage() + 1) % visiblePages().length));
 addEventListener('keydown', e => {
-  if (!sheetOpen() && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.target.closest('input,select')) goPage(Math.max(0, Math.min(3, curPage() + (e.key === 'ArrowRight' ? 1 : -1))));
+  if (!sheetOpen() && (e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.target.closest('input,select')) goPage(Math.max(0, Math.min(visiblePages().length - 1, curPage() + (e.key === 'ArrowRight' ? 1 : -1))));
 });
 addEventListener('resize', () => goPage(Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth))));
 
@@ -1570,7 +1651,8 @@ function openSettings() {
   $('langList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { setLang(b.dataset.lang); openSettings(); }));
   $('placeLbl2').textContent = placeName(state.place);
   renderThemes(); renderA11y();
-  document.querySelectorAll('.seg-ctl button').forEach(b => b.setAttribute('aria-checked', b.dataset.label === state.label ? 'true' : 'false'));
+  document.querySelectorAll('.seg-ctl button[data-label]').forEach(b => b.setAttribute('aria-checked', b.dataset.label === state.label ? 'true' : 'false'));
+  renderScreens();
   openSheet('sheetLang');
 }
 $('settingsBtn').addEventListener('click', openSettings);
@@ -1640,7 +1722,7 @@ $('playYearBtn').addEventListener('click', () => {
   if (state.playing) { state.playing = false; updateTravelOut(); return; }
   const base = nowMs(), y = SKY.year(base, state.place.lat), from = y.b[0], days = Math.round((y.b[72] - from) / 864e5);
   const tod = (((base - from) % 864e5) + 864e5) % 864e5, span = 72000, t0 = performance.now();
-  state.playing = 'year'; closeSheets(); setReveal(null); goPage(3);
+  state.playing = 'year'; closeSheets(); setReveal(null); { const yi = visiblePages().indexOf('year'); if (yi > 0) goPage(yi); }
   const step = ts => {
     if (state.playing !== 'year') return;
     const k = Math.min(1, (ts - t0) / span);
@@ -1721,12 +1803,12 @@ const SUN = (() => {
         for (const o of [core, glow, halo, rays, ring]) o.position.copy(pos);
         const { up, b, sunLab, accent } = D;
         setCol(core.material.color, up ? sunLab : [0.5, accent[1] * 0.3, accent[2] * 0.3]);
-        core.material.opacity = up ? 1 : 0.5; core.scale.setScalar((up ? 1 + 0.45 * b : 0.8) * k);
+        core.material.opacity = up ? 1 : 0.3; core.scale.setScalar((up ? 1 + 0.45 * b : 0.8) * k);
         setCol(glow.material.color, mixLab(sunLab, accent, 0.28)); base.glow = (up ? 1.3 + 2.6 * b : 0.6) * k; glow.material.opacity = up ? (0.55 + 0.35 * b) * (mixLab(D.sky.hor, D.sky.zen, 0.5)[0] > 0.62 ? 0.75 : 1) : 0.1;
         const soft = mixLab(D.sky.hor, D.sky.zen, 0.5)[0] > 0.62 ? 0.5 : 1;
         setCol(halo.material.color, mixLab(sunLab, accent, 0.55)); base.halo = (up ? 1.8 + 3.6 * b * b : 0.01) * k; halo.material.opacity = up ? (0.12 + 0.22 * b) * soft : 0;
         setCol(rays.material.color, mixLab(sunLab, accent, 0.5)); base.rays = (up ? 1.9 + 3.6 * b : 0.01) * k; base.raysA = up ? (0.16 + 0.28 * b) * soft : 0;
-        ring.visible = !up; ring.scale.setScalar(1.1 * k); setCol(ring.material.color, accent); ring.material.opacity = 0.8;
+        ring.visible = !up; ring.scale.setScalar(1.1 * k); setCol(ring.material.color, accent); ring.material.opacity = 0.42;
         base.up = up; this.anim(performance.now());
       },
       anim(now) {
@@ -1785,7 +1867,7 @@ const SUN = (() => {
       vec3 col = uCol * mix(1.0, 0.8, uLight * uAbove) * (0.8 + 0.32 * fib);
       col += uSunCol * sc * uAmt * (0.75 + 0.45 * uCur) * (1.0 - 0.4 * uBack);
       col += uRim * fr * (0.3 + 0.35 * uCur);
-      col += uCol * uNight * 0.22 * (0.55 + 0.45 * fib);
+      col += uCol * uNight * 0.07 * (0.55 + 0.45 * fib);
       float a = uAlpha * (0.7 + 0.3 * fib) + fr * 0.22 * (1.0 - uBack) + sc * uAmt * 0.4;
       gl_FragColor = vec4(col, clamp(a, 0.0, 0.94));
     }`;
@@ -1886,7 +1968,7 @@ const SUN = (() => {
         el.style.setProperty('--sp-up', light ? '#1c1a29' : '#f7f2e8');
         for (const e of edges) { const { k, above, cur } = e.userData, dark = light && above; setCol(e.material.color, dark ? mixLab(PAL[k], BLACK, 0.5) : mixLab(lift(PAL[k]), WHITE, 0.55)); e.material.opacity = cur ? 0.7 : dark ? 0.4 : 0.28; }
         // the sun lights the step it is passing through; under the glass it glows in the toki's color
-        const sunCol = D.up ? mixLab(D.sunLab, D.accent, 0.3) : D.accent, amt = D.up ? 0.35 + 0.85 * D.b : 0.4;
+        const sunCol = D.up ? mixLab(D.sunLab, D.accent, 0.3) : mixLab(D.accent, BLACK, 0.35), amt = D.up ? 0.35 + 0.85 * D.b : 0.12 + 0.12 * (1 - D.night);
         for (const u of stepU) { u.uSun.value.copy(pos); setCol(u.uSunCol.value, sunCol); u.uAmt.value = amt; u.uNight.value = D.night; u.uLight.value = light ? 1 : 0; }
         dirty = true;
       },
@@ -2249,54 +2331,54 @@ const SUN = (() => {
     };
   }
 
-  /* page wiring */
-  const MAKERS = { arc: ArcView, window: WindowView }, NEEDS3D = { arc: true, window: false };
-  const stage = $('sunStage'), boxes = {}, views = {};
-  let cur = store.get('ntoki.sunView') === 'window' ? 'window' : 'arc';
+  /* page wiring: Arc and Window are separate screens, each with its own stage */
+  const PAGES = {
+    arc: { page: 'arcPage', stage: 'arcStage', make: ArcView, needs3d: true },
+    window: { page: 'windowPage', stage: 'winStage', make: WindowView, needs3d: false }
+  };
   let scene = ['here', 'mountains', 'beach', 'hills', 'desert'].includes(store.get('ntoki.sunScene')) ? store.get('ntoki.sunScene') : 'here';
-  let visible = false, D = null, key = '';
-  function ensure(v) {
-    if (v in views) return views[v];
-    const box = document.createElement('div'); box.className = 'sp-view'; stage.appendChild(box); boxes[v] = box;
-    if (NEEDS3D[v] && !window.THREE) { views[v] = null; box.innerHTML = `<p class="sp-err">${tr('sunNo3d')}</p>`; return null; }
-    try { views[v] = MAKERS[v](box); views[v].key = ''; } catch (e) { views[v] = null; box.innerHTML = `<p class="sp-err">${tr('sunNo3d')}</p>`; }
-    return views[v];
+  let D = null, key = '';
+  for (const id in PAGES) Object.assign(PAGES[id], { view: undefined, key: '', visible: false });
+  function ensure(id) {
+    const P = PAGES[id];
+    if (P.view !== undefined) return P.view;
+    const box = document.createElement('div'); box.className = 'sp-view'; $(P.stage).appendChild(box);
+    if (P.needs3d && !window.THREE) { P.view = null; box.innerHTML = `<p class="sp-err">${tr('sunNo3d')}</p>`; return null; }
+    try { P.view = P.make(box); } catch (e) { P.view = null; box.innerHTML = `<p class="sp-err">${tr('sunNo3d')}</p>`; }
+    return P.view;
   }
-  function show() {
-    const V = ensure(cur);
-    for (const v in boxes) boxes[v].hidden = v !== cur;
-    document.querySelectorAll('#sunViews button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.sv === cur)));
-    $('sunScenes').hidden = cur !== 'window';
-    document.querySelectorAll('#sunScenes button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.scene === scene)));
-    if (V && D) { V.update(D, V.key !== key); V.key = key; V.resize(); }
-    writeText();
-  }
+  function refresh(id) { const P = PAGES[id], V = ensure(id); if (V && D) { V.update(D, P.key !== key); P.key = key; } }
   function writeText() {
     if (!D) return;
     const c = D.c, d = ((Math.round(D.sp.az / rad / 30) % 12) + 12) % 12, a = Math.abs(deg(D.sp.alt));
-    $('sunLens').textContent = D.up ? tr('sunUp', a, DIRK[d], DIRN[d]) : tr('sunDown', a, DIRK[d], DIRN[d]);
-    $('sunLegend').innerHTML = c.mode === 'solar'
+    const lens = D.up ? tr('sunUp', a, DIRK[d], DIRN[d]) : tr('sunDown', a, DIRK[d], DIRN[d]);
+    $('arcLens').textContent = lens; $('winLens').textContent = lens;
+    $('arcLegend').innerHTML = c.mode === 'solar'
       ? `<span>${tr('sunrise')}<b>${tStr(c.rise)}</b></span><span>${tr('sunHeight')}<b>${tStr(c.noon)} · ${deg(altAt(c.noon))}°</b></span><span>${tr('sunset')}<b>${tStr(c.set)}</b></span>`
       : `<span>${tr('sunHeight')}<b>${deg(altAt(c.noon))}°</b></span>`;
-    if (cur === 'arc') { const [lo, hi] = tokiRange(c, c.idx); $('sunNote').textContent = `${tr('stepsNote', tGlyph(c.idx), tokiName(c.idx), tStr(c.b[c.idx]), tStr(c.b[c.idx + 1]), fmtA(lo), fmtA(hi))} ${tr('arcNote')}`; }
-    else $('sunNote').textContent = tr(state.place.lat >= 0 ? 'windowNoteS' : 'windowNoteN');
+    const [lo, hi] = tokiRange(c, c.idx);
+    $('arcNote').textContent = `${tr('stepsNote', tGlyph(c.idx), tokiName(c.idx), tStr(c.b[c.idx]), tStr(c.b[c.idx + 1]), fmtA(lo), fmtA(hi))} ${tr('arcNote')}`;
+    $('winNote').textContent = tr(state.place.lat >= 0 ? 'windowNoteS' : 'windowNoteN');
     const here = document.querySelector('#sunScenes button[data-scene="here"]'); if (here) here.textContent = placeName(state.place);
+    document.querySelectorAll('#sunScenes button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.scene === scene)));
   }
-  document.querySelectorAll('#sunViews button').forEach(b => b.addEventListener('click', () => { cur = b.dataset.sv; store.set('ntoki.sunView', cur); show(); }));
-  document.querySelectorAll('#sunScenes button').forEach(b => b.addEventListener('click', () => { scene = b.dataset.scene; store.set('ntoki.sunScene', scene); show(); }));
-  const io = new IntersectionObserver(es => es.forEach(e => { const was = visible; visible = e.isIntersecting; if (visible && !was) { update(); show(); } }), { root: $('pager'), threshold: 0.01 });
-  io.observe($('sunPage'));
-  new ResizeObserver(() => { for (const v in views) if (views[v]) views[v].resize(); }).observe(stage);
+  document.querySelectorAll('#sunScenes button').forEach(b => b.addEventListener('click', () => { scene = b.dataset.scene; store.set('ntoki.sunScene', scene); PAGES.window.key = ''; refresh('window'); writeText(); }));
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    const id = e.target.id === 'arcPage' ? 'arc' : 'window', P = PAGES[id], was = P.visible; P.visible = e.isIntersecting;
+    if (P.visible && !was) { update(); const V = ensure(id); if (V) V.resize(); }
+  }), { root: $('pager'), threshold: 0.01 });
+  io.observe($('arcPage')); io.observe($('windowPage'));
+  const ro = new ResizeObserver(() => { for (const id in PAGES) if (PAGES[id].view) PAGES[id].view.resize(); });
+  ro.observe($('arcStage')); ro.observe($('winStage'));
   function update() {
     if (!state.cyc) return;
     D = compute();
     key = state.place.id + ':' + Math.round(D.c.b[0] / 6e4) + ':' + state.label + ':' + state.lang;
-    if (!visible) return;
-    const V = ensure(cur);
-    if (V) { V.update(D, V.key !== key); V.key = key; }
+    for (const id in PAGES) if (PAGES[id].visible) refresh(id);
     writeText();
   }
-  function frame(ts) { if (!visible || document.hidden) return; const V = views[cur]; if (V) V.render(false, ts); }
+  function frame(ts) { if (document.hidden) return; for (const id in PAGES) { const P = PAGES[id]; if (P.visible && P.view) P.view.render(false, ts); } }
+  function show() { update(); }
   return { update, frame, show };
 })();
 
@@ -2317,6 +2399,7 @@ if (window.NTOKI_MODE === 'wall' || /[?&]wall/.test(location.search)) $('app').c
 applyA11y();
 applyStatic();
 setReveal(null);
+applyScreens();
 tick();
 onPage();
 (() => {
