@@ -38,7 +38,7 @@ Sunrise and sunset use the SunCalc method; the sun's longitude for the 72 season
 
 ## Self-host
 
-It's one HTML file plus fonts and icons. Copy the repo to any static host, or open `index.html` from disk. No build step, no server.
+It's one HTML file plus fonts, icons and a local copy of [three.js](https://threejs.org) r128 (MIT, in `vendor/three/`). Copy the repo to any static host, or open `index.html` from disk. No build step, no server.
 
 - **Phone:** open the live link, then *Add to Home Screen* (iPhone) or *Install app* (Android).
 - **Windows window:** `desktop/Open N-Toki (online).bat` opens it with no browser bars.
@@ -50,7 +50,9 @@ It's one HTML file plus fonts and icons. Copy the repo to any static host, or op
 - **Day ring:** twelve toki at their true lengths, read facing south. **Year ring:** the 72 seasons.
 - **Settings:** place, appearance (Sky, Dark, Follow the sun), labels (kanji, animal, bells), accessibility (reduce motion, larger text), language (English, 日本語, 简体中文).
 - **Time travel:** any date; play a day in 45 seconds or a year in 72.
-- **Sun path** (`sun-path.html`): the day's sun drawn three ways, with depth. *Sun arc* is the weather-app chart as a small stage, with the night half under a glass floor and the twelve toki as tiles. *Window* is the sky facing south over layered hills. *Twelve steps* turns each toki into a lit pillar on a glass slab, as wide as it lasts and as tall as the sun climbs in it. Uses a local copy of [three.js](https://threejs.org) r128 (MIT, in `vendor/three/`).
+- **The sun's path:** today's arc of the sun, with each toki as a lantern step: as wide as the toki lasts, spanning the sun's lowest to highest point in it. The sun lights the step it is passing through; the night half floats under a glass floor.
+- **The sky outside:** the sky over your place facing the sun's side, with its land, natural landmarks and a stylized skyline, or a standard scene (mountains, beach, hills, desert).
+- **Screens:** Settings → Screens adds, removes and reorders every view after the living clock. Link straight to one with `#arc`, `#window`, `#cycle` or `#year`.
 
 ## Contributing
 

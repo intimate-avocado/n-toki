@@ -2402,6 +2402,8 @@ setReveal(null);
 applyScreens();
 tick();
 onPage();
+// open a screen by name: #arc, #window, #cycle or #year
+{ const i = visiblePages().indexOf(location.hash.slice(1)); if (i > 0) requestAnimationFrame(() => pager.scrollTo({ left: i * pager.clientWidth, behavior: 'auto' })); }
 (() => {
   const wall = $('app').classList.contains('wall');
   const opens = (store.get('ntoki.opens') || 0) + 1; store.set('ntoki.opens', opens);
