@@ -216,6 +216,7 @@ button{font:inherit;color:inherit}
 .sp-err{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:20px;text-align:center;color:#f7f2e8;font-size:14px}
 #sunLegend span{white-space:nowrap}
 #sunNote{margin:4px 0 0}
+#sunScenes{flex-wrap:wrap;justify-content:center;margin:12px auto 0;border-radius:18px}
 
 html[lang|="zh"]{--f-display:"Noto Serif SC","Songti SC","SimSun",serif;--f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif}
 .langs{display:grid;gap:6px;margin:0;padding:0;list-style:none}
@@ -380,6 +381,13 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
           <button type="button" role="radio" data-sv="window" aria-checked="false"><span lang="ja">窓</span> Window</button>
         </div>
         <div class="sun-stage" id="sunStage"></div>
+        <div class="seg-ctl" id="sunScenes" role="radiogroup" aria-label="Scenery" data-i18n-aria="sceneAria" hidden>
+          <button type="button" role="radio" data-scene="here" aria-checked="true">Here</button>
+          <button type="button" role="radio" data-scene="mountains" aria-checked="false">Mountains</button>
+          <button type="button" role="radio" data-scene="beach" aria-checked="false">Beach</button>
+          <button type="button" role="radio" data-scene="hills" aria-checked="false">Hills</button>
+          <button type="button" role="radio" data-scene="desert" aria-checked="false">Desert</button>
+        </div>
         <div class="legend" id="sunLegend"></div>
         <div class="dial-info"><p id="sunNote"></p></div>
         <div class="why">
@@ -704,7 +712,12 @@ const CITIES = [
   { id: 'tromso', name: 'Tromsø', sub: 'Norway · Arctic', lat: 69.6492, lng: 18.9553, tz: 'Europe/Oslo' },
   { id: 'nairobi', name: 'Nairobi', sub: 'Kenya · equator', lat: -1.2921, lng: 36.8219, tz: 'Africa/Nairobi' },
   { id: 'kyoto', name: 'Kyoto', sub: 'Japan', lat: 35.0116, lng: 135.7681, tz: 'Asia/Tokyo' },
-  { id: 'sydney', name: 'Sydney', sub: 'Australia', lat: -33.8688, lng: 151.2093, tz: 'Australia/Sydney' }
+  { id: 'sydney', name: 'Sydney', sub: 'Australia', lat: -33.8688, lng: 151.2093, tz: 'Australia/Sydney' },
+  { id: 'cairo', name: 'Cairo', sub: 'Egypt', lat: 30.0444, lng: 31.2357, tz: 'Africa/Cairo' },
+  { id: 'dubai', name: 'Dubai', sub: 'United Arab Emirates', lat: 25.2048, lng: 55.2708, tz: 'Asia/Dubai' },
+  { id: 'paris', name: 'Paris', sub: 'France', lat: 48.8566, lng: 2.3522, tz: 'Europe/Paris' },
+  { id: 'rio', name: 'Rio de Janeiro', sub: 'Brazil', lat: -22.9068, lng: -43.1729, tz: 'America/Sao_Paulo' },
+  { id: 'capetown', name: 'Cape Town', sub: 'South Africa', lat: -33.9249, lng: 18.4241, tz: 'Africa/Johannesburg' }
 ];
 
 /* ---------- colour: OKLab LUT over the 12-toki cycle ---------- */
@@ -842,8 +855,9 @@ const STR = {
     vArc: '<span lang="ja">弧</span> Arc', vWindow: '<span lang="ja">窓</span> Window', vSteps: '<span lang="ja">段</span> Steps',
     sunUp: (a, k, n) => `Sun ${a}° high, toward ${k} ${n}`, sunDown: (a, k, n) => `Sun ${a}° below the horizon, under ${k} ${n}`,
     arcNote: "Each step is as wide as its toki lasts and spans the sun's lowest to highest point in it. The night half floats under the glass floor.",
-    windowNoteS: "Facing south over a skyline drawn for this place. Far hills fade into the toki's color, and the sun sets behind them.",
-    windowNoteN: "Facing north, toward the sun, over a skyline drawn for this place. Far hills fade into the toki's color.",
+    windowNoteS: "Facing south. Far land fades into the toki's color, and the sun sets behind it. Each place is a portrait, not a literal view.",
+    windowNoteN: "Facing north, toward the sun. Far land fades into the toki's color. Each place is a portrait, not a literal view.",
+    sc_mountains: 'Mountains', sc_beach: 'Beach', sc_hills: 'Hills', sc_desert: 'Desert', sceneAria: 'Scenery',
     stepsNote: (k, n, a, b, lo, hi) => `Now: ${k} ${n}, ${a} – ${b}, the sun between ${lo} and ${hi}.`,
     sunWhyT: 'Why winter toki are short',
     sunWhyP: 'Daylight is always six toki, so a short, low arc means short toki. In winter the sun rises late, climbs only partway and sets early. In summer the arc is long and high, and each daylight toki stretches with it.',
@@ -892,8 +906,9 @@ const STR = {
     vArc: '<span lang="ja">弧</span>', vWindow: '<span lang="ja">窓</span>', vSteps: '<span lang="ja">段</span>',
     sunUp: (a, k) => `太陽の高さ ${a}°・${k}の方角`, sunDown: (a, k) => `太陽は地平線の下 ${a}°・${k}の方角`,
     arcNote: '段の幅はその刻の長さ、高さは刻のあいだに太陽が通る高さの幅です。夜の半分はガラスの床の下に浮かびます。',
-    windowNoteS: '南を向いた空。遠くの山は刻の色に溶け、太陽はその向こうに沈みます。',
-    windowNoteN: '北を向いた空。遠くの山は刻の色に溶け、太陽はその向こうに沈みます。',
+    windowNoteS: '南を向いた空。遠くの景色は刻の色に溶け、太陽はその向こうに沈みます。街の姿は写生ではなく、その土地の面影です。',
+    windowNoteN: '北を向いた空。遠くの景色は刻の色に溶けていきます。街の姿は写生ではなく、その土地の面影です。',
+    sc_mountains: '山', sc_beach: '海辺', sc_hills: '丘', sc_desert: '砂漠', sceneAria: '景色',
     stepsNote: (k, n, a, b, lo, hi) => `いまは${n}、${a}〜${b}。太陽は${lo}から${hi}のあいだ。`,
     sunWhyT: '冬の刻が短いわけ',
     sunWhyP: '昼はいつも六つの刻。弧が低く短ければ、刻も短くなります。冬の太陽は遅く昇り、高くは上がらず、早く沈みます。夏は弧が長く高く、昼の刻もそれに合わせて伸びます。',
@@ -942,8 +957,9 @@ const STR = {
     vArc: '<span lang="ja">弧</span> 弧线', vWindow: '<span lang="ja">窓</span> 窗景', vSteps: '<span lang="ja">段</span> 阶梯',
     sunUp: (a, k) => `太阳高度 ${a}°，在${k}方`, sunDown: (a, k) => `太阳在地平线下 ${a}°，在${k}方`,
     arcNote: '每一级台阶的宽度是该时辰的时长，高度是其间太阳经过的最低到最高点。夜间的一半浮在玻璃地面之下。',
-    windowNoteS: '面向南方。远山融入时辰的颜色，太阳在山后落下。',
-    windowNoteN: '面向北方。远山融入时辰的颜色，太阳在山后落下。',
+    windowNoteS: '面向南方。远景融入时辰的颜色，太阳在其后落下。每座城市都是一幅写意，而非实景。',
+    windowNoteN: '面向北方。远景融入时辰的颜色。每座城市都是一幅写意，而非实景。',
+    sc_mountains: '山', sc_beach: '海滩', sc_hills: '丘陵', sc_desert: '沙漠', sceneAria: '景色',
     stepsNote: (k, n, a, b, lo, hi) => `现在是${n}，${a}–${b}，太阳高度在${lo}到${hi}之间。`,
     sunWhyT: '冬季的时辰为何较短',
     sunWhyP: '白昼总是六个时辰。弧线又低又短，时辰也就短。冬天太阳升得晚、升得低、落得早；夏天弧线又长又高，白昼的每个时辰也随之拉长。',
@@ -996,6 +1012,7 @@ function applyStatic() {
   document.querySelectorAll('.seg-ctl button[data-label]').forEach(b => { b.innerHTML = tr(mode[b.dataset.label]); });
   const sv = { arc: 'vArc', window: 'vWindow', steps: 'vSteps' };
   document.querySelectorAll('#sunViews button').forEach(b => { b.innerHTML = tr(sv[b.dataset.sv]); });
+  document.querySelectorAll('#sunScenes button').forEach(b => { b.textContent = b.dataset.scene === 'here' ? placeName(state.place) : tr('sc_' + b.dataset.scene); });
   $('cityLbl').textContent = placeName(state.place);
 }
 function setLang(l) {
@@ -1705,10 +1722,10 @@ const SUN = (() => {
         const { up, b, sunLab, accent } = D;
         setCol(core.material.color, up ? sunLab : [0.5, accent[1] * 0.3, accent[2] * 0.3]);
         core.material.opacity = up ? 1 : 0.5; core.scale.setScalar((up ? 1 + 0.45 * b : 0.8) * k);
-        setCol(glow.material.color, mixLab(sunLab, accent, 0.28)); base.glow = (up ? 1.8 + 4.2 * b : 0.6) * k; glow.material.opacity = up ? (0.55 + 0.35 * b) * (mixLab(D.sky.hor, D.sky.zen, 0.5)[0] > 0.62 ? 0.75 : 1) : 0.1;
+        setCol(glow.material.color, mixLab(sunLab, accent, 0.28)); base.glow = (up ? 1.3 + 2.6 * b : 0.6) * k; glow.material.opacity = up ? (0.55 + 0.35 * b) * (mixLab(D.sky.hor, D.sky.zen, 0.5)[0] > 0.62 ? 0.75 : 1) : 0.1;
         const soft = mixLab(D.sky.hor, D.sky.zen, 0.5)[0] > 0.62 ? 0.5 : 1;
-        setCol(halo.material.color, mixLab(sunLab, accent, 0.55)); base.halo = (up ? 2.4 + 5.5 * b * b : 0.01) * k; halo.material.opacity = up ? (0.12 + 0.22 * b) * soft : 0;
-        setCol(rays.material.color, mixLab(sunLab, accent, 0.5)); base.rays = (up ? 2.2 + 4.6 * b : 0.01) * k; base.raysA = up ? (0.16 + 0.28 * b) * soft : 0;
+        setCol(halo.material.color, mixLab(sunLab, accent, 0.55)); base.halo = (up ? 1.8 + 3.6 * b * b : 0.01) * k; halo.material.opacity = up ? (0.12 + 0.22 * b) * soft : 0;
+        setCol(rays.material.color, mixLab(sunLab, accent, 0.5)); base.rays = (up ? 1.9 + 3.6 * b : 0.01) * k; base.raysA = up ? (0.16 + 0.28 * b) * soft : 0;
         ring.visible = !up; ring.scale.setScalar(1.1 * k); setCol(ring.material.color, accent); ring.material.opacity = 0.8;
         base.up = up; this.anim(performance.now());
       },
@@ -1751,6 +1768,27 @@ const SUN = (() => {
   function sizeTo(renderer, camera, el) { const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return null; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); return [w, h]; }
   function clearGroup(g) { for (const o of [...g.children]) { g.remove(o); if (o.geometry) o.geometry.dispose(); if (o.material && !o.material.keep) o.material.dispose(); } }
 
+
+  // Lantern steps: a translucent box with washi-paper fibres, a soft rim, and the sun's light scattering through it.
+  const STEP_VS = 'varying vec3 vW; varying vec3 vN; varying vec3 vP; void main(){ vP = position; vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * w; }';
+  const STEP_FS = `uniform vec3 uCol, uRim, uSun, uSunCol; uniform float uAmt, uCur, uAlpha, uNight, uLight, uBack, uAbove;
+    varying vec3 vW; varying vec3 vN; varying vec3 vP;
+    float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h1(i), h1(i + vec2(1.0, 0.0)), f.x), mix(h1(i + vec2(0.0, 1.0)), h1(i + vec2(1.0, 1.0)), f.x), f.y); }
+    void main(){
+      vec3 V = normalize(cameraPosition - vW), N = normalize(vN);
+      float fr = pow(1.0 - abs(dot(N, V)), 2.0);
+      vec2 uv = abs(N.z) > 0.5 ? vP.xy : (abs(N.x) > 0.5 ? vP.zy : vP.xz);
+      float fib = vn(uv * vec2(2.5, 30.0)) * 0.5 + vn(uv * vec2(22.0, 3.5) + 7.0) * 0.32 + vn(uv * 70.0) * 0.18;
+      float d = distance(vW, uSun);
+      float sc = exp(-d * d / 0.9) + 0.35 * exp(-d * d / 5.0);
+      vec3 col = uCol * mix(1.0, 0.8, uLight * uAbove) * (0.8 + 0.32 * fib);
+      col += uSunCol * sc * uAmt * (0.75 + 0.45 * uCur) * (1.0 - 0.4 * uBack);
+      col += uRim * fr * (0.3 + 0.35 * uCur);
+      col += uCol * uNight * 0.22 * (0.55 + 0.45 * fib);
+      float a = uAlpha * (0.7 + 0.3 * fib) + fr * 0.22 * (1.0 - uBack) + sc * uAmt * 0.4;
+      gl_FragColor = vec4(col, clamp(a, 0.0, 0.94));
+    }`;
   /* Arc: the day's curve on a small stage, with each toki as a step floating on it.
      A step is as wide as its toki lasts and spans the sun's lowest to highest point during it. */
   function ArcView(el) {
@@ -1792,9 +1830,9 @@ const SUN = (() => {
     const halo = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.2, depthWrite: false }); halo.keep = true;
     const sun = makeSun(scene), labels = makeLabels(el), look = makeLook(el, 14 * rad, 6 * rad);
     const stepLabels = TOKI.map(() => labels.add('step'));
-    let size = null, dirty = true, lastAnim = 0, X = () => 0, Y = () => 0, edges = [];
+    let size = null, dirty = true, lastAnim = 0, X = () => 0, Y = () => 0, edges = [], stepU = [];
     function build(D) {
-      clearGroup(day); edges = [];
+      clearGroup(day); edges = []; stepU = [];
       const c = D.c; X = t => -XW + (2 * XW * (t - c.b[0])) / (c.b[12] - c.b[0]); Y = a => (a / D.maxA) * AMP;
       const N = 240, pts = [];
       for (let i = 0; i <= N; i++) { const t = c.b[0] + ((c.b[12] - c.b[0]) * i) / N; pts.push(new THREE.Vector3(X(t), Y(altAt(t)), 0)); }
@@ -1812,9 +1850,13 @@ const SUN = (() => {
         const block = (y0, y1, above) => {
           const h = Math.max(0.1, y1 - y0), lab = above ? PAL[k] : mixLab(lift(PAL[k]), [0.3, 0, 0], 0.2);
           const geo = new THREE.BoxGeometry(w, h, DEP);
-          const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x000000, transparent: true, opacity: cur ? 0.8 : above ? 0.62 : 0.42, roughness: 0.35, metalness: 0.05, depthWrite: false }));
-          setCol(m.material.color, lab); setCol(m.material.emissive, mixLab(lab, BLACK, cur ? 0.45 : above ? 0.85 : 0.6));
-          m.position.set(cx, y0 + h / 2, 0); m.castShadow = above; m.renderOrder = above ? 6 : 1; day.add(m);
+          let m;
+          for (const back of [1, 0]) {   // inside faces first, then the outside, so the step reads as a volume
+            const u = { uCol: { value: setCol(new THREE.Color(), lab) }, uRim: { value: setCol(new THREE.Color(), mixLab(lift(PAL[k]), WHITE, 0.45)) }, uSun: { value: new THREE.Vector3(0, -99, 0) }, uSunCol: { value: new THREE.Color() },
+              uAmt: { value: 0 }, uCur: { value: cur ? 1 : 0 }, uAlpha: { value: (cur ? 0.5 : above ? 0.38 : 0.3) * (back ? 0.55 : 1) }, uNight: { value: 0 }, uLight: { value: 0 }, uBack: { value: back }, uAbove: { value: above ? 1 : 0 } };
+            m = new THREE.Mesh(geo, new THREE.ShaderMaterial({ uniforms: u, vertexShader: STEP_VS, fragmentShader: STEP_FS, transparent: true, depthWrite: false, side: back ? THREE.BackSide : THREE.FrontSide }));
+            m.position.set(cx, y0 + h / 2, 0); m.renderOrder = (above ? 6 : 1) + (back ? 0 : 0.1); m.castShadow = above && !back; day.add(m); stepU.push(u);
+          }
           const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: cur ? 0.9 : 0.42, depthWrite: false }));
           e.userData = { k, above, cur }; edges.push(e); e.position.copy(m.position); e.renderOrder = above ? 7 : 1; day.add(e);
         };
@@ -1842,7 +1884,10 @@ const SUN = (() => {
         const light = mixLab(D.sky.hor, D.sky.zen, 0.5)[0] > 0.62;
         ink.color.set(light ? 0x1c1a29 : 0xf7f2e8); halo.color.set(light ? 0x2a2433 : 0x000000); halo.opacity = light ? 0.2 : 0.32;
         el.style.setProperty('--sp-up', light ? '#1c1a29' : '#f7f2e8');
-        for (const e of edges) { const { k, above, cur } = e.userData, dark = light && above; setCol(e.material.color, dark ? mixLab(PAL[k], BLACK, 0.5) : mixLab(lift(PAL[k]), WHITE, 0.55)); e.material.opacity = cur ? 0.95 : dark ? 0.6 : 0.42; }
+        for (const e of edges) { const { k, above, cur } = e.userData, dark = light && above; setCol(e.material.color, dark ? mixLab(PAL[k], BLACK, 0.5) : mixLab(lift(PAL[k]), WHITE, 0.55)); e.material.opacity = cur ? 0.7 : dark ? 0.4 : 0.28; }
+        // the sun lights the step it is passing through; under the glass it glows in the toki's color
+        const sunCol = D.up ? mixLab(D.sunLab, D.accent, 0.3) : D.accent, amt = D.up ? 0.35 + 0.85 * D.b : 0.4;
+        for (const u of stepU) { u.uSun.value.copy(pos); setCol(u.uSunCol.value, sunCol); u.uAmt.value = amt; u.uNight.value = D.night; u.uLight.value = light ? 1 : 0; }
         dirty = true;
       },
       render(force, now) {
@@ -1860,83 +1905,276 @@ const SUN = (() => {
     };
   }
 
-  /* Skylines for the Window view. Stylized and generated, not traced: each place gets a character
-     (dense towers, low roofs, mountains) and a few generic landmark shapes. */
-  const SKYLINES = {
-    tokyo: { h: 0.27, dens: 0.95, style: 'towers', marks: [['lattice', 0.3, 0.42], ['needle', 0.74, 0.6]] },
-    kyoto: { h: 0.05, dens: 0.8, style: 'roofs', marks: [['pagoda', 0.42, 0.2]], ridge: 1.5 },
-    sanantonio: { h: 0.12, dens: 0.6, style: 'mid', marks: [['needle', 0.62, 0.34], ['dome', 0.3, 0.07]] },
-    austin: { h: 0.19, dens: 0.7, style: 'mid', marks: [['dome', 0.42, 0.15]], ridge: 1.15 },
-    houston: { h: 0.26, dens: 0.75, style: 'towers', marks: [] },
-    dallas: { h: 0.23, dens: 0.72, style: 'towers', marks: [['needle', 0.24, 0.28]] },
-    nyc: { h: 0.34, dens: 1, style: 'towers', marks: [['spire', 0.4, 0.5], ['spire', 0.66, 0.42]] },
-    la: { h: 0.17, dens: 0.45, style: 'mid', marks: [], ridge: 1.4 },
-    denver: { h: 0.17, dens: 0.6, style: 'mid', marks: [], peaks: true },
-    honolulu: { h: 0.15, dens: 0.6, style: 'mid', marks: [], ridge: 1.6 },
-    cdmx: { h: 0.19, dens: 0.82, style: 'mid', marks: [['spire', 0.56, 0.32], ['dome', 0.28, 0.09]], peaks: true },
-    london: { h: 0.19, dens: 0.75, style: 'mid', marks: [['clock', 0.34, 0.3], ['wheel', 0.52, 0.2], ['dome', 0.73, 0.16]] },
-    reykjavik: { h: 0.05, dens: 0.6, style: 'houses', marks: [['churchspire', 0.5, 0.24]], peaks: true },
-    tromso: { h: 0.04, dens: 0.5, style: 'houses', marks: [['bridge', 0.36, 0.07]], peaks: true },
-    nairobi: { h: 0.21, dens: 0.6, style: 'towers', marks: [], ridge: 1.3 },
-    sydney: { h: 0.21, dens: 0.7, style: 'towers', marks: [['bridge', 0.3, 0.12]] }
+  /* Window: the sky facing the equator over a scene (2D canvas, no WebGL).
+     Scenes are stylized portraits, not literal views. Each place gets its land (hills, mountains, desert, sea),
+     its natural landmarks, and a skyline built from generic building and landmark shapes. */
+  const SAND = hexToLab('#D9B67E'), SNOWC = [0.97, -0.004, -0.012];
+  const PLACES = {
+    tokyo: { land: 'hills', calm: 0.6, extras: [['fuji', 0.86, 0.15]], city: { h: 0.2, dens: 0.95, style: 'towers', cx: 0.45, marks: [['needle2', 0.2, 0.5], ['lattice', 0.64, 0.29]] } },
+    kyoto: { land: 'hills', calm: 1.7, city: { h: 0.03, dens: 0.9, style: 'roofs', marks: [['needle', 0.46, 0.17], ['pagoda', 0.7, 0.19]] } },
+    sanantonio: { land: 'hills', calm: 0.8, city: { h: 0.11, dens: 0.6, style: 'mid', cx: 0.42, marks: [['needle', 0.62, 0.3], ['dome', 0.3, 0.07]] } },
+    austin: { land: 'hills', calm: 1.1, city: { h: 0.17, dens: 0.7, style: 'mid', cx: 0.4, marks: [['dome', 0.58, 0.15]] } },
+    houston: { land: 'flat', city: { h: 0.24, dens: 0.75, style: 'towers', marks: [['taper', 0.5, 0.3]] } },
+    dallas: { land: 'flat', city: { h: 0.21, dens: 0.72, style: 'towers', cx: 0.55, marks: [['needle', 0.26, 0.24]] } },
+    nyc: { land: 'flat', city: { h: 0.3, dens: 1, style: 'towers', tanks: true, spread: 0.12, marks: [['spire', 0.38, 0.44], ['taper', 0.64, 0.52]] } },
+    la: { land: 'hills', calm: 1.4, palms: true, city: { h: 0.16, dens: 0.45, style: 'mid', marks: [] } },
+    denver: { land: 'mountains', city: { h: 0.16, dens: 0.6, style: 'mid', marks: [] } },
+    honolulu: { land: 'beach', palms: true, extras: [['crater', 0.17, 0.09]], city: { h: 0.13, dens: 0.7, style: 'mid', marks: [] } },
+    cdmx: { land: 'hills', calm: 0.8, extras: [['volcanoes', 0.2, 0.15]], city: { h: 0.18, dens: 0.82, style: 'mid', marks: [['taper', 0.56, 0.28], ['dome', 0.32, 0.09]] } },
+    london: { land: 'flat', city: { h: 0.15, dens: 0.75, style: 'mid', marks: [['shard', 0.28, 0.36], ['dome', 0.47, 0.16], ['wheel', 0.68, 0.18], ['clock', 0.82, 0.26]] } },
+    paris: { land: 'flat', city: { h: 0.06, dens: 0.95, style: 'mansard', marks: [['box', 0.47, 0.2], ['dome', 0.6, 0.12], ['eiffel', 0.76, 0.36]] } },
+    reykjavik: { land: 'mountains', calm: 0.6, city: { h: 0.04, dens: 0.6, style: 'houses', marks: [['churchspire', 0.5, 0.22]] } },
+    tromso: { land: 'mountains', city: { h: 0.035, dens: 0.5, style: 'houses', marks: [['bridge', 0.3, 0.07], ['aframe', 0.64, 0.12]] } },
+    nairobi: { land: 'hills', calm: 1.2, city: { h: 0.2, dens: 0.6, style: 'towers', marks: [['drum', 0.46, 0.25]] } },
+    cairo: { land: 'desert', extras: [['pyramids', 0.74, 0.13]], city: { h: 0.11, dens: 0.82, style: 'mid', cx: 0.4, marks: [['mosque', 0.2, 0.15], ['minaret', 0.36, 0.17], ['lotus', 0.52, 0.27], ['minaret', 0.6, 0.13]] } },
+    dubai: { land: 'desert', city: { h: 0.22, dens: 0.6, style: 'towers', cx: 0.55, marks: [['supertall', 0.52, 0.62]] } },
+    rio: { land: 'beach', palms: true, extras: [['peaks', 0.2, 0.24], ['sugarloaf', 0.82, 0.2]], city: { h: 0.1, dens: 0.75, style: 'mid', marks: [] } },
+    capetown: { land: 'flat', extras: [['table', 0.5, 0.2]], city: { h: 0.1, dens: 0.6, style: 'mid', marks: [] } },
+    sydney: { land: 'harbor', city: { h: 0.2, dens: 0.7, style: 'towers', cx: 0.58, marks: [['bridge', 0.26, 0.12]] } }
   };
-  function buildSkyline(id, W, Hh, yb) {
-    const P = SKYLINES[id] || { h: 0.05, dens: 0.55, style: 'houses', marks: [] };
-    const r = seeded([...String(id)].reduce((a, ch) => a * 31 + ch.charCodeAt(0), 7));
-    const bld = [], wins = [];
-    let x = -0.14 * W;
-    while (x < 1.14 * W) {
-      const tall = P.style === 'towers' || P.style === 'mid', cw = W * (tall ? 0.014 + r() * 0.03 : 0.012 + r() * 0.022);
-      if (r() > P.dens) { x += cw * 0.6; continue; }
-      const u = x / W, center = Math.exp(-((u - 0.52) ** 2) / 0.06), hmax = P.h * Hh;
-      let h = tall ? hmax * (0.18 + 0.82 * center * Math.pow(r(), 1.3)) + Hh * 0.015 : Hh * (0.018 + r() * 0.03 + P.h * 0.6 * r());
-      const roof = P.style === 'roofs' ? 'curve' : P.style === 'houses' ? 'gable' : r() < 0.22 ? 'step' : r() < 0.3 ? 'slant' : r() < 0.4 ? 'mast' : 'flat';
-      bld.push({ x, w: cw, h, roof });
-      if (h > Hh * 0.03) for (let wy = yb - h + 5; wy < yb - 4; wy += 7) for (let wx = x + 3; wx < x + cw - 3; wx += 5) if (r() < 0.5) wins.push([wx, wy, r()]);
-      x += cw + (r() < 0.25 ? cw * 0.3 : -cw * 0.05);
+  const TOWN = { land: 'hills', calm: 0.8, city: { h: 0.03, dens: 0.5, style: 'houses', marks: [] } };
+  const STD = { mountains: { land: 'mountains' }, beach: { land: 'beach', palms: true }, hills: { land: 'hills' }, desert: { land: 'desert' } };
+  const compOf = sc => (sc === 'here' ? PLACES[state.place.id] || TOWN : STD[sc] || TOWN);
+
+  function mkWaves(seed, n, f0, fStep, decay) { const r = seeded(seed); return Array.from({ length: n }, (_, i) => ({ f: (f0 + i * fStep) * (0.8 + r() * 0.5), a: (1 / Math.pow(i + 1, decay)) * (0.7 + r() * 0.6), ph: r() * 6.283 })); }
+  function ridgeY(L, u) {
+    let y = 0, s = 0;
+    for (const w of L.w) {
+      const ph = w.f * u * 6.283 + w.ph; s += w.a;
+      y += w.a * (L.kind === 'peaks' ? Math.pow(1 - Math.abs(Math.sin(ph / 2)), 1.7) * 2 - 1 : L.kind === 'dunes' ? Math.sin(ph + 0.8 * Math.sin(ph)) : Math.sin(ph));
     }
-    return { P, bld, wins, lights: [] };
+    return L.base - L.amp * (0.5 + (0.5 * y) / s);
   }
-  function pathMark(g, type, x, yb, h, W) {
-    const u = W / 1000;
-    g.beginPath();
-    if (type === 'lattice') { const b = 26 * u, t = 2 * u; g.moveTo(x - b, yb); g.lineTo(x - t * 4, yb - h * 0.55); g.lineTo(x - 9 * u, yb - h * 0.55); g.lineTo(x - 9 * u, yb - h * 0.6); g.lineTo(x - t * 2, yb - h * 0.6); g.lineTo(x - t, yb - h * 0.82); g.lineTo(x - 5 * u, yb - h * 0.82); g.lineTo(x - 5 * u, yb - h * 0.85); g.lineTo(x - t * 0.6, yb - h * 0.85); g.lineTo(x, yb - h); g.lineTo(x + t * 0.6, yb - h * 0.85); g.lineTo(x + 5 * u, yb - h * 0.85); g.lineTo(x + 5 * u, yb - h * 0.82); g.lineTo(x + t, yb - h * 0.82); g.lineTo(x + t * 2, yb - h * 0.6); g.lineTo(x + 9 * u, yb - h * 0.6); g.lineTo(x + 9 * u, yb - h * 0.55); g.lineTo(x + t * 4, yb - h * 0.55); g.lineTo(x + b, yb); }
-    else if (type === 'needle') { const s = 3.4 * u, pw = 13 * u; g.moveTo(x - s * 1.6, yb); g.lineTo(x - s, yb - h * 0.8); g.lineTo(x - pw, yb - h * 0.8); g.quadraticCurveTo(x - pw, yb - h * 0.87, x - s, yb - h * 0.88); g.lineTo(x - s * 0.5, yb - h * 0.97); g.lineTo(x, yb - h * 1.08); g.lineTo(x + s * 0.5, yb - h * 0.97); g.lineTo(x + s, yb - h * 0.88); g.quadraticCurveTo(x + pw, yb - h * 0.87, x + pw, yb - h * 0.8); g.lineTo(x + s, yb - h * 0.8); g.lineTo(x + s * 1.6, yb); }
-    else if (type === 'pagoda') { const tiers = 5; let y = yb; for (let i = 0; i < tiers; i++) { const bw = (16 - i * 2.2) * u, rw = bw * 1.7, th = (h * 0.8) / tiers; g.moveTo(x - bw, y); g.lineTo(x - bw, y - th * 0.55); g.lineTo(x - rw, y - th * 0.62); g.quadraticCurveTo(x - bw * 0.6, y - th * 0.72, x - bw * 0.5, y - th); g.lineTo(x + bw * 0.5, y - th); g.quadraticCurveTo(x + bw * 0.6, y - th * 0.72, x + rw, y - th * 0.62); g.lineTo(x + bw, y - th * 0.55); g.lineTo(x + bw, y); g.closePath(); y -= th; } g.moveTo(x - 1.2 * u, y); g.lineTo(x, y - h * 0.22); g.lineTo(x + 1.2 * u, y); }
-    else if (type === 'dome') { const dw = 22 * u; g.moveTo(x - dw * 1.4, yb); g.lineTo(x - dw * 1.4, yb - h * 0.45); g.lineTo(x - dw, yb - h * 0.45); g.lineTo(x - dw, yb - h * 0.55); g.ellipse(x, yb - h * 0.55, dw, h * 0.32, 0, PI, 0); g.lineTo(x + dw, yb - h * 0.45); g.lineTo(x + dw * 1.4, yb - h * 0.45); g.lineTo(x + dw * 1.4, yb); g.moveTo(x - 2.5 * u, yb - h * 0.85); g.lineTo(x - 2.5 * u, yb - h * 0.95); g.lineTo(x, yb - h); g.lineTo(x + 2.5 * u, yb - h * 0.95); g.lineTo(x + 2.5 * u, yb - h * 0.85); }
-    else if (type === 'spire') { const w0 = 24 * u; let y = yb, w = w0; const steps = [0.5, 0.18, 0.1, 0.07]; g.moveTo(x - w, yb); for (const s of steps) { y -= h * s; g.lineTo(x - w, y); w *= 0.7; g.lineTo(x - w, y); } g.lineTo(x, yb - h); for (let i = steps.length - 1; i >= 0; i--) { g.lineTo(x + w, y); w /= 0.7; g.lineTo(x + w, y); y += h * steps[i]; } g.lineTo(x + w0, yb); }
-    else if (type === 'clock' || type === 'churchspire') { const tw = (type === 'clock' ? 9 : 7) * u; g.moveTo(x - tw, yb); g.lineTo(x - tw, yb - h * 0.7); g.lineTo(x - tw * 1.2, yb - h * 0.72); g.lineTo(x, yb - h); g.lineTo(x + tw * 1.2, yb - h * 0.72); g.lineTo(x + tw, yb - h * 0.7); g.lineTo(x + tw, yb); if (type === 'churchspire') { g.moveTo(x - tw * 4, yb); g.lineTo(x - tw * 4, yb - h * 0.3); g.lineTo(x - tw, yb - h * 0.42); g.lineTo(x + tw, yb - h * 0.42); g.lineTo(x + tw * 4, yb - h * 0.3); g.lineTo(x + tw * 4, yb); } }
-    g.closePath();
+  function landLayers(C) {
+    const k = C.land, calm = C.calm || 1;
+    if (k === 'mountains') return [
+      { kind: 'peaks', w: mkWaves(11, 3, 1.3, 1.1, 0.7), base: 0.74, amp: 0.3 * calm + 0.04, mix: 0.24, par: 5, snow: 1 },
+      { kind: 'peaks', w: mkWaves(23, 3, 1.9, 1.6, 0.8), base: 0.78, amp: 0.16, mix: 0.42, par: 11, snow: 0.5 }];
+    if (k === 'desert') return [
+      { kind: 'dunes', w: mkWaves(31, 3, 0.7, 0.9, 1.2), base: 0.735, amp: 0.05, mix: 0.2, par: 6, sand: 1 },
+      { kind: 'dunes', w: mkWaves(37, 3, 1.0, 1.1, 1.2), base: 0.8, amp: 0.065, mix: 0.36, par: 12, sand: 1 }];
+    if (k === 'beach') return [{ kind: 'hills', w: mkWaves(41, 3, 0.8, 1.2, 1.4), base: 0.705, amp: 0.02, mix: 0.3, par: 4, span: [-0.1, 0.42] }];
+    if (k === 'harbor') return [{ kind: 'hills', w: mkWaves(43, 4, 0.6, 1, 1.4), base: 0.74, amp: 0.03, mix: 0.3, par: 5 }];
+    if (k === 'flat') return [{ kind: 'hills', w: mkWaves(47, 4, 0.6, 1, 1.4), base: 0.735, amp: 0.022, mix: 0.3, par: 6 }];
+    return [
+      { kind: 'hills', w: mkWaves(101, 4, 0.5, 0.85, 1.5), base: 0.72, amp: 0.07 * calm, mix: 0.26, par: 6 },
+      { kind: 'hills', w: mkWaves(154, 4, 0.7, 0.9, 1.5), base: 0.78, amp: 0.08 * calm, mix: 0.44, par: 13 }];
   }
-  function strokeMark(g, type, x, yb, h, W) {
-    const u = W / 1000; g.beginPath();
-    if (type === 'wheel') { const rr = h * 0.48, cy = yb - h * 0.52; g.arc(x, cy, rr, 0, 2 * PI); for (let i = 0; i < 12; i++) { const a = (i / 12) * 2 * PI; g.moveTo(x, cy); g.lineTo(x + rr * Math.cos(a), cy + rr * Math.sin(a)); } g.moveTo(x - rr * 0.5, yb); g.lineTo(x, cy); g.lineTo(x + rr * 0.5, yb); return 1.4 * u + 0.6; }
-    if (type === 'bridge') { const span = 170 * u, top = yb - h; g.moveTo(x - span / 2, yb - h * 0.25); g.quadraticCurveTo(x, top - h * 0.6, x + span / 2, yb - h * 0.25); g.moveTo(x - span * 0.7, yb - h * 0.3); g.lineTo(x + span * 0.7, yb - h * 0.3); for (const s of [-0.5, 0.5]) { g.moveTo(x + s * span - 5 * u, yb); g.lineTo(x + s * span - 5 * u, yb - h * 0.45); g.moveTo(x + s * span + 5 * u, yb); g.lineTo(x + s * span + 5 * u, yb - h * 0.45); } return 2.2 * u + 0.8; }
-    return 0;
+  const NEAR = { kind: 'hills', w: mkWaves(207, 4, 0.6, 0.9, 1.5), base: 0.955, amp: 0.045, mix: 0.9, par: 40 };
+  const NEAR_DUNE = { kind: 'dunes', w: mkWaves(211, 3, 0.8, 1, 1.2), base: 0.935, amp: 0.075, mix: 0.7, par: 34, sand: 1 };
+
+  // One row of buildings, generated from the place's character.
+  function genRow(P, seed, W, Hh, o) {
+    const r = seeded(seed), out = [], st = P.style;
+    let x = o.x0 * W;
+    while (x < o.x1 * W) {
+      const w = W * (st === 'mansard' ? 0.03 + r() * 0.025 : st === 'roofs' ? 0.016 + r() * 0.02 : st === 'houses' ? 0.014 + r() * 0.016 : st === 'towers' ? 0.016 + r() * 0.028 : 0.02 + r() * 0.03) * (o.wScale || 1);
+      if (r() > (o.dens != null ? o.dens : P.dens)) { x += w * 0.7; continue; }
+      const u = x / W, center = Math.exp(-((u - (P.cx != null ? P.cx : 0.5)) ** 2) / (P.spread || 0.07)), hmax = P.h * Hh * o.scale;
+      let h;
+      if (st === 'towers') h = hmax * (0.2 + 0.8 * center * Math.pow(r(), 1.1)) + Hh * 0.02;
+      else if (st === 'mid') h = hmax * (0.3 + 0.7 * center * r()) + Hh * 0.015;
+      else if (st === 'mansard') h = Hh * (0.04 + r() * 0.012) * o.scale;
+      else h = Hh * (0.016 + r() * 0.02) * o.scale + hmax * 0.3 * r();
+      let roof = 'flat';
+      if (st === 'roofs') roof = r() < 0.12 ? 'temple' : 'curve';
+      else if (st === 'houses') roof = 'gable';
+      else if (st === 'mansard') roof = 'mansard';
+      else { const q = r(); roof = q < 0.18 ? 'step' : q < 0.28 ? 'slant' : q < 0.4 ? 'mast' : q < 0.46 ? 'pyramid' : q < 0.52 ? 'round' : 'flat'; }
+      out.push({ x, w, h, roof, tank: !!P.tanks && roof === 'flat' && h < hmax * 0.6 && r() < 0.5, win: [] });
+      x += w + (r() < 0.2 ? w * 0.25 : -w * 0.04);
+    }
+    const fh = Math.max(4, Hh * 0.011), cw = Math.max(3.5, W * 0.0055);
+    for (const B of out) {
+      if (B.h < Hh * 0.025 || st === 'roofs') continue;
+      for (let y = fh; y < B.h - fh * 0.6; y += fh) { const fl = r(); for (let x = cw * 0.6; x < B.w - cw * 0.5; x += cw) B.win.push([x, y, fl < 0.3 ? r() * 0.4 : r(), r() < 0.22]); }
+    }
+    return out;
   }
 
-  /* Window: the sky facing the equator over hills and the place's skyline (2D canvas, no WebGL) */
   function WindowView(el) {
     const cv = document.createElement('canvas'); el.prepend(cv); const g = cv.getContext('2d');
     const hud = document.createElement('div'); hud.className = 'sp-hud'; hud.innerHTML = '<b></b><span></span>'; el.appendChild(hud);
     const look = makeLook(el, 1, 1);
-    const mkLayer = (d, peaks) => { const r = seeded(101 + d * 53); return { d, waves: Array.from({ length: peaks ? 6 : 4 }, (_, i) => ({ f: (peaks ? 0.9 + i * 1.4 : 0.5 + i * 0.85) * (1 + r() * 0.5) * (1 + d * 0.22), a: ((peaks ? 0.9 : 0.7) / Math.pow(i + 1, peaks ? 1.1 : 1.5)) * (0.7 + r() * 0.6), ph: r() * 6.283 })), base: [0.7, 0.76, 0.85, 0.95][d], amp: (peaks ? [0.16, 0.12] : [0.08, 0.09, 0.09, 0.07])[d] || 0.08, mix: [0.3, 0.48, 0.7, 0.9][d], par: [6, 14, 26, 44][d], peaks }; };
     const STARS = (() => { const r = seeded(17); return Array.from({ length: 90 }, () => [r(), r() * 0.62, 0.4 + r() * 1.2, r()]); })();
     const CLOUDS = [[0.15, 0.2, 0.34, 0.05, 0.004], [0.62, 0.32, 0.42, 0.045, 0.0028], [1.05, 0.13, 0.28, 0.035, 0.0036]];
-    let D = null, W = 0, Hh = 0, dpr = 1, dirty = true, last = 0, city = null, cityKey = '', layers = [];
-    const ridge = (L, u) => { let y = 0; for (const w of L.waves) y += L.peaks ? w.a * (1 - Math.abs(Math.sin(w.f * u * 3.1416 + w.ph))) : w.a * Math.sin(w.f * u * 6.283 + w.ph); return L.base - L.amp * (L.peaks ? y / 1.6 : 0.5 + y / 2.2); };
-    function resize() { const w = el.clientWidth, h = el.clientHeight; dpr = Math.min(2, devicePixelRatio || 1); W = w; Hh = h; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cityKey = ''; dirty = true; }
-    function ensureCity() {
-      const key = state.place.id + ':' + W + 'x' + Hh; if (key === cityKey) return; cityKey = key;
-      const P = SKYLINES[state.place.id];
-      layers = [mkLayer(0, P && P.peaks), mkLayer(1, P && P.peaks), mkLayer(2), mkLayer(3)];
-      if (P && P.ridge) layers[1].amp *= P.ridge;
-      city = buildSkyline(state.place.id, W, Hh, Hh * 0.88);
+    let D = null, W = 0, Hh = 0, dpr = 1, dirty = true, last = 0, key = '', C = TOWN, layers = [], rows = null;
+    function resize() { const w = el.clientWidth, h = el.clientHeight; dpr = Math.min(2, devicePixelRatio || 1); W = w; Hh = h; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); key = ''; dirty = true; }
+    function ensure() {
+      const k = state.place.id + ':' + scene + ':' + W + 'x' + Hh; if (k === key) return; key = k;
+      C = compOf(scene); layers = landLayers(C); rows = null;
+      if (C.city) {
+        const P = C.city, seed = [...String(state.place.id)].reduce((a, ch) => a * 31 + ch.charCodeAt(0), 7);
+        if (C.land === 'beach') rows = { back: genRow(P, seed + 1, W, Hh, { x0: -0.1, x1: 0.46, scale: 0.5, wScale: 0.7 }), front: [] };
+        else rows = { back: genRow(P, seed + 1, W, Hh, { x0: -0.14, x1: 1.14, scale: 1, dens: P.dens * 0.85 }), front: genRow(P, seed + 2, W, Hh, { x0: -0.14, x1: 1.14, scale: P.style === 'towers' || P.style === 'mid' ? 0.6 : 0.85, wScale: 1.1 }) };
+      }
     }
-    function fillRidge(L, off, voff, fill) { g.beginPath(); g.moveTo(-60, Hh + 10); for (let x = -60; x <= W + 60; x += 6) g.lineTo(x, ridge(L, (x - off + 400) / W) * Hh + voff); g.lineTo(W + 60, Hh + 10); g.closePath(); g.fillStyle = fill; g.fill(); }
+    const u1 = () => W / 1000;
+    const layerLab = (sky, mixAmt, sand) => { let c = mixLab(sky.hor, sky.ground, mixAmt); if (sand) c = mixLab(c, mixLab(SAND, sky.hor, 0.45), (1 - mixAmt) * 0.55 * (1 - D.night * 0.7)); return c; };
+    function shadeFill(lab, sx, b, up, amt) { const sun = mixLab(lab, mixLab(D.sunLab, D.accent, 0.3), up ? amt * (0.4 + b) : 0); const h = g.createLinearGradient(sx - W, 0, sx + W, 0); h.addColorStop(0, css(lab)); h.addColorStop(0.5, css(sun)); h.addColorStop(1, css(lab)); return h; }
+    function ridgePath(L, off, voff) { const a = L.span ? L.span[0] * W : -60, z = L.span ? L.span[1] * W : W + 60; g.beginPath(); g.moveTo(a, Hh + 10); for (let x = a; x <= z; x += 6) g.lineTo(x, ridgeY(L, (x - off + 400) / W) * Hh + voff); g.lineTo(z, ridgeY(L, (z - off + 400) / W) * Hh + voff); g.lineTo(z, Hh + 10); g.closePath(); }
+    function drawLayer(L, sx, sy) {
+      const { sky, up, b, night, sunLab } = D, off = look.az * L.par, voff = look.el * L.par * 0.35, lab = layerLab(sky, L.mix, L.sand);
+      ridgePath(L, off, voff); g.fillStyle = shadeFill(lab, sx, b, up, 0.22 - L.mix * 0.1); g.fill();
+      if (L.snow) {
+        g.save(); ridgePath(L, off, voff); g.clip();
+        const top = (L.base - L.amp) * Hh + voff, sn = g.createLinearGradient(0, top, 0, top + L.amp * Hh * 0.5), snow = mixLab(mixLab(SNOWC, sky.hor, 0.3 + 0.2 * L.mix), sky.ground, night * 0.65);
+        sn.addColorStop(0, rgba(snow, 0.95 * L.snow)); sn.addColorStop(0.55, rgba(snow, 0.55 * L.snow)); sn.addColorStop(1, rgba(snow, 0)); g.fillStyle = sn; g.fillRect(0, top - 4, W, L.amp * Hh * 0.5 + 4); g.restore();
+      }
+      if (up && L.mix < 0.8) {
+        g.beginPath(); const a = L.span ? L.span[0] * W : -60, z = L.span ? L.span[1] * W : W + 60; for (let x = a; x <= z; x += 6) { const y = ridgeY(L, (x - off + 400) / W) * Hh + voff; x === a ? g.moveTo(x, y) : g.lineTo(x, y); }
+        const h = g.createLinearGradient(sx - W * 0.6, 0, sx + W * 0.6, 0), al = (0.5 - L.mix * 0.35) * (0.3 + 0.7 * b); h.addColorStop(0, rgba(sunLab, 0)); h.addColorStop(0.5, rgba(mixLab(sunLab, WHITE, 0.2), al)); h.addColorStop(1, rgba(sunLab, 0)); g.strokeStyle = h; g.lineWidth = 1.5; g.stroke();
+      }
+      if (L.mix < 0.8) haze((L.base - L.amp) * Hh + voff);
+    }
+    function haze(top) { const h = g.createLinearGradient(0, top, 0, Hh); h.addColorStop(0, rgba(D.sky.hor, 0)); h.addColorStop(0.5, rgba(D.sky.hor, 0.11 * (1 - D.night * 0.6))); h.addColorStop(1, rgba(D.sky.hor, 0)); g.fillStyle = h; g.fillRect(0, top, W, Hh - top); }
+
+    // natural landmarks
+    function extra(type, u, hf, yb, sx) {
+      const { sky, up, b, night } = D, off = look.az * 5, x = u * W + off, h = hf * Hh, far = mixLab(sky.hor, sky.ground, 0.28), lit = mixLab(far, mixLab(D.sunLab, D.accent, 0.3), up ? 0.18 * (0.4 + b) : 0);
+      const snow = mixLab(mixLab(SNOWC, sky.hor, 0.32), sky.ground, night * 0.65);
+      const fillSnow = (path, line) => { g.save(); path(); g.clip(); g.fillStyle = css(snow); g.beginPath(); g.moveTo(x - W, yb - h * 2); g.lineTo(x + W, yb - h * 2); for (let i = 0; i <= 24; i++) { const t = i / 24, xx = x + W * (0.5 - t) * 0.6; g.lineTo(xx, yb - h * line + Math.sin(i * 2.7) * h * 0.04 + (i % 2 ? h * 0.05 : 0)); } g.closePath(); g.fill(); g.restore(); };
+      g.fillStyle = shadeFill(far, sx, b, up, 0.15);
+      if (type === 'fuji' || type === 'volcanoes') {
+        const cone = (cx, ch, cw) => () => { g.beginPath(); g.moveTo(cx - cw, yb); g.quadraticCurveTo(cx - cw * 0.42, yb - ch * 0.18, cx - cw * 0.1, yb - ch); g.lineTo(cx - cw * 0.04, yb - ch * 0.985); g.lineTo(cx + cw * 0.04, yb - ch * 0.99); g.lineTo(cx + cw * 0.1, yb - ch); g.quadraticCurveTo(cx + cw * 0.42, yb - ch * 0.18, cx + cw, yb); g.closePath(); };
+        const p1 = cone(x, h, h * (type === 'fuji' ? 2.8 : 2.3)); p1(); g.fill(); fillSnow(p1, type === 'fuji' ? 0.64 : 0.78);
+        if (type === 'volcanoes') { const rx = x + W * 0.17, rh = h * 0.72, p2 = () => { g.beginPath(); g.moveTo(rx - W * 0.13, yb); g.quadraticCurveTo(rx - W * 0.09, yb - rh * 0.9, rx - W * 0.06, yb - rh); g.quadraticCurveTo(rx - W * 0.03, yb - rh * 0.86, rx, yb - rh * 0.92); g.quadraticCurveTo(rx + W * 0.03, yb - rh * 0.98, rx + W * 0.05, yb - rh * 0.82); g.quadraticCurveTo(rx + W * 0.1, yb - rh * 0.5, rx + W * 0.15, yb); g.closePath(); }; p2(); g.fill(); fillSnow(p2, 0.82); }
+      } else if (type === 'table') {
+        g.beginPath(); g.moveTo(x - W * 0.34, yb); g.lineTo(x - W * 0.26, yb - h * 0.55); g.lineTo(x - W * 0.2, yb - h * 0.92); g.lineTo(x - W * 0.17, yb - h); g.lineTo(x + W * 0.16, yb - h * 0.99); g.lineTo(x + W * 0.19, yb - h * 0.86); g.lineTo(x + W * 0.23, yb - h * 0.42); g.quadraticCurveTo(x + W * 0.27, yb - h * 0.4, x + W * 0.3, yb - h * 0.72); g.quadraticCurveTo(x + W * 0.32, yb - h * 0.78, x + W * 0.34, yb - h * 0.5); g.lineTo(x + W * 0.4, yb); g.closePath(); g.fill();
+      } else if (type === 'sugarloaf') {
+        const dome = (cx, ch) => { const w = ch * 0.42; g.moveTo(cx - w, yb); g.bezierCurveTo(cx - w * 0.75, yb - ch * 0.9, cx - w * 0.35, yb - ch * 1.02, cx, yb - ch); g.bezierCurveTo(cx + w * 0.35, yb - ch * 1.02, cx + w * 0.62, yb - ch * 0.85, cx + w * 0.8, yb); };
+        g.beginPath(); dome(x, h); dome(x - h * 0.55, h * 0.45); g.closePath(); g.fill();
+      } else if (type === 'peaks') {
+        g.beginPath(); g.moveTo(x - W * 0.2, yb); for (const [dx, ph] of [[-0.14, 0.55], [-0.08, 0.8], [-0.02, 0.62], [0.05, 1], [0.12, 0.5]]) { const px = x + dx * W; g.lineTo(px - W * 0.03, yb - h * ph * 0.42); g.quadraticCurveTo(px - W * 0.014, yb - h * ph * 1.03, px, yb - h * ph); g.quadraticCurveTo(px + W * 0.01, yb - h * ph * 0.98, px + W * 0.02, yb - h * ph * 0.6); } g.lineTo(x + W * 0.2, yb); g.closePath(); g.fill();
+      } else if (type === 'crater') {
+        g.beginPath(); g.moveTo(x - W * 0.2, yb); for (const [dx, ph] of [[-0.15, 0.55], [-0.11, 0.8], [-0.08, 1], [-0.05, 0.85], [0.02, 0.78], [0.08, 0.6], [0.16, 0.25]]) g.lineTo(x + dx * W, yb - h * ph); g.lineTo(x + W * 0.22, yb); g.closePath(); g.fill();
+      } else if (type === 'pyramids') {
+        const stone = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.32 + night * 0.3);
+        for (const [du, s] of [[0, 1], [0.075, 0.94], [0.14, 0.52]]) {
+          const px = (u + du) * W + look.az * 12, ph = h * s, hw = ph * 0.82, split = px + hw * 0.22, litRight = sx > px;
+          g.fillStyle = css(litRight ? mixLab(stone, BLACK, 0.18) : mixLab(stone, D.sunLab, up ? 0.2 * b : 0)); g.beginPath(); g.moveTo(px - hw, yb); g.lineTo(px, yb - ph); g.lineTo(split, yb); g.closePath(); g.fill();
+          g.fillStyle = css(litRight ? mixLab(stone, D.sunLab, up ? 0.2 * b : 0) : mixLab(stone, BLACK, 0.18)); g.beginPath(); g.moveTo(split, yb); g.lineTo(px, yb - ph); g.lineTo(px + hw, yb); g.closePath(); g.fill();
+        }
+      }
+    }
+
+    // generic landmark silhouettes (filled)
+    function markPath(type, x, yb, h) {
+      const u = u1(); g.beginPath();
+      const poly = pts => { g.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]); g.closePath(); };
+      const sym = right => { const l = right.map(([dx, y]) => [x - dx, y]).reverse(); poly(l.concat(right.map(([dx, y]) => [x + dx, y]))); };
+      if (type === 'needle') sym([[0, yb - h * 1.06], [1.2 * u, yb - h * 0.93], [3 * u, yb - h * 0.92], [11 * u, yb - h * 0.885], [12 * u, yb - h * 0.85], [5 * u, yb - h * 0.81], [4 * u, yb - h * 0.79], [6 * u, yb]]);
+      else if (type === 'needle2') sym([[0, yb - h], [1 * u, yb - h * 0.84], [3 * u, yb - h * 0.8], [7 * u, yb - h * 0.79], [7 * u, yb - h * 0.76], [3.6 * u, yb - h * 0.75], [5 * u, yb - h * 0.6], [11 * u, yb - h * 0.585], [11 * u, yb - h * 0.55], [6 * u, yb - h * 0.535], [9 * u, yb - h * 0.25], [16 * u, yb]]);
+      else if (type === 'lattice') sym([[0, yb - h], [0.7 * u, yb - h * 0.86], [5 * u, yb - h * 0.86], [5 * u, yb - h * 0.83], [1.6 * u, yb - h * 0.82], [3 * u, yb - h * 0.62], [10 * u, yb - h * 0.61], [10 * u, yb - h * 0.56], [5 * u, yb - h * 0.55], [12 * u, yb - h * 0.3], [26 * u, yb]]);
+      else if (type === 'eiffel') {
+        sym([[0, yb - h], [1.2 * u, yb - h * 0.92], [3 * u, yb - h * 0.65], [8 * u, yb - h * 0.62], [8 * u, yb - h * 0.6], [5 * u, yb - h * 0.59], [11 * u, yb - h * 0.36], [17 * u, yb - h * 0.34], [17 * u, yb - h * 0.31], [14 * u, yb - h * 0.3], [26 * u, yb - h * 0.08], [36 * u, yb]]);
+        g.moveTo(x + 18 * u, yb); g.quadraticCurveTo(x + 12 * u, yb - h * 0.2, x, yb - h * 0.21); g.quadraticCurveTo(x - 12 * u, yb - h * 0.2, x - 18 * u, yb); g.closePath();
+      }
+      else if (type === 'dome') { g.moveTo(x - 30 * u, yb); g.lineTo(x - 30 * u, yb - h * 0.42); g.lineTo(x - 21 * u, yb - h * 0.42); g.lineTo(x - 21 * u, yb - h * 0.55); g.ellipse(x, yb - h * 0.55, 21 * u, h * 0.3, 0, PI, 0); g.lineTo(x + 21 * u, yb - h * 0.42); g.lineTo(x + 30 * u, yb - h * 0.42); g.lineTo(x + 30 * u, yb); g.closePath(); g.moveTo(x - 2.5 * u, yb - h * 0.84); g.lineTo(x - 2.5 * u, yb - h * 0.95); g.lineTo(x, yb - h); g.lineTo(x + 2.5 * u, yb - h * 0.95); g.lineTo(x + 2.5 * u, yb - h * 0.84); g.closePath(); }
+      else if (type === 'spire') sym([[0, yb - h], [1.2 * u, yb - h * 0.86], [5 * u, yb - h * 0.85], [5 * u, yb - h * 0.8], [9 * u, yb - h * 0.79], [9 * u, yb - h * 0.72], [13 * u, yb - h * 0.71], [13 * u, yb - h * 0.6], [17 * u, yb - h * 0.59], [17 * u, yb - h * 0.25], [24 * u, yb - h * 0.24], [24 * u, yb]]);
+      else if (type === 'taper') sym([[0, yb - h], [0.8 * u, yb - h * 0.86], [6 * u, yb - h * 0.85], [8 * u, yb - h * 0.82], [17 * u, yb - h * 0.08], [17 * u, yb]]);
+      else if (type === 'shard') { g.moveTo(x - 18 * u, yb); g.lineTo(x - 2 * u, yb - h); g.lineTo(x + 1 * u, yb - h * 0.93); g.lineTo(x + 4 * u, yb - h * 0.96); g.lineTo(x + 18 * u, yb); g.closePath(); }
+      else if (type === 'clock') sym([[0, yb - h], [1.5 * u, yb - h * 0.9], [6 * u, yb - h * 0.78], [7 * u, yb - h * 0.77], [7 * u, yb - h * 0.72], [9 * u, yb - h * 0.71], [9 * u, yb - h * 0.6], [7 * u, yb - h * 0.59], [7 * u, yb]]);
+      else if (type === 'churchspire') { sym([[0, yb - h], [5 * u, yb - h * 0.72], [6 * u, yb - h * 0.7], [6 * u, yb - h * 0.45], [22 * u, yb - h * 0.3], [24 * u, yb]]); }
+      else if (type === 'aframe') { g.moveTo(x - 30 * u, yb); g.lineTo(x, yb - h); g.lineTo(x + 30 * u, yb); g.closePath(); g.moveTo(x - 22 * u, yb); g.lineTo(x + 6 * u, yb - h * 0.8); g.lineTo(x + 34 * u, yb); g.closePath(); }
+      else if (type === 'pagoda') { let y = yb; for (let i = 0; i < 5; i++) { const bw = (14 - i * 2) * u, rw = bw * 1.75, th = (h * 0.8) / 5; g.moveTo(x - bw, y); g.lineTo(x - bw, y - th * 0.55); g.lineTo(x - rw, y - th * 0.6); g.quadraticCurveTo(x - bw * 0.6, y - th * 0.72, x - bw * 0.5, y - th); g.lineTo(x + bw * 0.5, y - th); g.quadraticCurveTo(x + bw * 0.6, y - th * 0.72, x + rw, y - th * 0.6); g.lineTo(x + bw, y - th * 0.55); g.lineTo(x + bw, y); g.closePath(); y -= th; } g.moveTo(x - 1.2 * u, y); g.lineTo(x, y - h * 0.2); g.lineTo(x + 1.2 * u, y); g.closePath(); }
+      else if (type === 'minaret') sym([[0, yb - h], [3 * u, yb - h * 0.86], [3 * u, yb - h * 0.8], [5 * u, yb - h * 0.79], [5 * u, yb - h * 0.77], [3.2 * u, yb - h * 0.76], [3.2 * u, yb - h * 0.55], [5.5 * u, yb - h * 0.54], [5.5 * u, yb - h * 0.52], [3.6 * u, yb - h * 0.51], [4 * u, yb]]);
+      else if (type === 'mosque') { g.moveTo(x - 34 * u, yb); g.lineTo(x - 34 * u, yb - h * 0.36); g.lineTo(x - 20 * u, yb - h * 0.36); g.ellipse(x, yb - h * 0.36, 20 * u, h * 0.3, 0, PI, 0); g.lineTo(x + 34 * u, yb - h * 0.36); g.lineTo(x + 34 * u, yb); g.closePath(); for (const s of [-1, 1]) { const mx = x + s * 30 * u; g.moveTo(mx - 3 * u, yb); g.lineTo(mx - 3 * u, yb - h * 0.82); g.lineTo(mx, yb - h); g.lineTo(mx + 3 * u, yb - h * 0.82); g.lineTo(mx + 3 * u, yb); g.closePath(); } }
+      else if (type === 'lotus') sym([[0, yb - h], [1 * u, yb - h * 0.9], [9 * u, yb - h * 0.88], [8 * u, yb - h * 0.84], [5 * u, yb - h * 0.8], [5 * u, yb - h * 0.1], [9 * u, yb]]);
+      else if (type === 'supertall') { const st = [[26, 0.0], [21, 0.22], [17, 0.4], [13, 0.55], [9.5, 0.68], [6.5, 0.78], [4, 0.86], [2, 0.92], [0.6, 1]]; const right = []; for (let i = 0; i < st.length - 1; i++) { right.push([st[i][0] * u, yb - h * st[i][1]], [st[i][0] * u, yb - h * st[i + 1][1]]); } right.push([0, yb - h]); sym(right.reverse()); }
+      else if (type === 'drum') sym([[0, yb - h], [2 * u, yb - h * 0.9], [17 * u, yb - h * 0.88], [17 * u, yb - h * 0.85], [12 * u, yb - h * 0.84], [12 * u, yb]]);
+      else if (type === 'box') sym([[0, yb - h * 1.02], [19 * u, yb - h * 1.02], [19 * u, yb]]);
+    }
+    function markStroke(type, x, yb, h) {
+      const u = u1(); g.beginPath();
+      if (type === 'wheel') { const rr = h * 0.48, cy = yb - h * 0.52; g.arc(x, cy, rr, 0, 2 * PI); for (let i = 0; i < 16; i++) { const a = (i / 16) * 2 * PI; g.moveTo(x, cy); g.lineTo(x + rr * Math.cos(a), cy + rr * Math.sin(a)); } g.moveTo(x - rr * 0.5, yb); g.lineTo(x, cy); g.lineTo(x + rr * 0.5, yb); return 1.2 * u + 0.6; }
+      if (type === 'bridge') { const span = 170 * u; g.moveTo(x - span / 2, yb - h * 0.25); g.quadraticCurveTo(x, yb - h * 1.6, x + span / 2, yb - h * 0.25); g.moveTo(x - span * 0.72, yb - h * 0.3); g.lineTo(x + span * 0.72, yb - h * 0.3); for (let i = 1; i < 10; i++) { const t = i / 10, bx = x - span / 2 + span * t, by = yb - h * 0.25 - 4 * t * (1 - t) * h * 0.67; g.moveTo(bx, by); g.lineTo(bx, yb - h * 0.3); } for (const s of [-0.5, 0.5]) { g.moveTo(x + s * span - 6 * u, yb); g.lineTo(x + s * span - 6 * u, yb - h * 0.5); g.moveTo(x + s * span + 6 * u, yb); g.lineTo(x + s * span + 6 * u, yb - h * 0.5); } return 1.8 * u + 0.7; }
+      return 0;
+    }
+    function bldPath(B, yb, s) {
+      const x = B.x, w = B.w, top = yb - B.h, bot = yb + 80;
+      g.moveTo(x, bot);
+      switch (B.roof) {
+        case 'gable': g.lineTo(x, top + w * 0.3); g.lineTo(x + w / 2, top - w * 0.12); g.lineTo(x + w, top + w * 0.3); break;
+        case 'curve': g.lineTo(x - w * 0.1, top + w * 0.2); g.quadraticCurveTo(x + w * 0.18, top + w * 0.12, x + w * 0.3, top - w * 0.1); g.lineTo(x + w * 0.7, top - w * 0.1); g.quadraticCurveTo(x + w * 0.82, top + w * 0.12, x + w * 1.1, top + w * 0.2); g.lineTo(x + w * 1.1, bot); g.closePath(); return;
+        case 'temple': g.lineTo(x - w * 0.2, top + w * 0.25); g.quadraticCurveTo(x + w * 0.1, top + w * 0.18, x + w * 0.22, top - w * 0.2); g.lineTo(x + w * 0.78, top - w * 0.2); g.quadraticCurveTo(x + w * 0.9, top + w * 0.18, x + w * 1.2, top + w * 0.25); g.lineTo(x + w * 1.2, bot); g.closePath(); return;
+        case 'mansard': g.lineTo(x, top + B.h * 0.28); g.lineTo(x + w * 0.08, top); for (const c of [0.25, 0.62]) { g.lineTo(x + w * c, top); g.lineTo(x + w * c, top - 4 * s); g.lineTo(x + w * (c + 0.06), top - 4 * s); g.lineTo(x + w * (c + 0.06), top); } g.lineTo(x + w * 0.92, top); g.lineTo(x + w, top + B.h * 0.28); break;
+        case 'step': g.lineTo(x, top + B.h * 0.14); g.lineTo(x + w * 0.16, top + B.h * 0.14); g.lineTo(x + w * 0.16, top + B.h * 0.05); g.lineTo(x + w * 0.3, top + B.h * 0.05); g.lineTo(x + w * 0.3, top); g.lineTo(x + w * 0.7, top); g.lineTo(x + w * 0.7, top + B.h * 0.05); g.lineTo(x + w * 0.84, top + B.h * 0.05); g.lineTo(x + w * 0.84, top + B.h * 0.14); g.lineTo(x + w, top + B.h * 0.14); break;
+        case 'slant': g.lineTo(x, top + w * 0.45); g.lineTo(x + w, top); break;
+        case 'pyramid': g.lineTo(x, top + w * 0.5); g.lineTo(x + w / 2, top - w * 0.12); g.lineTo(x + w, top + w * 0.5); break;
+        case 'round': g.lineTo(x, top + w * 0.5); g.quadraticCurveTo(x + w / 2, top - w * 0.28, x + w, top + w * 0.5); break;
+        case 'mast': g.lineTo(x, top); g.lineTo(x + w * 0.47, top); g.lineTo(x + w * 0.49, top - B.h * 0.16); g.lineTo(x + w * 0.51, top - B.h * 0.16); g.lineTo(x + w * 0.53, top); g.lineTo(x + w, top); break;
+        default:
+          g.lineTo(x, top);
+          if (B.tank) { const t = Math.max(1, s); g.lineTo(x + w * 0.55, top); g.lineTo(x + w * 0.56, top - 3 * t); g.lineTo(x + w * 0.56, top - 8 * t); g.lineTo(x + w * 0.63, top - 10.5 * t); g.lineTo(x + w * 0.7, top - 8 * t); g.lineTo(x + w * 0.7, top - 3 * t); g.lineTo(x + w * 0.71, top); }
+          g.lineTo(x + w, top);
+      }
+      g.lineTo(x + w, bot); g.closePath();
+    }
+    function drawRow(row, yb, mixAmt, off, sx) {
+      const { sky, up, b, night } = D, lab = layerLab(sky, mixAmt), s = Hh / 700;
+      g.save(); g.translate(off, 0);
+      // side faces turned toward the middle of the view: lit when the sun is on that side
+      const sideLit = mixLab(lab, mixLab(D.sunLab, D.accent, 0.3), up ? 0.16 * (0.4 + b) : 0), sideDark = mixLab(lab, BLACK, 0.2);
+      for (const B of row) {
+        if (B.roof === 'curve' || B.roof === 'temple' || B.roof === 'gable') continue;
+        const mid = B.x + B.w / 2 + off, toRight = mid < W / 2, sd = Math.min(B.w * 0.35, (Math.abs(mid - W / 2) / W) * B.w * 1.1), ex = toRight ? B.x + B.w : B.x, top = yb - B.h + (B.roof === 'step' ? B.h * 0.14 : B.roof === 'slant' ? (toRight ? 0 : B.w * 0.45) : 0);
+        if (sd < 1) continue;
+        g.fillStyle = css((toRight ? sx > mid : sx < mid) ? sideLit : sideDark);
+        g.beginPath(); g.moveTo(ex, yb + 80); g.lineTo(ex, top); g.lineTo(ex + (toRight ? sd : -sd), top + sd * 0.3); g.lineTo(ex + (toRight ? sd : -sd), yb + 80); g.closePath(); g.fill();
+      }
+      g.fillStyle = shadeFill(lab, sx - off, b, up, 0.2 - mixAmt * 0.1); g.beginPath(); for (const B of row) bldPath(B, yb, s); g.fill();
+      if (night > 0.02) {
+        const lim = 0.16 + 0.34 * night;
+        g.fillStyle = `rgba(255,214,150,${(0.3 + 0.6 * night).toFixed(3)})`; for (const B of row) for (const [dx, dy, q, cool] of B.win) if (q < lim && !cool) g.fillRect(B.x + dx, yb - dy - 3, 2, 3);
+        g.fillStyle = `rgba(205,225,255,${(0.25 + 0.5 * night).toFixed(3)})`; for (const B of row) for (const [dx, dy, q, cool] of B.win) if (q < lim && cool) g.fillRect(B.x + dx, yb - dy - 3, 2, 3);
+      }
+      g.restore();
+    }
+    function drawMarks(P, yb, off, sx, T) {
+      const { sky, up, b, night } = D, lab = layerLab(sky, 0.56);
+      g.save(); g.translate(off, 0); g.fillStyle = shadeFill(lab, sx - off, b, up, 0.15);
+      for (const [type, u, hm] of P.marks) {
+        const x = u * W, h = hm * Hh, lw = markStroke(type, x, yb, h);
+        if (lw) { g.strokeStyle = css(lab); g.lineWidth = lw; g.stroke(); } else { markPath(type, x, yb, h); g.fill(type === 'eiffel' ? 'evenodd' : 'nonzero'); }
+      }
+      if (night > 0.02) for (const [type, u, hm] of P.marks) if (!['dome', 'wheel', 'bridge', 'pagoda', 'mosque', 'aframe', 'box'].includes(type)) { const blink = 0.55 + 0.45 * Math.sin(T * 2.4 + u * 9); g.fillStyle = `rgba(255,90,70,${(night * blink).toFixed(3)})`; g.beginPath(); g.arc(u * W, yb - hm * Hh * (type === 'needle' ? 1.06 : 1.0) - 1, 2, 0, 2 * PI); g.fill(); }
+      g.restore();
+    }
+    // A palm: a curved, tapering trunk and drooping fronds, each a feathered leaf.
+    function palm(x, yb, h, lean, col) {
+      const tx = x + lean * h * 0.28, ty = yb - h, tw = Math.max(2, h * 0.035);
+      g.fillStyle = col; g.strokeStyle = col; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(x - tw, yb); g.quadraticCurveTo(x + lean * h * 0.04 - tw * 0.8, yb - h * 0.55, tx - tw * 0.45, ty); g.lineTo(tx + tw * 0.45, ty); g.quadraticCurveTo(x + lean * h * 0.04 + tw * 0.8, yb - h * 0.55, x + tw, yb); g.closePath(); g.fill();
+      const fronds = [[-2.75, 0.5], [-2.25, 0.46], [-1.75, 0.38], [-1.25, 0.42], [-0.75, 0.47], [-0.3, 0.5], [-1.55, 0.3]];
+      for (const [a0, lf] of fronds) {
+        const a = a0 + lean * 0.12, len = h * lf, mx = tx + Math.cos(a) * len * 0.5, my = ty + Math.sin(a) * len * 0.5 - len * 0.12, ex = tx + Math.cos(a) * len, ey = ty + Math.sin(a) * len * 0.3 + len * 0.42;
+        // the rib
+        g.lineWidth = Math.max(1, h * 0.012); g.beginPath(); g.moveTo(tx, ty); g.quadraticCurveTo(mx, my, ex, ey); g.stroke();
+        // leaflets hanging off the rib
+        g.lineWidth = Math.max(0.8, h * 0.008);
+        for (let i = 2; i <= 11; i++) {
+          const t = i / 12, px = (1 - t) * (1 - t) * tx + 2 * (1 - t) * t * mx + t * t * ex, py = (1 - t) * (1 - t) * ty + 2 * (1 - t) * t * my + t * t * ey, ll = len * 0.2 * Math.sin(PI * t) + len * 0.04;
+          const dx = 2 * (1 - t) * (mx - tx) + 2 * t * (ex - mx), dy = 2 * (1 - t) * (my - ty) + 2 * t * (ey - my), dl = Math.hypot(dx, dy) || 1, nx = -dy / dl, ny = dx / dl;
+          for (const sgn of [1, -1]) { g.beginPath(); g.moveTo(px, py); g.lineTo(px + (nx * sgn * 0.6 + dx / dl * 0.35) * ll, py + (ny * sgn * 0.6 + dy / dl * 0.35) * ll + ll * 0.55); g.stroke(); }
+        }
+      }
+    }
+    function drawSea(yTop, yBot, sx, sy, T) {
+      const { sky, up, b, night, sunLab } = D, far = mixLab(mixLab(sky.hor, sky.zen, 0.3), BLACK, 0.1), near = mixLab(mixLab(sky.ground, sky.zen, 0.35), BLACK, 0.1);
+      let gr = g.createLinearGradient(0, yTop, 0, yBot); gr.addColorStop(0, css(far)); gr.addColorStop(1, css(near)); g.fillStyle = gr; g.fillRect(0, yTop, W, yBot - yTop);
+      if (up || D.sp.alt > -10 * rad) {
+        const a = up ? 0.25 + 0.35 * b : 0.3 * smooth(-10 * rad, 0, D.sp.alt), glowLab = mixLab(sunLab, D.accent, 0.3);
+        gr = g.createRadialGradient(sx, yTop, 0, sx, yTop, W * 0.4); gr.addColorStop(0, rgba(glowLab, a)); gr.addColorStop(1, rgba(glowLab, 0)); g.save(); g.globalCompositeOperation = 'screen'; g.fillStyle = gr; g.fillRect(0, yTop, W, yBot - yTop);
+        if (up) { g.fillStyle = rgba(mixLab(sunLab, WHITE, 0.3), 0.5 + 0.4 * b); for (let i = 0; i < 70; i++) { const t = Math.pow(i / 70, 1.5), y = yTop + 1 + (yBot - yTop) * t, spread = 4 + W * (0.02 + 0.12 * t) * (0.6 + b), jx = Math.sin(i * 12.99 + T * (1.1 + (i % 5) * 0.3)) * spread, len = 3 + 18 * t * (0.5 + 0.5 * Math.sin(i * 3.1 + T * 2)); g.globalAlpha = (1 - t * 0.7) * (0.35 + 0.65 * Math.abs(Math.sin(i * 7.3 + T * 1.7))); g.fillRect(sx + jx - len / 2, y, len, 1.2 + t); } g.globalAlpha = 1; }
+        g.restore();
+      }
+      g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.4), 0.18 * (1 - night * 0.5)); g.lineWidth = 1;
+      for (let i = 0; i < 4; i++) { const y = yTop + (yBot - yTop) * (0.35 + i * 0.18); g.beginPath(); for (let x = 0; x <= W; x += 8) { const yy = y + Math.sin(x * 0.03 + T * 0.8 + i) * 1.2; x ? g.lineTo(x, yy) : g.moveTo(x, yy); } g.stroke(); }
+    }
     function draw(now) {
       if (!D || !W) return;
-      ensureCity();
+      ensure();
       const { c, sp, up, b, sky, sunLab, night } = D, south = state.place.lat >= 0, face = south ? 180 : 0, hy = Hh * 0.7;
       const ax = az => W / 2 + ((((az - face + 540) % 360) - 180) / 115) * W * 0.48;
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1967,53 +2205,40 @@ const SUN = (() => {
         g.fillStyle = gr; g.beginPath(); g.arc(sx, sy, r * 3.4 * pulse, 0, 2 * PI); g.fill();
         g.fillStyle = css(mixLab(sunLab, WHITE, 0.25)); g.beginPath(); g.arc(sx, sy, r, 0, 2 * PI); g.fill();
       }
-      const shade = (mixAmt, d) => { const base = mixLab(sky.hor, sky.ground, mixAmt), sunSide = mixLab(base, glowLab, up ? (0.22 - d * 0.04) * (0.4 + b) : 0); const h = g.createLinearGradient(sx - W, 0, sx + W, 0); h.addColorStop(0, css(base)); h.addColorStop(0.5, css(sunSide)); h.addColorStop(1, css(base)); return h; };
-      const haze = (top, d) => { const h = g.createLinearGradient(0, top, 0, Hh); h.addColorStop(0, rgba(sky.hor, 0)); h.addColorStop(0.55, rgba(sky.hor, 0.12 * (1 - night * 0.6))); h.addColorStop(1, rgba(sky.hor, 0)); g.fillStyle = h; g.fillRect(0, top, W, Hh - top); };
-      const rim = (L, off, voff) => { g.beginPath(); for (let x = -60; x <= W + 60; x += 6) { const y = ridge(L, (x - off + 400) / W) * Hh + voff; x === -60 ? g.moveTo(x, y) : g.lineTo(x, y); } const h = g.createLinearGradient(sx - W * 0.6, 0, sx + W * 0.6, 0), a = (0.55 - L.d * 0.12) * (0.3 + 0.7 * b); h.addColorStop(0, rgba(sunLab, 0)); h.addColorStop(0.5, rgba(mixLab(sunLab, WHITE, 0.2), a)); h.addColorStop(1, rgba(sunLab, 0)); g.strokeStyle = h; g.lineWidth = 1.6; g.stroke(); };
-      const hasCity = !!SKYLINES[state.place.id];
-      for (const L of layers) {
-        if (hasCity && L.d === 2) {
-          // the place's skyline sits where the third ridge would be
-          const off = pxo * L.par, voff = pyo * L.par * 0.35, yb = Hh * 0.88 + voff, P = city.P;
-          g.save(); g.translate(off, 0);
-          g.fillStyle = shade(0.66, 2); g.beginPath();
-          for (const B of city.bld) {
-            const top = yb - B.h; g.moveTo(B.x, yb + 40);
-            if (B.roof === 'gable') { g.lineTo(B.x, top + B.w * 0.3); g.lineTo(B.x + B.w / 2, top - B.w * 0.1); g.lineTo(B.x + B.w, top + B.w * 0.3); }
-            else if (B.roof === 'curve') { g.lineTo(B.x - B.w * 0.12, top + B.w * 0.18); g.quadraticCurveTo(B.x + B.w * 0.2, top + B.w * 0.1, B.x + B.w * 0.3, top - B.w * 0.12); g.lineTo(B.x + B.w * 0.7, top - B.w * 0.12); g.quadraticCurveTo(B.x + B.w * 0.8, top + B.w * 0.1, B.x + B.w * 1.12, top + B.w * 0.18); }
-            else if (B.roof === 'step') { g.lineTo(B.x, top + B.h * 0.12); g.lineTo(B.x + B.w * 0.18, top + B.h * 0.12); g.lineTo(B.x + B.w * 0.18, top); g.lineTo(B.x + B.w * 0.82, top); g.lineTo(B.x + B.w * 0.82, top + B.h * 0.12); g.lineTo(B.x + B.w, top + B.h * 0.12); }
-            else if (B.roof === 'slant') { g.lineTo(B.x, top + B.w * 0.4); g.lineTo(B.x + B.w, top); }
-            else { g.lineTo(B.x, top); if (B.roof === 'mast') { g.lineTo(B.x + B.w * 0.46, top); g.lineTo(B.x + B.w * 0.5, top - B.h * 0.18); g.lineTo(B.x + B.w * 0.54, top); } g.lineTo(B.x + B.w, top); }
-            g.lineTo(B.x + (B.roof === 'curve' ? B.w * 1.12 : B.w), yb + 40); g.closePath();
-          }
-          g.fill();
-          for (const [type, u, hm] of P.marks) {
-            const mx = u * W, mh = hm * Hh;
-            const lw = strokeMark(g, type, mx, yb, mh, W);
-            if (lw) { g.strokeStyle = shade(0.66, 2); g.lineWidth = lw; g.stroke(); } else { pathMark(g, type, mx, yb, mh, W); g.fill(); }
-          }
-          // lit windows and beacons after dark
-          if (night > 0.02) {
-            g.fillStyle = `rgba(255,214,150,${(0.25 + 0.6 * night).toFixed(3)})`;
-            const lim = 0.18 + 0.32 * night;
-            for (const [wx, wy, q] of city.wins) if (q < lim) g.fillRect(wx, wy, 2, 3);
-            for (const [type, u, hm] of P.marks) if (['lattice', 'needle', 'spire', 'clock', 'churchspire'].includes(type)) { const blink = 0.55 + 0.45 * Math.sin(T * 2.4 + u * 9); g.fillStyle = `rgba(255,90,70,${(night * blink).toFixed(3)})`; g.beginPath(); g.arc(u * W, yb - hm * Hh * (type === 'needle' ? 1.07 : 1) - 1, 2, 0, 2 * PI); g.fill(); }
-          }
-          g.restore();
-          haze(yb - P.h * Hh, 2);
-          continue;
+      const land = C.land, beachy = land === 'beach', extraY = beachy ? hy + 1 : Hh * 0.745;
+      for (const [type, u, hf] of C.extras || []) if (type !== 'pyramids') extra(type, u, hf, extraY, sx);
+      for (const L of layers) drawLayer(L, sx, sy);
+      for (const [type, u, hf] of C.extras || []) if (type === 'pyramids') extra(type, u, hf, Hh * 0.8, sx);
+      if (rows) {
+        const P = C.city;
+        if (beachy) { drawRow(rows.back, hy + 1, 0.42, pxo * 6, sx); }
+        else if (land === 'harbor') {
+          const yb = Hh * 0.8;
+          drawRow(rows.back, yb, 0.5, pxo * 18, sx); drawMarks(P, yb, pxo * 18, sx, T); drawRow(rows.front, yb, 0.62, pxo * 22, sx);
+          g.save(); g.translate(0, 2 * yb); g.scale(1, -1); g.globalAlpha = 0.22; drawRow(rows.back, yb, 0.5, pxo * 18, sx); drawRow(rows.front, yb, 0.62, pxo * 22, sx); g.restore(); g.globalAlpha = 1;
+          drawSea(yb, Hh * 0.94, sx, sy, T);
+          g.fillStyle = css(layerLab(sky, 0.92)); g.fillRect(0, Hh * 0.94, W, Hh * 0.06);
+        } else {
+          const yb = Hh * 0.86 + pyo * 8;
+          drawRow(rows.back, yb, 0.55, pxo * 20, sx); drawMarks(P, yb, pxo * 20, sx, T);
+          drawRow(rows.front, Hh * 0.885 + pyo * 10, 0.72, pxo * 28, sx);
+          haze(yb - P.h * Hh);
         }
-        const off = pxo * L.par, voff = pyo * L.par * 0.35;
-        fillRidge(L, off, voff, shade(L.mix, L.d));
-        if (up && L.d < 3) rim(L, off, voff);
-        if (L.d < 3) haze((L.base - L.amp) * Hh + voff, L.d);
       }
-      g.font = `700 ${W < 500 ? 11 : 12.5}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`; g.textAlign = 'center'; g.fillStyle = 'rgba(247,242,232,.58)';
+      if (beachy) {
+        drawSea(hy, Hh * 0.86, sx, sy, T);
+        const sand = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.25 + night * 0.55);
+        g.fillStyle = css(sand); g.beginPath(); g.moveTo(0, Hh); for (let x = 0; x <= W; x += 8) g.lineTo(x, Hh * 0.86 + Math.sin(x * 0.006 + 1) * Hh * 0.012 + pyo * 4); g.lineTo(W, Hh); g.closePath(); g.fill();
+        g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.6), 0.35 * (1 - night * 0.5)); g.lineWidth = 1.5; g.beginPath(); for (let x = 0; x <= W; x += 8) { const y = Hh * 0.86 + Math.sin(x * 0.006 + 1) * Hh * 0.012 - 2 + Math.sin(x * 0.05 + T * 1.2) * 1.2 + pyo * 4; x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+      } else if (land === 'desert') drawLayer(NEAR_DUNE, sx, sy);
+      else if (land !== 'harbor') drawLayer(NEAR, sx, sy);
+      if (C.palms) { const col = css(mixLab(layerLab(sky, 0.95), BLACK, 0.15)); palm(W * 0.06 - pxo * 46, Hh + 2, Hh * 0.27, 0.45, col); palm(W * 0.12 - pxo * 44, Hh + 2, Hh * 0.2, 0.15, col); palm(W * 0.94 - pxo * 46, Hh + 2, Hh * 0.24, -0.4, col); }
+      g.font = `700 ${W < 500 ? 11 : 12.5}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`; g.textAlign = 'center'; g.fillStyle = 'rgba(247,242,232,.62)';
       for (const az of south ? [90, 180, 270] : [270, 0, 90]) g.fillText(`${DIRK[Math.round(az / 30) % 12]} ${tr('dir' + az)}`, ax(az) - pxo * 44, Hh - 14);
       hud.style.color = inkOn(sky.zen);
     }
     return {
-      update(d) { D = d; hud.firstChild.textContent = tGlyph(d.c.idx); hud.lastChild.textContent = `${placeName(state.place)} · ${tokiName(d.c.idx)}`; dirty = true; },
+      update(d) { D = d; hud.firstChild.textContent = tGlyph(d.c.idx); hud.lastChild.textContent = `${scene === 'here' ? placeName(state.place) : tr('sc_' + scene)} · ${tokiName(d.c.idx)}`; dirty = true; },
       render(force, now) {
         if (!W || force) resize();
         const moving = look.step(), drift = animOn() && now - last > 50;
@@ -2028,6 +2253,7 @@ const SUN = (() => {
   const MAKERS = { arc: ArcView, window: WindowView }, NEEDS3D = { arc: true, window: false };
   const stage = $('sunStage'), boxes = {}, views = {};
   let cur = store.get('ntoki.sunView') === 'window' ? 'window' : 'arc';
+  let scene = ['here', 'mountains', 'beach', 'hills', 'desert'].includes(store.get('ntoki.sunScene')) ? store.get('ntoki.sunScene') : 'here';
   let visible = false, D = null, key = '';
   function ensure(v) {
     if (v in views) return views[v];
@@ -2040,6 +2266,8 @@ const SUN = (() => {
     const V = ensure(cur);
     for (const v in boxes) boxes[v].hidden = v !== cur;
     document.querySelectorAll('#sunViews button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.sv === cur)));
+    $('sunScenes').hidden = cur !== 'window';
+    document.querySelectorAll('#sunScenes button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.scene === scene)));
     if (V && D) { V.update(D, V.key !== key); V.key = key; V.resize(); }
     writeText();
   }
@@ -2052,8 +2280,10 @@ const SUN = (() => {
       : `<span>${tr('sunHeight')}<b>${deg(altAt(c.noon))}°</b></span>`;
     if (cur === 'arc') { const [lo, hi] = tokiRange(c, c.idx); $('sunNote').textContent = `${tr('stepsNote', tGlyph(c.idx), tokiName(c.idx), tStr(c.b[c.idx]), tStr(c.b[c.idx + 1]), fmtA(lo), fmtA(hi))} ${tr('arcNote')}`; }
     else $('sunNote').textContent = tr(state.place.lat >= 0 ? 'windowNoteS' : 'windowNoteN');
+    const here = document.querySelector('#sunScenes button[data-scene="here"]'); if (here) here.textContent = placeName(state.place);
   }
   document.querySelectorAll('#sunViews button').forEach(b => b.addEventListener('click', () => { cur = b.dataset.sv; store.set('ntoki.sunView', cur); show(); }));
+  document.querySelectorAll('#sunScenes button').forEach(b => b.addEventListener('click', () => { scene = b.dataset.scene; store.set('ntoki.sunScene', scene); show(); }));
   const io = new IntersectionObserver(es => es.forEach(e => { const was = visible; visible = e.isIntersecting; if (visible && !was) { update(); show(); } }), { root: $('pager'), threshold: 0.01 });
   io.observe($('sunPage'));
   new ResizeObserver(() => { for (const v in views) if (views[v]) views[v].resize(); }).observe(stage);
