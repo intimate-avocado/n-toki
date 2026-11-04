@@ -2014,9 +2014,10 @@ const SUN = (() => {
         // the sun lights the step it is passing through; under the glass it glows in the toki's color
         const sunCol = D.up ? mixLab(D.sunLab, D.accent, 0.3) : mixLab(D.accent, BLACK, 0.35), amt = D.up ? 0.35 + 0.85 * D.b : 0.12 + 0.12 * (1 - D.night);
         // each lantern glows on its own: softly by day, barely after dark
-        const self = 0.16 - 0.12 * D.night;
-        for (const u of stepU) { u.uSun.value.copy(pos); setCol(u.uSunCol.value, sunCol); u.uAmt.value = amt; u.uNight.value = D.night; u.uLight.value = light ? 1 : 0; u.uSelf.value = self; }
-        for (const a of auras) a.material.opacity = (a.userData.cur ? 0.32 : 0.16) * (light ? 0.6 : 1) * (1 - 0.65 * D.night);
+        // only the lantern of the active toki glows: full by day, dim after dark
+        const self = 0.3 - 0.2 * D.night;
+        for (const u of stepU) { u.uSun.value.copy(pos); setCol(u.uSunCol.value, sunCol); u.uAmt.value = amt; u.uNight.value = D.night; u.uLight.value = light ? 1 : 0; u.uSelf.value = u.uCur.value ? self : 0; }
+        for (const a of auras) a.material.opacity = a.userData.cur ? 0.34 * (light ? 0.6 : 1) * (1 - 0.6 * D.night) : 0;
         dirty = true;
       },
       render(force, now) {
@@ -2043,7 +2044,7 @@ const SUN = (() => {
     tokyo: { land: 'hills', calm: 0.6, extras: [['fuji', 0.86, 0.15]], city: { h: 0.2, dens: 0.95, style: 'towers', cx: 0.45, marks: [['skytree', 0.2, 0.52], ['tmg', 0.42, 0.3], ['tokyotower', 0.66, 0.28]] } },
     kyoto: { land: 'hills', calm: 1.7, city: { h: 0.03, dens: 0.9, style: 'roofs', marks: [['pagoda', 0.27, 0.12], ['kyototower', 0.47, 0.21, 'light'], ['pagoda', 0.71, 0.18]] } },
     sanantonio: { land: 'hills', calm: 0.8, city: { h: 0.11, dens: 0.6, style: 'mid', cx: 0.46, marks: [['alamo', 0.26, 0.05, 'light'], ['towerlife', 0.42, 0.17], ['needle', 0.64, 0.32]] } },
-    austin: { land: 'hills', calm: 1.1, city: { h: 0.16, dens: 0.7, style: 'mid', cx: 0.44, marks: [['curvetop', 0.28, 0.23], ['jenga', 0.36, 0.26], ['slimslant', 0.43, 0.27], ['frost', 0.51, 0.25], ['capitol', 0.62, 0.17, 'light'], ['uttower', 0.84, 0.14]] } },
+    austin: { land: 'hills', calm: 1.1, city: { h: 0.12, dens: 0.65, style: 'mid', cx: 0.42, marks: [['slimslant', 0.26, 0.23], ['jenga', 0.35, 0.28], ['curvetop', 0.44, 0.28], ['frost', 0.52, 0.22], ['capitol', 0.66, 0.15, 'light'], ['uttower', 0.86, 0.14]] } },
     houston: { land: 'flat', city: { h: 0.22, dens: 0.75, style: 'towers', marks: [['gothic', 0.36, 0.26], ['pennzoil', 0.46, 0.21], ['chase', 0.53, 0.34], ['heritage', 0.62, 0.29]] } },
     dallas: { land: 'flat', city: { h: 0.2, dens: 0.72, style: 'towers', cx: 0.52, marks: [['reunion', 0.22, 0.24], ['box', 0.42, 0.32], ['prism', 0.51, 0.27], ['xcrown', 0.62, 0.29]] } },
     nyc: { land: 'flat', city: { h: 0.27, dens: 1, style: 'towers', tanks: true, spread: 0.12, marks: [['steinway', 0.3, 0.5], ['empire', 0.43, 0.43], ['owtc', 0.53, 0.52], ['park432', 0.6, 0.48], ['chrysler', 0.69, 0.36]] } },
