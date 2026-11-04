@@ -3581,5 +3581,5 @@ requestAnimationFrame(loop);
 setInterval(() => { if (!state.playing) tick(); }, 1000);
 </script>
 
-<script>if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
+<script>if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => { const had = !!navigator.serviceWorker.controller; let done = false; navigator.serviceWorker.addEventListener("controllerchange", () => { if (had && !done) { done = true; location.reload(); } }); navigator.serviceWorker.register("sw.js").catch(() => {}); });</script>
 </body></html>
