@@ -976,8 +976,8 @@ const STR = {
     vArc: '<span lang="ja">弧</span> Arc', vWindow: '<span lang="ja">窓</span> Window', vSteps: '<span lang="ja">段</span> Steps',
     sunUp: (a, k, n) => `Sun ${a}° high, toward ${k} ${n}`, sunDown: (a, k, n) => `Sun ${a}° below the horizon, under ${k} ${n}`,
     arcNote: "Each step is as wide as its toki lasts and spans the sun's lowest to highest point in it. The night half floats under the glass floor.",
-    windowNoteS: "Facing south. Far land fades into the toki's color, and the sun sets behind it. Each place is a portrait, not a literal view, though its landmarks stand roughly to scale.",
-    windowNoteN: "Facing north, toward the sun. Far land fades into the toki's color. Each place is a portrait, not a literal view, though its landmarks stand roughly to scale.",
+    windowNoteS: "Facing south from a real spot in the city, east on the left. Landmarks keep their true order and stand roughly to scale, spaced a little so each one reads. Far land fades into the toki's color.",
+    windowNoteN: "Facing north toward the sun from a real spot in the city, east on the right. Landmarks keep their true order and stand roughly to scale, spaced a little so each one reads. Far land fades into the toki's color.",
     sc_mountains: 'Mountains', sc_beach: 'Beach', sc_hills: 'Hills', sc_desert: 'Desert', sceneAria: 'Scenery',
     arcTab: 'Arc', windowTab: 'Window', windowTitle: 'The sky outside', windowAria: 'The sky outside',
     arcLede: "Today's path of the sun, toki by toki.", windowLede: "The sky over this place right now, facing the sun's side.",
@@ -1038,8 +1038,8 @@ const STR = {
     vArc: '<span lang="ja">弧</span>', vWindow: '<span lang="ja">窓</span>', vSteps: '<span lang="ja">段</span>',
     sunUp: (a, k) => `太陽の高さ ${a}°・${k}の方角`, sunDown: (a, k) => `太陽は地平線の下 ${a}°・${k}の方角`,
     arcNote: '段の幅はその刻の長さ、高さは刻のあいだに太陽が通る高さの幅です。夜の半分はガラスの床の下に浮かびます。',
-    windowNoteS: '南を向いた空。遠くの景色は刻の色に溶け、太陽はその向こうに沈みます。街の姿は写生ではなく、その土地の面影です。名所の高さはおおよそ実寸の比率です。',
-    windowNoteN: '北を向いた空。遠くの景色は刻の色に溶けていきます。街の姿は写生ではなく、その土地の面影です。名所の高さはおおよそ実寸の比率です。',
+    windowNoteS: '街の実在の場所から南を向いた空。東は左です。名所は実際の並びのまま、おおよそ実寸の比率で、見分けやすいよう少し間をあけています。遠くの景色は刻の色に溶けていきます。',
+    windowNoteN: '街の実在の場所から、太陽のある北を向いた空。東は右です。名所は実際の並びのまま、おおよそ実寸の比率で、見分けやすいよう少し間をあけています。遠くの景色は刻の色に溶けていきます。',
     sc_mountains: '山', sc_beach: '海辺', sc_hills: '丘', sc_desert: '砂漠', sceneAria: '景色',
     arcTab: '弧', windowTab: '窓', windowTitle: '窓の外の空', windowAria: '窓の外の空',
     arcLede: '今日の太陽の道を、刻ごとに。', windowLede: 'いまのこの土地の空。太陽の側を向いて。',
@@ -1100,8 +1100,8 @@ const STR = {
     vArc: '<span lang="ja">弧</span> 弧线', vWindow: '<span lang="ja">窓</span> 窗景', vSteps: '<span lang="ja">段</span> 阶梯',
     sunUp: (a, k) => `太阳高度 ${a}°，在${k}方`, sunDown: (a, k) => `太阳在地平线下 ${a}°，在${k}方`,
     arcNote: '每一级台阶的宽度是该时辰的时长，高度是其间太阳经过的最低到最高点。夜间的一半浮在玻璃地面之下。',
-    windowNoteS: '面向南方。远景融入时辰的颜色，太阳在其后落下。每座城市都是一幅写意，而非实景，但地标的高低大致按真实比例。',
-    windowNoteN: '面向北方。远景融入时辰的颜色。每座城市都是一幅写意，而非实景，但地标的高低大致按真实比例。',
+    windowNoteS: '从城中真实的位置面向南方，东在左。地标保持真实的先后次序，大致按真实比例，并稍微拉开间距以便辨认。远景融入时辰的颜色。',
+    windowNoteN: '从城中真实的位置面向太阳所在的北方，东在右。地标保持真实的先后次序，大致按真实比例，并稍微拉开间距以便辨认。远景融入时辰的颜色。',
     sc_mountains: '山', sc_beach: '海滩', sc_hills: '丘陵', sc_desert: '沙漠', sceneAria: '景色',
     arcTab: '弧线', windowTab: '窗景', windowTitle: '窗外的天空', windowAria: '窗外的天空',
     arcLede: '今日太阳的轨迹，按时辰展开。', windowLede: '此刻此地的天空，面向太阳的一侧。',
@@ -2173,117 +2173,121 @@ SUN = (() => {
   const R = (kind, seed, base, amp, mix, par, o) => Object.assign({ kind, base, amp, mix, par }, kind === 'karst' ? { pk: mkKarst(seed) } : { w: mkWaves(seed, ...RW[kind]) }, o);
   const SEA_RIDGE = span => [{ kind: 'hills', w: mkWaves(41, 3, 0.8, 1.2, 1.4), base: 0.705, amp: 0.02, mix: 0.3, par: 4, span }];
 
-  // land: the far ridges (mountains, hills, flat, desert, karst); water: 'bay' in front of the city, or 'sea' out to the horizon
+  // Each view is from a real spot, facing the equator: south in the northern hemisphere (east on the left), north in the
+  // southern (east on the right). Landmarks keep their true order and side; they are spread a little so each one reads.
+  // land: the far ridges (mountains, hills, flat, desert, karst); a ridge with a span rises only there and lies flat elsewhere
+  // water: 'bay' in front of the city, or 'sea' out to the horizon (beach: false for open water with no sand in front)
+  // near: what is in front where there is no water: 'trees', 'savanna', 'promenade', 'pines'
   // extras: natural landmarks [type, x, height (fraction of the view), the ridge they stand behind, half-width if they stand on it]
-  // city: style and [min, max] metres of its generic buildings; lines back to front { y: baseline, d: size for distance };
-  //   marks [shape, x, height m, width m, line, tone]; tone 'light' (pale stone), 'red' or 'gold'; `top` is the view fraction the tallest gets
+  // city: style and [min, max] metres of its generic buildings; lines back to front { y: baseline, d: size for distance,
+  //   bank: drawn on a shore after the water, from x0 to x1 }; marks [shape, x, height m, width m, line, tone]; `top` is the view fraction the tallest gets
   // over: things on the water [type, x, height m, length m, size, how far down the water (0 far .. 1 near)]
   const PLACES = {
-    tokyo: { land: 'hills', calm: 0.6, extras: [['fuji', 0.86, 0.15]],
-      city: { style: 'towers', gen: [20, 160], dens: 0.95, cx: 0.5, spread: 0.12, top: 0.46, lines: [L2(0.835, 0.62), L2(0.86, 0.8), L2(0.89, 1)],
-        marks: [['skytree', 0.16, 634, 68, 0], ['cocoon', 0.35, 204, 46, 1], ['docomo', 0.43, 240, 44, 1], ['tmg', 0.53, 243, 104, 1], ['tokyotower', 0.69, 333, 80, 2, 'red'], ['azabudai', 0.81, 325, 64, 2]] } },
-    kyoto: { land: 'hills', calm: 1.7,
+    tokyo: { from: 'Ikebukuro', land: 'hills', calm: 0.6, extras: [['fuji', 0.82, 0.15]],
+      city: { style: 'towers', gen: [20, 160], dens: 0.95, cx: 0.55, spread: 0.12, top: 0.46, lines: [L2(0.835, 0.62), L2(0.86, 0.8), L2(0.89, 1)],
+        marks: [['skytree', 0.18, 634, 68, 0], ['tokyotower', 0.4, 333, 80, 0, 'red'], ['azabudai', 0.46, 325, 64, 0], ['docomo', 0.56, 240, 44, 2], ['cocoon', 0.62, 204, 46, 2], ['tmg', 0.69, 243, 104, 2]] } },
+    kyoto: { from: 'the north of the city', land: 'hills', ridges: [R('hills', 101, 0.74, 0.17, 0.26, 6, { span: [-0.3, 0.42] }), R('hills', 109, 0.745, 0.12, 0.3, 6, { span: [0.62, 1.3] }), R('hills', 154, 0.79, 0.025, 0.44, 14)],
       city: { style: 'roofs', gen: [6, 12], dens: 0.9, top: 0.28, lines: [L2(0.85, 0.85), L2(0.885, 1), L2(0.95, 1.7, { gen: false, near: true })],
-        marks: [['kiyomizu', 0.14, 28, 46, 0], ['pagoda', 0.3, 46, 12, 0], ['kyototower', 0.5, 131, 60, 1, 'light'], ['pagoda', 0.71, 55, 13, 1], ['torii', 0.87, 24, 30, 2, 'red']] } },
-    sanantonio: { land: 'hills', calm: 0.8,
-      city: { style: 'mid', gen: [14, 80], dens: 0.6, cx: 0.46, top: 0.36, lines: [L2(0.85, 0.82), L2(0.885, 1), L2(0.955, 3.6, { gen: false, near: true })],
-        marks: [['towerlife', 0.38, 123, 32, 0], ['frostsa', 0.5, 142, 40, 0], ['needle', 0.66, 229, 14, 1], ['alamo', 0.24, 11, 19, 2, 'light']] } },
-    austin: { land: 'hills', calm: 0.9, water: 'bay', bats: true,
-      city: { style: 'mid', gen: [22, 150], dens: 0.92, cx: 0.45, spread: 0.16, top: 0.4, lines: [L2(0.78, 0.82, { dens: 0.4, gen: [8, 28], mix: 0.6 }), L2(0.8, 1)],
-        marks: [['capitol', 0.5, 94, 160, 0, 'light'], ['uttower', 0.88, 94, 60, 0, 'light'], ['sixguad', 0.1, 268, 42, 1], ['jenga', 0.2, 210, 36, 1], ['curvetop', 0.28, 208, 28, 1], ['slimslant', 0.35, 171, 30, 1], ['frost', 0.63, 157, 36, 1], ['waterline', 0.74, 312, 40, 1]] } },
-    houston: { land: 'flat', traffic: true,
-      city: { style: 'towers', gen: [30, 190], dens: 0.75, top: 0.42, lines: [L2(0.85, 0.55, { x0: 0.02, x1: 0.28, dens: 0.4 }), L2(0.86, 0.85), L2(0.89, 1)],
-        marks: [['williams', 0.15, 275, 42, 0], ['gothic', 0.34, 238, 64, 1, 'red'], ['heritage', 0.61, 232, 50, 1], ['pennzoil', 0.43, 159, 72, 2], ['chase', 0.52, 305, 50, 2], ['wellsfargo', 0.68, 302, 52, 2]] } },
-    dallas: { land: 'flat', traffic: true,
-      city: { style: 'towers', gen: [30, 170], dens: 0.72, cx: 0.52, top: 0.38, lines: [L2(0.85, 0.85), L2(0.885, 1), L2(0.95, 0.7, { gen: false, near: true })],
-        marks: [['bofa', 0.4, 281, 50, 0], ['xcrown', 0.6, 270, 46, 0], ['reunion', 0.2, 171, 36, 1], ['prism', 0.51, 219, 54, 1], ['chasedallas', 0.71, 224, 44, 1], ['huntbridge', 0.84, 122, 260, 2, 'light']] } },
-    nyc: { land: 'flat', water: 'bay',
-      city: { style: 'towers', tanks: true, gen: [25, 200], dens: 1, spread: 0.12, top: 0.5, lines: [L2(0.775, 0.62, { cx: 0.72 }), L2(0.8, 1, { cx: 0.36 })],
-        marks: [['hudson30', 0.55, 387, 50, 0], ['empire', 0.63, 443, 60, 0], ['vanderbilt', 0.7, 427, 50, 0], ['chrysler', 0.75, 319, 40, 0], ['centralpark', 0.81, 472, 32, 0], ['steinway', 0.86, 435, 18, 0], ['park432', 0.91, 426, 28, 0], ['owtc', 0.28, 541, 62, 1], ['woolworth', 0.4, 241, 46, 1], ['spruce8', 0.47, 265, 40, 1]] },
-      over: [['brooklyn', 0.2, 84, 420, 1.25, 0.32]] },
-    la: { land: 'mountains', palms: true, traffic: true, ridges: [R('peaks', 11, 0.745, 0.17, 0.24, 5, { snow: 0.35 }), R('hills', 154, 0.8, 0.05, 0.42, 12)], extras: [['griffith', 0.3, 0.03, 1, 0.06]],
-      city: { style: 'mid', gen: [15, 120], dens: 0.5, top: 0.36, marks: [['aon', 0.59, 262, 50, 0], ['usbank', 0.43, 310, 44, 1], ['wilshire', 0.51, 335, 46, 1]] } },
-    denver: { land: 'mountains',
-      city: { style: 'mid', gen: [15, 110], dens: 0.6, top: 0.3, marks: [['register', 0.47, 212, 48, 0], ['box', 0.56, 218, 50, 0], ['dfclock', 0.35, 99, 12, 1], ['notch', 0.65, 216, 44, 1]] } },
-    honolulu: { land: 'hills', water: 'sea', palms: true, ridges: SEA_RIDGE([-0.1, 0.42]), extras: [['crater', 0.17, 0.09]],
-      city: { style: 'mid', gen: [20, 110], dens: 0.75, cx: 0.22, spread: 0.05, top: 0.17, lines: [L2(0.701, 1, { x0: -0.1, x1: 0.46 })], marks: [['alohatower', 0.03, 56, 12, 0]] },
-      over: [['outrigger', 0.62, 2, 12, 2.4, 0.45]] },
-    cdmx: { land: 'hills', calm: 0.8, smoke: true, extras: [['volcanoes', 0.2, 0.15]],
-      city: { style: 'mid', gen: [15, 110], dens: 0.82, top: 0.36, marks: [['mitikah', 0.25, 267, 40, 0], ['reforma', 0.56, 246, 46, 0], ['bellas', 0.33, 53, 84, 1, 'light'], ['latino', 0.43, 183, 36, 1], ['angel', 0.72, 45, 9, 1, 'gold']] } },
-    london: { land: 'flat', water: 'bay',
-      city: { style: 'mid', gen: [15, 90], dens: 0.75, top: 0.42, lines: [L2(0.78, 0.7), L2(0.8, 1, { gen: [10, 45] })],
-        marks: [['bishops22', 0.4, 278, 50, 0], ['wedge', 0.46, 225, 50, 0], ['gherkin', 0.52, 180, 50, 0], ['walkie', 0.58, 160, 56, 0], ['stpauls', 0.68, 111, 76, 0, 'light'], ['towerbridge', 0.15, 65, 244, 1, 'light'], ['shard', 0.28, 310, 58, 1], ['eye', 0.79, 135, 120, 1], ['bigben', 0.91, 96, 12, 1, 'light']] } },
-    paris: { land: 'flat', sparkle: true,
-      city: { style: 'mansard', gen: [18, 26], dens: 0.95, top: 0.42, lines: [L2(0.845, 0.55, { style: 'towers', gen: [80, 180], x0: 0.02, x1: 0.24, dens: 0.7 }), L2(0.86, 0.85), L2(0.89, 1)],
-        marks: [['grandearche', 0.12, 110, 108, 0, 'light'], ['sacrecoeur', 0.27, 140, 230, 1, 'light'], ['notredame', 0.41, 96, 48, 1], ['montparnasse', 0.54, 210, 50, 1], ['invalides', 0.65, 107, 60, 2, 'gold'], ['eiffel', 0.79, 330, 125, 2], ['arc', 0.93, 50, 45, 2, 'light']] } },
-    reykjavik: { land: 'mountains', calm: 0.6, water: 'bay',
-      city: { style: 'houses', gen: [6, 14], dens: 0.6, top: 0.2, lines: [L2(0.8, 1)], marks: [['hallgrim', 0.42, 74.5, 44, 0, 'light'], ['harpa', 0.67, 43, 110, 0]] } },
-    tromso: { land: 'mountains', water: 'bay',
-      city: { style: 'houses', gen: [6, 12], dens: 0.5, top: 0.13, lines: [L2(0.79, 0.85), L2(0.8, 1)], marks: [['arctic', 0.66, 35, 45, 0, 'light'], ['cantilever', 0.32, 38, 420, 1]] } },
-    nairobi: { land: 'hills', calm: 0.9, extras: [['ngong', 0.82, 0.08]],
-      city: { style: 'towers', gen: [20, 110], dens: 0.6, top: 0.24, marks: [['times', 0.36, 140, 36, 0], ['britam', 0.6, 200, 40, 0], ['kicc', 0.46, 105, 40, 1]] } },
-    cairo: { land: 'desert', water: 'bay', ridges: [R('dunes', 31, 0.735, 0.035, 0.2, 5, { sand: 1 }), R('hills', 61, 0.765, 0.012, 0.32, 8, { sand: 1 })], extras: [['pyramids', 0.72, 0.12, 1]],
-      city: { style: 'mid', gen: [14, 70], dens: 0.82, cx: 0.32, top: 0.32, lines: [L2(0.785, 0.75, { x1: 0.6 }), L2(0.805, 1, { x1: 0.66 })],
-        marks: [['citadel', 0.16, 82, 120, 0], ['minaret', 0.34, 62, 8, 1], ['lotus', 0.47, 187, 30, 1], ['minaret', 0.58, 52, 8, 1]] },
+        marks: [['kiyomizu', 0.22, 28, 46, 0], ['pagoda', 0.34, 46, 12, 0], ['kyototower', 0.5, 131, 60, 0, 'light'], ['pagoda', 0.63, 55, 13, 1], ['torii', 0.15, 24, 30, 2, 'red']] } },
+    sanantonio: { from: 'the Pearl', land: 'hills', calm: 0.8,
+      city: { style: 'mid', gen: [14, 80], dens: 0.6, cx: 0.52, top: 0.36, lines: [L2(0.85, 0.82), L2(0.885, 1), L2(0.955, 3.6, { gen: false, near: true })],
+        marks: [['needle', 0.38, 229, 14, 0], ['frostsa', 0.53, 142, 40, 1], ['towerlife', 0.6, 123, 32, 1], ['alamo', 0.32, 11, 19, 2, 'light']] } },
+    austin: { from: 'north of the Capitol', land: 'hills', calm: 0.9, bats: true,
+      city: { style: 'mid', gen: [22, 150], dens: 0.9, cx: 0.53, spread: 0.12, top: 0.4, lines: [L2(0.86, 0.9), L2(0.9, 1.45, { gen: [8, 22], dens: 0.5 })],
+        marks: [['waterline', 0.36, 312, 40, 0], ['frost', 0.46, 157, 36, 0], ['curvetop', 0.51, 208, 28, 0], ['sixguad', 0.58, 268, 42, 0], ['slimslant', 0.64, 171, 30, 0], ['jenga', 0.69, 210, 36, 0], ['capitol', 0.5, 94, 160, 1, 'light']] } },
+    houston: { from: 'north of downtown', land: 'flat', traffic: true,
+      city: { style: 'towers', gen: [30, 190], dens: 0.75, top: 0.42, lines: [L2(0.85, 0.55, { x0: 0.7, x1: 0.94, dens: 0.4 }), L2(0.86, 0.85), L2(0.89, 1)],
+        marks: [['williams', 0.82, 275, 42, 0], ['gothic', 0.53, 238, 64, 1, 'red'], ['heritage', 0.65, 232, 50, 1], ['chase', 0.4, 305, 50, 2], ['pennzoil', 0.46, 159, 72, 2], ['wellsfargo', 0.59, 302, 52, 2]] } },
+    dallas: { from: 'Uptown', land: 'flat', traffic: true,
+      city: { style: 'towers', gen: [30, 170], dens: 0.72, top: 0.38, lines: [L2(0.85, 0.85), L2(0.885, 1), L2(0.95, 0.7, { gen: false, near: true })],
+        marks: [['xcrown', 0.44, 270, 46, 0], ['bofa', 0.58, 281, 50, 0], ['reunion', 0.68, 171, 36, 0], ['chasedallas', 0.37, 224, 44, 1], ['prism', 0.51, 219, 54, 1], ['huntbridge', 0.85, 122, 260, 2, 'light']] } },
+    nyc: { from: 'Central Park', land: 'flat', near: 'trees',
+      city: { style: 'towers', tanks: true, gen: [25, 200], dens: 1, spread: 0.16, top: 0.5, lines: [L2(0.835, 0.45, { gen: [20, 110] }), L2(0.85, 0.7), L2(0.87, 1, { gen: [20, 90], dens: 0.85 })],
+        marks: [['spruce8', 0.47, 265, 40, 0], ['woolworth', 0.51, 241, 46, 0], ['owtc', 0.56, 541, 62, 0], ['chrysler', 0.38, 319, 40, 1], ['vanderbilt', 0.43, 427, 50, 1], ['empire', 0.49, 443, 60, 1], ['hudson30', 0.7, 387, 50, 1], ['park432', 0.33, 426, 28, 2], ['steinway', 0.55, 435, 18, 2], ['centralpark', 0.62, 472, 32, 2]] } },
+    la: { from: 'the Hollywood Hills', land: 'flat', palms: true, traffic: true, ridges: [R('hills', 157, 0.735, 0.05, 0.24, 5, { span: [0.62, 1.3] }), R('hills', 154, 0.77, 0.015, 0.4, 10)],
+      city: { style: 'mid', gen: [12, 70], dens: 0.6, cx: 0.4, top: 0.32, lines: [L2(0.84, 0.75), L2(0.87, 1)],
+        marks: [['usbank', 0.34, 310, 44, 0], ['wilshire', 0.39, 335, 46, 0], ['aon', 0.44, 262, 50, 0], ['ccity', 0.68, 174, 46, 0], ['ccity', 0.72, 174, 46, 0]] } },
+    denver: { from: 'north of downtown', land: 'mountains', ridges: [R('peaks', 11, 0.745, 0.24, 0.24, 5, { snow: 1, span: [0.52, 1.4] }), R('peaks', 23, 0.775, 0.1, 0.42, 12, { snow: 0.5, span: [0.64, 1.4] }), R('hills', 47, 0.79, 0.015, 0.44, 14)], extras: [['denali', 0.47, 0.045]],
+      city: { style: 'mid', gen: [15, 110], dens: 0.6, top: 0.3, marks: [['notch', 0.42, 216, 44, 0], ['register', 0.5, 212, 48, 0], ['box', 0.55, 218, 50, 0], ['dfclock', 0.61, 99, 12, 1]] } },
+    honolulu: { from: 'the slopes above the city', land: 'hills', water: 'sea', beach: false, palms: true, ridges: SEA_RIDGE([-0.1, 0.34]), extras: [['crater', 0.2, 0.09]],
+      city: { style: 'mid', gen: [15, 110], dens: 0.8, cx: 0.45, spread: 0.06, top: 0.24, lines: [L2(0.8, 1, { bank: true, x0: -0.2, x1: 1.2 })], marks: [['alohatower', 0.72, 56, 12, 0]] },
+      over: [['outrigger', 0.55, 2, 12, 2.4, 0.12]] },
+    cdmx: { from: 'the north of the city', land: 'hills', calm: 0.8, smoke: true, extras: [['volcanoes', 0.28, 0.15]],
+      city: { style: 'mid', gen: [15, 110], dens: 0.82, cx: 0.55, top: 0.36, marks: [['mitikah', 0.56, 267, 40, 0], ['reforma', 0.67, 246, 46, 0], ['bellas', 0.41, 53, 84, 1, 'light'], ['latino', 0.47, 183, 36, 1], ['angel', 0.73, 45, 9, 1, 'gold']] } },
+    london: { from: 'Parliament Hill', land: 'flat', near: 'trees',
+      city: { style: 'mid', gen: [15, 70], dens: 0.75, cx: 0.42, top: 0.42, lines: [L2(0.835, 0.6), L2(0.86, 0.8), L2(0.885, 1, { gen: [10, 30] })],
+        marks: [['shard', 0.43, 310, 58, 0], ['bishops22', 0.27, 278, 50, 1], ['gherkin', 0.31, 180, 50, 1], ['wedge', 0.34, 225, 50, 1], ['walkie', 0.37, 160, 56, 1], ['stpauls', 0.48, 111, 76, 1, 'light'], ['eye', 0.6, 135, 120, 1], ['bigben', 0.66, 96, 12, 1, 'light']] } },
+    paris: { from: 'Montmartre', land: 'flat', sparkle: true,
+      city: { style: 'mansard', gen: [18, 26], dens: 0.95, top: 0.42, lines: [L2(0.845, 0.55, { style: 'towers', gen: [80, 180], x0: 0.82, x1: 1.02, dens: 0.7 }), L2(0.86, 0.85), L2(0.89, 1)],
+        marks: [['grandearche', 0.91, 110, 108, 0, 'light'], ['notredame', 0.36, 96, 48, 1], ['montparnasse', 0.52, 210, 50, 1], ['invalides', 0.6, 107, 60, 1, 'gold'], ['eiffel', 0.69, 330, 125, 2], ['arc', 0.81, 50, 45, 2, 'light']] } },
+    reykjavik: { from: 'the old harbour', land: 'mountains', calm: 0.35, water: 'bay',
+      city: { style: 'houses', gen: [6, 14], dens: 0.65, top: 0.2, lines: [L2(0.78, 0.8), L2(0.8, 1)], marks: [['hallgrim', 0.46, 74.5, 44, 0, 'light'], ['perlan', 0.63, 30, 46, 0], ['harpa', 0.27, 43, 80, 1, 'light']] } },
+    tromso: { from: 'the harbour', land: 'mountains', water: 'bay', ridges: [R('peaks', 11, 0.74, 0.28, 0.24, 5, { snow: 1, span: [-0.3, 0.56] }), R('peaks', 23, 0.775, 0.1, 0.42, 12, { snow: 0.6 })],
+      city: { style: 'houses', gen: [6, 12], dens: 0.5, top: 0.13, lines: [L2(0.79, 0.7, { x1: 0.45 }), L2(0.8, 1, { x0: 0.52 })], marks: [['arctic', 0.2, 35, 45, 0, 'light'], ['cantilever', 0.36, 38, 420, 1]] } },
+    nairobi: { from: 'Nairobi National Park', land: 'flat', near: 'savanna',
+      city: { style: 'towers', gen: [20, 110], dens: 0.6, cx: 0.55, top: 0.2, lines: [L2(0.84, 0.8), L2(0.86, 1)], marks: [['britam', 0.4, 200, 40, 0], ['times', 0.55, 140, 36, 1], ['kicc', 0.6, 105, 40, 1]] } },
+    cairo: { from: 'the Nile, north of downtown', land: 'desert', water: 'bay', ridges: [R('dunes', 31, 0.735, 0.035, 0.2, 5, { sand: 1 }), R('hills', 61, 0.765, 0.012, 0.32, 8, { sand: 1 })], extras: [['pyramids', 0.72, 0.12, 1]],
+      city: { style: 'mid', gen: [14, 70], dens: 0.82, cx: 0.4, top: 0.32, lines: [L2(0.785, 0.75, { x1: 0.6 }), L2(0.805, 1, { x1: 0.66 })],
+        marks: [['citadel', 0.16, 82, 120, 0], ['minaret', 0.34, 62, 8, 1], ['minaret', 0.45, 52, 8, 1], ['lotus', 0.56, 187, 30, 1]] },
       over: [['felucca', 0.3, 14, 9, 1.6, 0.42], ['felucca', 0.74, 12, 8, 1.3, 0.22]] },
-    dubai: { land: 'desert',
-      city: { style: 'towers', gen: [40, 250], dens: 0.6, cx: 0.5, top: 0.62, lines: [L2(0.85, 0.75), L2(0.885, 1)],
-        marks: [['cayan', 0.24, 306, 34, 0], ['frame', 0.72, 150, 95, 0, 'gold'], ['burjalarab', 0.9, 321, 60, 0, 'light'], ['emirates', 0.36, 355, 90, 1], ['khalifa', 0.52, 828, 100, 1], ['museumfuture', 0.64, 77, 70, 1, 'light']] } },
-    rio: { land: 'hills', water: 'sea', palms: true, cable: true, ridges: SEA_RIDGE([-0.1, 0.42]), extras: [['corcovado', 0.24, 0.27], ['sugarloaf', 0.82, 0.2]],
-      city: { style: 'mid', gen: [15, 45], dens: 0.75, top: 0.12, lines: [L2(0.701, 1, { x0: -0.1, x1: 0.46 })], marks: [] } },
-    capetown: { land: 'flat', water: 'bay', extras: [['table', 0.5, 0.2], ['lionshead', 0.12, 0.15]],
-      city: { style: 'mid', gen: [12, 70], dens: 0.6, top: 0.22, lines: [L2(0.79, 0.85), L2(0.805, 1)], marks: [['portside', 0.42, 139, 40, 0], ['stadium', 0.7, 50, 250, 1, 'light'], ['wheel', 0.87, 40, 40, 1]] } },
-    sydney: { land: 'flat', water: 'bay',
-      city: { style: 'towers', gen: [30, 200], dens: 0.7, cx: 0.48, top: 0.4, lines: [L2(0.775, 0.75), L2(0.8, 1, { gen: [15, 90], x0: 0.32, x1: 0.62 })],
-        marks: [['crown', 0.33, 271, 46, 0], ['sydneytower', 0.47, 309, 30, 0], ['opera', 0.19, 65, 140, 1, 'light'], ['harbourbridge', 0.78, 134, 330, 1]] },
-      over: [['ferry', 0.5, 8, 40, 1.3, 0.5]] },
-    lafayette: { land: 'flat', water: 'bay', shore: 'grass',
+    dubai: { from: 'Deira', land: 'desert',
+      city: { style: 'towers', gen: [40, 250], dens: 0.6, cx: 0.6, top: 0.62, lines: [L2(0.85, 0.6), L2(0.865, 0.8), L2(0.885, 1)],
+        marks: [['cayan', 0.74, 306, 34, 0], ['burjalarab', 0.83, 321, 60, 0, 'light'], ['khalifa', 0.62, 828, 100, 1], ['frame', 0.38, 150, 95, 2, 'gold'], ['museumfuture', 0.47, 77, 70, 2, 'light'], ['emirates', 0.53, 355, 90, 2]] } },
+    rio: { from: 'Copacabana beach', land: 'hills', near: 'promenade', palms: true, cable: true, ridges: [R('hills', 41, 0.745, 0.05, 0.3, 5)], extras: [['corcovado', 0.3, 0.3], ['sugarloaf', 0.8, 0.22]],
+      city: { style: 'mid', gen: [15, 45], dens: 0.85, top: 0.12, lines: [L2(0.86, 1)], marks: [] } },
+    capetown: { from: 'the slopes of Table Mountain', land: 'flat', water: 'sea', beach: false, ridges: SEA_RIDGE([0.62, 1.3]), extras: [['lionshead', 0.13, 0.22], ['island', 0.46, 0.012]],
+      city: { style: 'mid', gen: [12, 70], dens: 0.75, cx: 0.55, top: 0.22, lines: [L2(0.8, 0.9, { bank: true, x0: -0.2, x1: 1.2 }), L2(0.87, 1.3, { bank: true, x0: -0.2, x1: 1.2, gen: [6, 30] })],
+        marks: [['stadium', 0.3, 50, 250, 0, 'light'], ['wheel', 0.55, 40, 40, 0], ['portside', 0.62, 139, 40, 1]] } },
+    sydney: { from: 'Circular Quay', land: 'hills', calm: 0.4, water: 'bay',
+      city: { style: 'towers', gen: [20, 150], dens: 0.7, cx: 0.36, spread: 0.06, top: 0.36, lines: [L2(0.78, 0.7), L2(0.8, 1, { gen: false }), L2(0.86, 1.4, { bank: true, x0: 0.6, gen: false })],
+        marks: [['harbourbridge', 0.3, 134, 330, 1], ['opera', 0.77, 65, 140, 2, 'light']] },
+      over: [['ferry', 0.52, 8, 40, 1.3, 0.5]] },
+    lafayette: { from: 'the Vermilion River', land: 'flat', water: 'bay', shore: 'grass',
       city: { style: 'mid', gen: [8, 50], dens: 0.75, cx: 0.5, spread: 0.18, top: 0.16, lines: [L2(0.8, 1)], marks: [['belltower', 0.42, 40, 16, 0, 'red'], ['watertower', 0.68, 40, 14, 0]] },
       over: [['cypress', 0.78, 16, 12, 1, 0.12], ['cypress', 0.1, 26, 18, 1.5, 0.55], ['cypress', 0.9, 22, 16, 1.7, 0.72]] },
-    newport: { land: 'hills', calm: 0.25, water: 'bay',
-      city: { style: 'houses', chimney: true, gen: [7, 13], dens: 0.78, top: 0.2, lines: [L2(0.775, 0.42, { dens: 0.35, gen: [5, 9] }), L2(0.8, 1, { style: 'wharf' })],
-        marks: [['pell', 0.36, 122, 320, 0], ['trinity', 0.56, 46, 26, 1, 'light'], ['harborlight', 0.87, 10, 5, 1, 'light']] },
-      over: [['sloop', 0.18, 18, 10, 1.4, 0.35], ['sloop', 0.32, 22, 12, 1.2, 0.15], ['schooner', 0.47, 30, 26, 1.3, 0.3], ['sloop', 0.67, 16, 9, 1.6, 0.52], ['sloop', 0.9, 20, 10, 1.8, 0.66]] },
-    whitefish: { land: 'mountains', train: true, near: 'pines', extras: [['skimtn', 0.62, 0.2, 1]],
-      city: { style: 'chalet', gen: [6, 12], dens: 0.55, top: 0.1, marks: [['watertower', 0.8, 28, 12, 0], ['depot', 0.42, 16, 44, 1]] } },
-    phuquoc: { land: 'hills', water: 'sea', palms: true, squid: true, ridges: SEA_RIDGE([-0.1, 0.3]), extras: [['island', 0.8, 0.06]],
+    newport: { from: 'the harbour', land: 'hills', water: 'sea', beach: false, ridges: [R('hills', 43, 0.71, 0.06, 0.3, 5, { span: [0.42, 1.4] }), R('hills', 154, 0.75, 0.05, 0.44, 12, { span: [0.56, 1.4] })],
+      city: { style: 'houses', chimney: true, gen: [7, 13], dens: 0.85, cx: 0.75, top: 0.2, lines: [L2(0.76, 0.7, { bank: true, x0: 0.48, dens: 0.6 }), L2(0.82, 1, { bank: true, x0: 0.62, style: 'wharf' })],
+        marks: [['trinity', 0.74, 46, 26, 0, 'light']] },
+      over: [['wharf', 0.62, 6, 90, 1, 0.42], ['wharf', 0.6, 6, 70, 1.2, 0.66], ['sloop', 0.16, 18, 10, 1.4, 0.35], ['sloop', 0.3, 22, 12, 1.2, 0.18], ['schooner', 0.4, 30, 26, 1.3, 0.3], ['sloop', 0.5, 16, 9, 1.6, 0.54], ['sloop', 0.22, 20, 10, 1.8, 0.72]] },
+    whitefish: { from: 'the top of Big Mountain', land: 'mountains', water: 'bay', shore: 'snow', train: true, ridges: [R('peaks', 11, 0.73, 0.22, 0.24, 5, { snow: 1, span: [-0.3, 0.5] }), R('hills', 47, 0.765, 0.02, 0.38, 9)],
+      city: { style: 'chalet', gen: [6, 12], dens: 0.6, cx: 0.55, top: 0.08, lines: [L2(0.79, 1)], marks: [['depot', 0.58, 16, 44, 0], ['watertower', 0.7, 28, 12, 0]] } },
+    phuquoc: { from: 'An Thới', land: 'hills', water: 'sea', palms: true, squid: true, ridges: SEA_RIDGE([-0.1, 0.3]), extras: [['island', 0.8, 0.06]],
       city: { style: 'houses', gen: [6, 14], dens: 0.5, top: 0.05, lines: [L2(0.701, 1, { x0: -0.1, x1: 0.3 })], marks: [] },
       over: [['cablecar', 0.5, 0, 0, 1, 0.02], ['longtail', 0.62, 3, 12, 2, 0.4], ['basket', 0.3, 1, 3, 3, 0.62]] },
-    fukuoka: { land: 'hills', calm: 0.4, water: 'bay', yatai: true,
-      city: { style: 'mid', gen: [15, 100], dens: 0.75, cx: 0.55, top: 0.42, lines: [L2(0.775, 0.8), L2(0.8, 1), L2(0.965, 3.6, { gen: false, quay: true })],
-        marks: [['fukuokatower', 0.22, 234, 46, 0], ['bigdome', 0.46, 84, 170, 0], ['hakataport', 0.8, 100, 14, 1], ['mecha', 0.66, 52, 30, 2, 'light']] } },
-    shanghai: { land: 'flat', water: 'bay',
-      city: { style: 'towers', gen: [40, 260], dens: 0.85, cx: 0.55, spread: 0.1, top: 0.58, lines: [L2(0.775, 0.85), L2(0.8, 1, { gen: [30, 200] })],
-        marks: [['shanghaitower', 0.5, 632, 70, 0], ['swfc', 0.6, 492, 58, 0], ['jinmao', 0.68, 421, 54, 0], ['pearl', 0.3, 468, 50, 1]] },
-      over: [['cruise', 0.66, 12, 60, 1.3, 0.5]] },
-    beijing: { land: 'mountains', calm: 0.35,
-      city: { style: 'towers', gen: [50, 200], dens: 0.75, cx: 0.55, top: 0.5, lines: [L2(0.84, 0.72), L2(0.87, 1, { style: 'roofs', gen: [6, 10], dens: 0.95 }), L2(0.955, 1.8, { gen: false, near: true })],
-        marks: [['cctv', 0.4, 234, 150, 0], ['chinazun', 0.56, 528, 78, 0], ['cwtc3', 0.65, 330, 58, 0], ['heaven', 0.2, 38, 32, 2], ['gatetower', 0.8, 35, 66, 2, 'red']] } },
-    hongkong: { land: 'mountains', water: 'bay', lasers: true, ridges: [R('peaks', 71, 0.745, 0.24, 0.3, 5), R('hills', 73, 0.775, 0.07, 0.42, 10)],
-      city: { style: 'towers', gen: [60, 230], dens: 0.95, cx: 0.5, spread: 0.12, top: 0.3, lines: [L2(0.785, 0.88), L2(0.8, 1)],
-        marks: [['thecenter', 0.58, 346, 46, 0], ['centralplaza', 0.68, 374, 50, 0], ['ifc2', 0.3, 412, 60, 1], ['cheungkong', 0.4, 283, 50, 1], ['boc', 0.48, 367, 52, 1]] },
-      over: [['junk', 0.62, 20, 24, 1.4, 0.45]] },
-    guangzhou: { land: 'flat', water: 'bay',
-      city: { style: 'towers', gen: [40, 240], dens: 0.8, cx: 0.4, top: 0.56, lines: [L2(0.775, 0.85), L2(0.8, 1, { gen: [20, 120] })],
-        marks: [['ctf', 0.34, 530, 64, 0], ['gzifc', 0.44, 440, 60, 0], ['cantontower', 0.68, 604, 60, 1]] } },
-    chongqing: { land: 'hills', calm: 1.4, water: 'bay',
-      city: { style: 'towers', gen: [50, 240], dens: 0.95, cx: 0.4, spread: 0.12, top: 0.44, lines: [L2(0.765, 0.8), L2(0.8, 1, { gen: [30, 160] })],
-        marks: [['raffles', 0.5, 350, 300, 1], ['hongyadong', 0.85, 60, 130, 1]] },
-      over: [['ropeway', 0.5, 0, 0, 1, 0]] },
-    guilin: { land: 'karst', water: 'bay', ridges: [R('karst', 81, 0.73, 0.3, 0.2, 4), R('karst', 83, 0.765, 0.22, 0.36, 9), R('karst', 87, 0.795, 0.13, 0.54, 15)],
+    fukuoka: { from: 'Hakata Bay', land: 'hills', calm: 0.4, water: 'bay', yatai: true,
+      city: { style: 'mid', gen: [15, 100], dens: 0.75, cx: 0.48, top: 0.42, lines: [L2(0.775, 0.8), L2(0.8, 1), L2(0.965, 3.6, { gen: false, quay: true })],
+        marks: [['bigdome', 0.66, 84, 170, 0], ['fukuokatower', 0.8, 234, 46, 0], ['hakataport', 0.42, 100, 14, 1], ['mecha', 0.26, 56, 24, 2, 'light']] } },
+    shanghai: { from: 'the North Bund', land: 'flat', water: 'bay',
+      city: { style: 'towers', gen: [40, 260], dens: 0.85, cx: 0.32, spread: 0.06, top: 0.58, lines: [L2(0.775, 0.8, { x1: 0.62 }), L2(0.8, 1, { x1: 0.58, gen: [30, 160] }), L2(0.84, 1.6, { bank: true, x0: 0.62, gen: [18, 32], dens: 1 })],
+        marks: [['jinmao', 0.23, 421, 54, 0], ['shanghaitower', 0.28, 632, 70, 0], ['swfc', 0.33, 492, 58, 0], ['pearl', 0.41, 468, 50, 1], ['customs', 0.74, 79, 40, 2, 'light']] },
+      over: [['cruise', 0.48, 12, 60, 1.3, 0.5]] },
+    beijing: { from: 'Jingshan Park', land: 'mountains', ridges: [R('peaks', 11, 0.745, 0.14, 0.24, 5, { span: [0.64, 1.4] }), R('hills', 47, 0.775, 0.012, 0.4, 9)],
+      city: { style: 'towers', gen: [40, 180], dens: 0.65, cx: 0.3, spread: 0.05, top: 0.5, lines: [L2(0.84, 0.72), L2(0.87, 0.9, { style: 'roofs', gen: [6, 10], dens: 0.95 }), L2(0.93, 1.8, { style: 'roofs', gen: [12, 22], dens: 1, near: true })],
+        marks: [['cctv', 0.22, 234, 150, 0], ['chinazun', 0.29, 528, 78, 0], ['cwtc3', 0.34, 330, 58, 0], ['heaven', 0.43, 38, 32, 1], ['gatetower', 0.5, 35, 66, 2, 'red']] } },
+    hongkong: { from: 'Tsim Sha Tsui', land: 'mountains', water: 'bay', lasers: true, ridges: [R('peaks', 71, 0.745, 0.16, 0.3, 5), R('peaks', 75, 0.75, 0.26, 0.32, 6, { span: [0.5, 1.4] }), R('hills', 73, 0.775, 0.07, 0.42, 10)],
+      city: { style: 'towers', gen: [60, 230], dens: 0.95, cx: 0.52, spread: 0.12, top: 0.3, lines: [L2(0.785, 0.88), L2(0.8, 1)],
+        marks: [['centralplaza', 0.36, 374, 50, 0], ['boc', 0.5, 367, 52, 1], ['cheungkong', 0.55, 283, 50, 1], ['thecenter', 0.6, 346, 46, 1], ['ifc2', 0.66, 412, 60, 1]] },
+      over: [['junk', 0.42, 20, 24, 1.4, 0.45]] },
+    guangzhou: { from: 'Huacheng Square', land: 'flat',
+      city: { style: 'towers', gen: [40, 240], dens: 0.8, spread: 0.1, top: 0.56, lines: [L2(0.84, 0.6, { gen: [20, 80] }), L2(0.87, 1)],
+        marks: [['cantontower', 0.5, 604, 60, 0], ['ctf', 0.36, 530, 64, 1], ['gzifc', 0.65, 440, 60, 1]] } },
+    chongqing: { from: 'across the Jialing River', land: 'hills', calm: 1.4, water: 'bay',
+      city: { style: 'towers', gen: [50, 240], dens: 0.95, cx: 0.5, spread: 0.12, top: 0.44, lines: [L2(0.765, 0.8), L2(0.8, 1, { gen: [30, 160] })],
+        marks: [['raffles', 0.3, 350, 300, 1], ['hongyadong', 0.63, 60, 130, 1]] } },
+    guilin: { from: 'the Li River', land: 'karst', water: 'bay', ridges: [R('karst', 81, 0.73, 0.3, 0.2, 4), R('karst', 83, 0.765, 0.22, 0.36, 9), R('karst', 87, 0.795, 0.13, 0.54, 15)],
       city: { style: 'roofs', gen: [5, 10], dens: 0.4, top: 0.1, lines: [L2(0.8, 1)], marks: [['pagoda', 0.58, 41, 9, 0, 'gold'], ['pagoda', 0.64, 35, 8, 0, 'light']] },
       over: [['elephant', 0.82, 40, 84, 1, 0.04], ['raft', 0.34, 2, 8, 2.4, 0.55]] },
-    shenzhen: { land: 'hills', calm: 0.7,
+    shenzhen: { from: 'Lianhuashan Park', land: 'hills', calm: 0.7,
       city: { style: 'towers', gen: [40, 230], dens: 0.85, cx: 0.48, top: 0.56, lines: [L2(0.85, 0.8), L2(0.885, 1)],
-        marks: [['kk100', 0.3, 442, 60, 0], ['springbamboo', 0.63, 393, 60, 0], ['pingan', 0.48, 599, 66, 1]] } },
-    miami: { land: 'flat', water: 'bay', palms: true, neon: true,
-      city: { style: 'towers', gen: [30, 200], dens: 0.85, cx: 0.45, top: 0.36, lines: [L2(0.775, 0.8), L2(0.8, 1)],
-        marks: [['panorama', 0.22, 265, 46, 0], ['box', 0.3, 240, 40, 0], ['astonmartin', 0.38, 240, 50, 1], ['miamitower', 0.48, 191, 56, 1], ['museum1000', 0.58, 216, 40, 1, 'light'], ['freedom', 0.72, 78, 30, 1, 'light']] },
-      over: [['yacht', 0.62, 10, 40, 1.4, 0.5]] },
-    anchorage: { land: 'mountains', calm: 1.1, water: 'bay', extras: [['denali', 0.84, 0.13]],
-      city: { style: 'mid', gen: [10, 50], dens: 0.5, top: 0.16, lines: [L2(0.8, 1)], marks: [['atwood', 0.36, 80, 40, 0], ['box', 0.44, 90, 45, 0], ['captaincook', 0.54, 67, 60, 0]] },
-      over: [['floatplane', 0.3, 4, 12, 2.2, 0.4]] },
-    area51: { land: 'desert', playa: true, ufo: true, ridges: [R('peaks', 91, 0.75, 0.14, 0.34, 5, { sand: 1 }), R('peaks', 95, 0.775, 0.07, 0.46, 9, { sand: 1 })],
+        marks: [['kk100', 0.3, 442, 60, 0], ['springbamboo', 0.66, 393, 60, 0], ['pingan', 0.48, 599, 66, 1]] } },
+    miami: { from: 'the Venetian Causeway', land: 'flat', water: 'sea', beach: false, palms: true, neon: true, ridges: SEA_RIDGE([-0.1, 0.3]),
+      city: { style: 'towers', gen: [30, 200], dens: 0.85, cx: 0.62, top: 0.36, lines: [L2(0.76, 0.75, { bank: true, x0: 0.42 }), L2(0.8, 1, { bank: true, x0: 0.5 })],
+        marks: [['panorama', 0.56, 265, 46, 0], ['box', 0.62, 240, 40, 0], ['museum1000', 0.54, 216, 40, 1, 'light'], ['astonmartin', 0.61, 240, 50, 1], ['miamitower', 0.71, 191, 56, 1], ['freedom', 0.81, 78, 30, 1, 'light']] },
+      over: [['yacht', 0.28, 10, 40, 1.4, 0.5]] },
+    anchorage: { from: 'Government Hill', land: 'mountains', water: 'sea', beach: false, ridges: [R('peaks', 13, 0.745, 0.38, 0.24, 5, { snow: 1, span: [-0.3, 0.52] }), R('peaks', 23, 0.775, 0.12, 0.4, 12, { snow: 0.7, span: [-0.3, 0.42] })], extras: [['fuji', 0.86, 0.06]],
+      city: { style: 'mid', gen: [10, 50], dens: 0.55, cx: 0.45, top: 0.16, lines: [L2(0.8, 1, { bank: true, x0: -0.2, x1: 0.72 })], marks: [['atwood', 0.38, 80, 40, 0], ['box', 0.45, 90, 45, 0], ['captaincook', 0.54, 67, 60, 0]] },
+      over: [['floatplane', 0.8, 4, 12, 2.2, 0.4]] },
+    area51: { from: 'the north end of Groom Lake', land: 'desert', playa: true, ufo: true, ridges: [R('peaks', 91, 0.75, 0.14, 0.34, 5, { sand: 1 }), R('peaks', 95, 0.775, 0.07, 0.46, 9, { sand: 1 })],
       city: { style: 'mid', gen: false, top: 0.07, lines: [L2(0.8, 1)], marks: [['hangar', 0.28, 28, 120, 0], ['hangar', 0.46, 22, 90, 0], ['controltower', 0.6, 32, 10, 0], ['radar', 0.72, 30, 22, 0], ['watertower', 0.84, 30, 12, 0]] } }
   };
   const TOWN = { land: 'hills', calm: 0.8, city: { style: 'houses', gen: [5, 10], dens: 0.5, top: 0.035, marks: [] } };
@@ -2483,23 +2487,27 @@ SUN = (() => {
       trinity: (g, x, yb, h, u) => { sym([[0, 1], [0.5, 0.97], [2.2, 0.62], [3.4, 0.6], [3.4, 0.5], [4.4, 0.49], [4.4, 0.36], [5, 0.35], [5, 0]])(g, x, yb, h, u); g.moveTo(x + 4 * u, yb); g.lineTo(x + 4 * u, yb - h * 0.22); g.lineTo(x + 13 * u, yb - h * 0.33); g.lineTo(x + 22 * u, yb - h * 0.22); g.lineTo(x + 22 * u, yb); g.closePath(); },
       harborlight: sym([[0, 1], [1.4, 0.92], [2, 0.86], [2.6, 0.86], [2.6, 0.82], [2, 0.81], [2.6, 0.1], [5, 0.08], [5, 0]]),
       depot: (g, x, yb, h, u) => { g.moveTo(x - 30 * u, yb); g.lineTo(x - 30 * u, yb - h * 0.45); g.lineTo(x - 34 * u, yb - h * 0.47); g.lineTo(x - 16 * u, yb - h * 0.85); g.lineTo(x + 16 * u, yb - h * 0.85); g.lineTo(x + 34 * u, yb - h * 0.47); g.lineTo(x + 30 * u, yb - h * 0.45); g.lineTo(x + 30 * u, yb); g.closePath(); g.rect(x + 9 * u, yb - h, 6 * u, h * 0.2); g.moveTo(x + 8 * u, yb - h); g.lineTo(x + 12 * u, yb - h * 1.12); g.lineTo(x + 16 * u, yb - h); g.closePath(); },
-      // Fukuoka: an original giant robot standing at ease on a stepped plinth: long legs, slim limbs, arms at its sides
+      // Fukuoka: an original giant robot standing at ease on a stepped plinth: long legs, a slim frame, arms at its sides,
+      // and a gladiator's helmet with a wide brim, a barred visor and a tall fin crest
       mecha: (g, x, yb, h, u) => {
         const P = pts => { g.moveTo(x + pts[0][0] * u, yb - h * pts[0][1]); for (let i = 1; i < pts.length; i++) g.lineTo(x + pts[i][0] * u, yb - h * pts[i][1]); g.closePath(); }, Mx = pts => P(pts.map(([a, b]) => [-a, b]));
-        P([[-16, 0], [16, 0], [14.5, 0.035], [-14.5, 0.035]]); P([[-11, 0.035], [11, 0.035], [10, 0.055], [-10, 0.055]]);   // plinth
+        P([[-15, 0], [15, 0], [13.5, 0.03], [-13.5, 0.03]]); P([[-10, 0.03], [10, 0.03], [9, 0.048], [-9, 0.048]]);   // plinth
         for (const S of [P, Mx]) {
-          S([[-7.5, 0.055], [-2, 0.055], [-2.4, 0.085], [-6.6, 0.09]]); S([[-6.4, 0.085], [-2.6, 0.085], [-2.2, 0.29], [-5.4, 0.3]]);     // feet, shins
-          S([[-6.2, 0.27], [-2.2, 0.27], [-2.6, 0.33], [-5.6, 0.34]]); S([[-5.6, 0.33], [-2, 0.33], [-1.6, 0.47], [-5.2, 0.48]]);          // knee guards, thighs
-          S([[-6.8, 0.46], [-3.4, 0.46], [-3.6, 0.53], [-6.2, 0.54]]);                                                                     // side skirt
-          S([[-12.6, 0.66], [-7.6, 0.66], [-7.2, 0.745], [-9, 0.765], [-12.8, 0.74]]);                                                      // shoulder armor
-          S([[-11.8, 0.52], [-8.6, 0.52], [-8.4, 0.66], [-11.6, 0.66]]); S([[-12, 0.49], [-8.4, 0.49], [-8.6, 0.53], [-11.8, 0.53]]);      // upper arm, elbow
-          S([[-12.2, 0.36], [-8.4, 0.36], [-8.6, 0.49], [-12, 0.49]]); S([[-11.8, 0.31], [-8.8, 0.31], [-8.6, 0.36], [-12, 0.36]]);       // forearm, hand
-          S([[-6.2, 0.72], [-4.6, 0.72], [-4.8, 0.8], [-6, 0.795]]);                                                                       // thrusters behind the shoulders
+          S([[-6, 0.048], [-1.8, 0.048], [-2.1, 0.075], [-5.3, 0.08]]); S([[-5, 0.075], [-2.2, 0.075], [-1.9, 0.3], [-4.3, 0.31]]);     // feet, shins
+          S([[-4.9, 0.28], [-1.9, 0.28], [-2.2, 0.335], [-4.5, 0.345]]); S([[-4.4, 0.335], [-1.7, 0.335], [-1.4, 0.49], [-4.1, 0.5]]);    // knee guards, thighs
+          S([[-5.4, 0.48], [-2.8, 0.48], [-3, 0.55], [-5, 0.56]]);                                                                        // side skirt
+          S([[-10.2, 0.68], [-6.2, 0.68], [-5.9, 0.755], [-7.4, 0.772], [-10.4, 0.75]]);                                                   // shoulder armor
+          S([[-9.5, 0.54], [-7, 0.54], [-6.9, 0.68], [-9.4, 0.68]]); S([[-9.7, 0.51], [-6.9, 0.51], [-7, 0.545], [-9.6, 0.545]]);         // upper arm, elbow
+          S([[-9.8, 0.37], [-7, 0.37], [-7.1, 0.51], [-9.7, 0.51]]); S([[-9.5, 0.325], [-7.3, 0.325], [-7.1, 0.37], [-9.7, 0.37]]);       // forearm, hand
+          S([[-5, 0.73], [-3.8, 0.73], [-3.95, 0.81], [-4.9, 0.805]]);                                                                   // thrusters behind the shoulders
         }
-        P([[-2.2, 0.44], [2.2, 0.44], [2.6, 0.54], [-2.6, 0.54]]); P([[-4.2, 0.53], [4.2, 0.53], [4.6, 0.58], [-4.6, 0.58]]);             // front plate, waist
-        P([[-7.2, 0.58], [7.2, 0.58], [8, 0.7], [5.4, 0.74], [-5.4, 0.74], [-8, 0.7]]); P([[-3.4, 0.74], [3.4, 0.74], [2.6, 0.77], [-2.6, 0.77]]);   // chest, collar
-        P([[-1.4, 0.77], [1.4, 0.77], [1.4, 0.8], [-1.4, 0.8]]); P([[-2.8, 0.8], [2.8, 0.8], [3.1, 0.85], [2.4, 0.9], [-2.4, 0.9], [-3.1, 0.85]]);    // neck, head
-        P([[-0.4, 0.9], [0.4, 0.9], [0.15, 0.96], [-0.15, 0.96]]);                                                                            // a single crest
+        P([[-1.8, 0.46], [1.8, 0.46], [2.1, 0.56], [-2.1, 0.56]]); P([[-3.4, 0.55], [3.4, 0.55], [3.7, 0.6], [-3.7, 0.6]]);              // front plate, waist
+        P([[-5.8, 0.6], [5.8, 0.6], [6.5, 0.71], [4.4, 0.755], [-4.4, 0.755], [-6.5, 0.71]]); P([[-2.7, 0.755], [2.7, 0.755], [2.1, 0.78], [-2.1, 0.78]]);   // chest, collar
+        P([[-1.1, 0.78], [1.1, 0.78], [1.1, 0.805], [-1.1, 0.805]]);                                                                                      // neck
+        P([[-2, 0.805], [2, 0.805], [2.2, 0.85], [-2.2, 0.85]]);                                                                                          // visor
+        P([[-4.2, 0.845], [-2.2, 0.85], [2.2, 0.85], [4.2, 0.845], [3.8, 0.862], [-3.8, 0.862]]);                                                       // brim
+        P([[-2.6, 0.86], [2.6, 0.86], [2.3, 0.895], [1.2, 0.91], [-1.2, 0.91], [-2.3, 0.895]]);                                                         // dome
+        P([[-0.45, 0.9], [0.45, 0.9], [0.85, 0.935], [0.75, 0.965], [0.3, 0.985], [-0.3, 0.985], [-0.75, 0.965], [-0.85, 0.935]]);                       // fin crest
       },
       // Area 51
       hangar: (g, x, yb, h, u) => { g.moveTo(x - 30 * u, yb); g.lineTo(x - 30 * u, yb - h * 0.55); g.quadraticCurveTo(x, yb - h * 1.45, x + 30 * u, yb - h * 0.55); g.lineTo(x + 30 * u, yb); g.closePath(); },
@@ -2548,6 +2556,10 @@ SUN = (() => {
       museum1000: sym([[0, 1], [13, 1], [12, 0.94], [10.5, 0.85], [10.5, 0.2], [12, 0.08], [14, 0]]),
       miamitower: (g, x, yb, h, u) => { g.moveTo(x - 20 * u, yb); g.lineTo(x - 20 * u, yb - h * 0.8); g.quadraticCurveTo(x - 14 * u, yb - h * 0.88, x - 8 * u, yb - h * 0.8); g.lineTo(x - 8 * u, yb - h * 0.88); g.quadraticCurveTo(x - 2 * u, yb - h * 0.96, x + 4 * u, yb - h * 0.88); g.lineTo(x + 4 * u, yb - h * 0.94); g.quadraticCurveTo(x + 10 * u, yb - h * 1.03, x + 20 * u, yb - h * 0.94); g.lineTo(x + 20 * u, yb); g.closePath(); },
       freedom: (g, x, yb, h, u) => { g.rect(x - 20 * u, yb - h * 0.35, 40 * u, h * 0.35); g.rect(x - 6 * u, yb - h * 0.82, 12 * u, h * 0.5); g.moveTo(x - 4.5 * u, yb - h * 0.82); g.quadraticCurveTo(x - 4 * u, yb - h * 0.94, x, yb - h * 0.95); g.quadraticCurveTo(x + 4 * u, yb - h * 0.94, x + 4.5 * u, yb - h * 0.82); g.closePath(); g.rect(x - 0.5 * u, yb - h, u, h * 0.06); },
+      // Los Angeles: the Century Plaza Towers; Reykjavík: Perlan, a glass dome on its ring of hot-water tanks; Shanghai: the Customs House clock tower
+      ccity: sym([[0, 1], [9, 1], [14, 0.96], [14, 0]]),
+      perlan: (g, x, yb, h, u) => { for (let i = 0; i < 4; i++) g.rect(x + (i * 11.5 - 22) * u, yb - h * 0.62, 9.5 * u, h * 0.62); g.moveTo(x + 23 * u, yb - h * 0.6); g.ellipse(x, yb - h * 0.6, 23 * u, h * 0.4, 0, PI, 0); g.closePath(); },
+      customs: (g, x, yb, h, u) => { g.rect(x - 20 * u, yb - h * 0.42, 40 * u, h * 0.42); g.rect(x - 6 * u, yb - h * 0.84, 12 * u, h * 0.43); g.moveTo(x - 6.6 * u, yb - h * 0.84); g.lineTo(x, yb - h); g.lineTo(x + 6.6 * u, yb - h * 0.84); g.closePath(); },
       // Anchorage
       atwood: sym([[0, 1], [16, 1], [16, 0]]),
       captaincook: (g, x, yb, h, u) => { for (const [dx, f] of [[-16, 0.75], [0, 1], [16, 0.85]]) g.rect(x + (dx - 6) * u, yb - h * f, 12 * u, h * f); },
@@ -2577,7 +2589,7 @@ SUN = (() => {
     M.pelltowers = (g, x, yb, h, u) => { for (const s of [-1, 1]) { const px = x + s * 50 * u; g.rect(px - 3.4 * u, yb - h, 1.7 * u, h); g.rect(px + 1.7 * u, yb - h, 1.7 * u, h); for (const f of [0.98, 0.74, 0.5]) g.rect(px - 3.4 * u, yb - h * f, 6.8 * u, h * 0.025); } };
     // footprint half-widths in u ([left, right] when asymmetric): a landmark's width in metres spans exactly this
     const FOOT = { skytree: 17, tokyotower: 24, tmg: 28, kyototower: 24, pagoda: 14, needle: 6, towerlife: 13, alamo: 22, capitol: 40, frost: 13, jenga: 16, slimslant: 8, curvetop: 11, uttower: 24, gothic: 28, heritage: 15, pennzoil: 26, chase: 17, reunion: 10, prism: 14, xcrown: 12, box: 19, steinway: 6.5, park432: 9.5, empire: 26, owtc: 16, chrysler: 15, spire: 24, usbank: 13, wilshire: 13, register: 13, dfclock: 5.5, bellas: 34, angel: 8, shard: 18, gherkin: 12, walkie: 14, wedge: 14, stpauls: 42, bigben: 7, towerbridge: 51, eiffel: 36, notredame: [24, 40], invalides: 30, arc: 16, sacrecoeur: 60, hallgrim: 20, arctic: [20, 32], kicc: 12, minaret: 4, mosque: 34, lotus: 9, khalifa: 26, emirates: [22, 19], twinspire: 20, watertower: 11, gable: 16, fukuokatower: 12, bigdome: 60, mecha: 18, hakataport: 11, sydneytower: 9, opera: [46, 54],
-      waterline: 20, sixguad: 21, docomo: 19, cocoon: 22, azabudai: 25, torii: 15, kiyomizu: [26, 34], frostsa: 20, wellsfargo: 24, williams: 12, bofa: 17, chasedallas: 20, centralpark: [10, 15], vanderbilt: 17, hudson30: 18, spruce8: 14, woolworth: 21, aon: 18, notch: 18, alohatower: 7, mitikah: 12, reforma: 16, latino: 11, bishops22: 17, montparnasse: 18, grandearche: 27, harpa: 30, britam: 14, times: 15, citadel: 60, burjalarab: [26, 24], frame: 24, museumfuture: 32, cayan: 14, portside: 16, stadium: 50, crown: 18, belltower: 8, trinity: [5, 22], harborlight: 5, depot: 34, hangar: 30, controltower: 6, radar: 11, pearl: 18, shanghaitower: 24, swfc: 22, jinmao: 19, cctv: [38, 40], chinazun: 26, cwtc3: 18, heaven: 24, gatetower: 33, ifc2: 16, boc: 17, centralplaza: 14, thecenter: 14, cheungkong: 15, cantontower: 26, ctf: 14, gzifc: 14, raffles: 46, hongyadong: 65, pingan: 16, kk100: 14, springbamboo: 15, panorama: 14, astonmartin: 16, museum1000: 14, miamitower: 20, freedom: 20, atwood: 16, captaincook: 22,
+      waterline: 20, sixguad: 21, docomo: 19, cocoon: 22, azabudai: 25, torii: 15, kiyomizu: [26, 34], frostsa: 20, wellsfargo: 24, williams: 12, bofa: 17, chasedallas: 20, centralpark: [10, 15], vanderbilt: 17, hudson30: 18, spruce8: 14, woolworth: 21, aon: 18, notch: 18, alohatower: 7, mitikah: 12, reforma: 16, latino: 11, bishops22: 17, montparnasse: 18, grandearche: 27, harpa: 30, britam: 14, times: 15, citadel: 60, burjalarab: [26, 24], frame: 24, museumfuture: 32, cayan: 14, portside: 16, stadium: 50, crown: 18, belltower: 8, trinity: [5, 22], harborlight: 5, depot: 34, hangar: 30, controltower: 6, radar: 11, pearl: 18, shanghaitower: 24, swfc: 22, jinmao: 19, cctv: [38, 40], chinazun: 26, cwtc3: 18, heaven: 24, gatetower: 33, ifc2: 16, boc: 17, centralplaza: 14, thecenter: 14, cheungkong: 15, cantontower: 26, ctf: 14, gzifc: 14, raffles: 46, hongyadong: 65, pingan: 16, kk100: 14, springbamboo: 15, panorama: 14, ccity: 14, perlan: 23, customs: 20, astonmartin: 16, museum1000: 14, miamitower: 20, freedom: 20, atwood: 16, captaincook: 22,
       wheel: 24, eye: 24, harbourbridge: 156, cantilever: 110, pell: 100, huntbridge: 140 };
     return { fill: M, stroke: S, foot: FOOT, pair: { harbourbridge: 'harbourpylons', pell: 'pelltowers' }, evenodd: new Set(['eiffel', 'arc', 'chasedallas', 'grandearche', 'frame', 'museumfuture', 'swfc', 'cctv']) };
   })();
@@ -2632,6 +2644,7 @@ SUN = (() => {
         const row = Ln.gen === false || P.gen === false ? [] : genRow(P, Ln, seed + i * 7 + 1, (Ln.x0 != null ? Ln.x0 : -0.18) * W, (Ln.x1 != null ? Ln.x1 : 1.18) * W, s, W);
         return Object.assign({}, Ln, { i, s, row, mix: Ln.mix != null ? Ln.mix : near ? 0.86 : 0.46 + 0.26 * f, par: Ln.par != null ? Ln.par : near ? 46 : 12 + 14 * f, marks: (P.marks || []).filter(m => (m[4] || 0) === i).map(m => mkMark(m, s)) });
       });
+      const banks = lines.filter(L => L.bank); banks.forEach((L, k) => { L.bandTo = banks[k + 1] ? banks[k + 1].y : null; });
       // keep each landmark clear: nothing generic on its own footprint, and the lines in front of it kept low across it
       for (const L of lines) for (const M of L.marks) {
         if (M.stroke) continue;
@@ -2661,8 +2674,10 @@ SUN = (() => {
     // fill the current path
     const fl = rule => g.fill(rule || 'nonzero');
     // land
-    function ridgePath(L, off, voff) { const a = L.span ? L.span[0] * W : -W * 0.3, z = L.span ? L.span[1] * W : W * 1.3; g.beginPath(); g.moveTo(a, Hh + 10); for (let x = a; x <= z; x += 6) g.lineTo(x, ridgeY(L, (x - off + 400) / W) * Hh + voff); g.lineTo(z, ridgeY(L, (z - off + 400) / W) * Hh + voff); g.lineTo(z, Hh + 10); g.closePath(); }
-    function ridgeLine(L, off, voff, dy) { const a = L.span ? L.span[0] * W : -W * 0.3, z = L.span ? L.span[1] * W : W * 1.3; g.beginPath(); for (let x = a; x <= z; x += 6) { const y = ridgeY(L, (x - off + 400) / W) * Hh + voff + dy; x === a ? g.moveTo(x, y) : g.lineTo(x, y); } }
+    // a ridge's height at x; a ridge with a span rises only inside it and lies flat at its base elsewhere
+    function ridgeAt(L, x, off) { const y = ridgeY(L, (x - off + 400) / W); if (!L.span) return y; const u = (x - off) / W, f = 0.09, k = smooth(L.span[0] - f, L.span[0] + f, u) * (1 - smooth(L.span[1] - f, L.span[1] + f, u)); return L.base - (L.base - y) * k; }
+    function ridgePath(L, off, voff) { const a = -W * 0.3, z = W * 1.3; g.beginPath(); g.moveTo(a, Hh + 10); for (let x = a; x <= z; x += 6) g.lineTo(x, ridgeAt(L, x, off) * Hh + voff); g.lineTo(z, ridgeAt(L, z, off) * Hh + voff); g.lineTo(z, Hh + 10); g.closePath(); }
+    function ridgeLine(L, off, voff, dy) { const a = -W * 0.3, z = W * 1.3; g.beginPath(); for (let x = a; x <= z; x += 6) { const y = ridgeAt(L, x, off) * Hh + voff + dy; x === a ? g.moveTo(x, y) : g.lineTo(x, y); } }
     function drawLayer(L) {
       const { sky, up, b, night, sunLab } = D, off = lk.az * L.par * PAR, voff = lk.el * L.par * 0.4, k = Math.round(L.mix * 4);
       
@@ -2683,7 +2698,7 @@ SUN = (() => {
       let yb;
       if (C.water === 'sea' && !sit) yb = Hh * 0.7 + 1;
       else if (!L) yb = layers.length ? layers[layers.length - 1].base * Hh + 2 : Hh * 0.7 + 2;
-      else if (type === 'pyramids' || sit) { const x0 = (u - (sit || 0.1)) * W + off, x1 = (u + (sit || 0.26)) * W + off; let m = 0; for (let k = 0; k <= 18; k++) { const xx = x0 + ((x1 - x0) * k) / 18; m = Math.max(m, ridgeY(L, (xx - off + 400) / W) * Hh + voff); } yb = m + (sit ? 1 : 2); }
+      else if (type === 'pyramids' || sit) { const x0 = (u - (sit || 0.1)) * W + off, x1 = (u + (sit || 0.26)) * W + off; let m = 0; for (let k = 0; k <= 18; k++) { const xx = x0 + ((x1 - x0) * k) / 18; m = Math.max(m, ridgeAt(L, xx, off) * Hh + voff); } yb = m + (sit ? 1 : 2); }
       else yb = L.base * Hh + voff + 2;
       
       extra(type, u, hf, yb, par);
@@ -2758,7 +2773,7 @@ SUN = (() => {
       if (type === 'fuji' || type === 'volcanoes') {
         const cone = (cx, ch, cw) => () => { g.beginPath(); g.moveTo(cx - cw, yb); g.quadraticCurveTo(cx - cw * 0.42, yb - ch * 0.18, cx - cw * 0.1, yb - ch); g.lineTo(cx - cw * 0.04, yb - ch * 0.985); g.lineTo(cx + cw * 0.04, yb - ch * 0.99); g.lineTo(cx + cw * 0.1, yb - ch); g.quadraticCurveTo(cx + cw * 0.42, yb - ch * 0.18, cx + cw, yb); g.closePath(); };
         const p1 = cone(x, h, h * (type === 'fuji' ? 2.8 : 2.3)); p1(); fl(); fillSnow(p1, type === 'fuji' ? 0.64 : 0.78); if (type === 'volcanoes' && C.smoke) live(() => smokeAt(x + h * 0.03, yb - h, h));
-        if (type === 'volcanoes') { const rx = x + W * 0.17, rh = h * 0.72, p2 = () => { g.beginPath(); g.moveTo(rx - W * 0.13, yb); g.quadraticCurveTo(rx - W * 0.09, yb - rh * 0.9, rx - W * 0.06, yb - rh); g.quadraticCurveTo(rx - W * 0.03, yb - rh * 0.86, rx, yb - rh * 0.92); g.quadraticCurveTo(rx + W * 0.03, yb - rh * 0.98, rx + W * 0.05, yb - rh * 0.82); g.quadraticCurveTo(rx + W * 0.1, yb - rh * 0.5, rx + W * 0.15, yb); g.closePath(); }; p2(); fl(); fillSnow(p2, 0.82); }
+        if (type === 'volcanoes') { const rx = x - W * 0.16, rh = h * 0.72, p2 = () => { g.beginPath(); g.moveTo(rx - W * 0.13, yb); g.quadraticCurveTo(rx - W * 0.09, yb - rh * 0.9, rx - W * 0.06, yb - rh); g.quadraticCurveTo(rx - W * 0.03, yb - rh * 0.86, rx, yb - rh * 0.92); g.quadraticCurveTo(rx + W * 0.03, yb - rh * 0.98, rx + W * 0.05, yb - rh * 0.82); g.quadraticCurveTo(rx + W * 0.1, yb - rh * 0.5, rx + W * 0.15, yb); g.closePath(); }; p2(); fl(); fillSnow(p2, 0.82); }
       } else if (type === 'table') {
         g.beginPath(); g.moveTo(x - W * 0.34, yb); g.lineTo(x - W * 0.26, yb - h * 0.55); g.lineTo(x - W * 0.2, yb - h * 0.92); g.lineTo(x - W * 0.17, yb - h); g.lineTo(x + W * 0.16, yb - h * 0.99); g.lineTo(x + W * 0.19, yb - h * 0.86); g.lineTo(x + W * 0.23, yb - h * 0.42); g.quadraticCurveTo(x + W * 0.27, yb - h * 0.4, x + W * 0.3, yb - h * 0.72); g.quadraticCurveTo(x + W * 0.32, yb - h * 0.78, x + W * 0.34, yb - h * 0.5); g.lineTo(x + W * 0.4, yb); g.closePath(); fl(); live(() => tablecloth(x, yb, h));
       } else if (type === 'sugarloaf') {
@@ -2815,7 +2830,7 @@ SUN = (() => {
       }
     }
     function bldPath(B, yb, s) {
-      const x = B.x, w = B.w, top = yb - B.h, bot = yb + 80;
+      const x = B.x, w = B.w, top = yb - B.h, bot = yb + 1;
       g.moveTo(x, bot);
       switch (B.roof) {
         case 'gable': g.lineTo(x, top + w * 0.3); if (B.chim) { g.lineTo(x + w * 0.2, top + w * 0.18); g.lineTo(x + w * 0.2, top - w * 0.1); g.lineTo(x + w * 0.31, top - w * 0.1); g.lineTo(x + w * 0.31, top + w * 0.12); } g.lineTo(x + w / 2, top - w * 0.12); g.lineTo(x + w, top + w * 0.3); break;
@@ -2841,7 +2856,11 @@ SUN = (() => {
       const { sky, up, b, night } = D, sx = D.sx, off = lk.az * L.par * PAR, voff = lk.el * L.par * 0.3, yb = L.y * Hh + voff;
       curOff = off; 
       g.save(); g.translate(off, 0);
-      g.beginPath(); g.rect(-W * 0.5, yb - 0.5, W * 2, Hh * 1.3 - yb); g.fillStyle = shade(L.mix, false, 0.1, off); fl();
+      if (L.bank) {
+        const a = L.x0 != null && L.x0 > -0.2 ? L.x0 * W : -W * 0.5, z = L.x1 != null && L.x1 < 1.2 ? L.x1 * W : W * 1.5, bot = L.bandTo ? L.bandTo * Hh + 2 : Hh * 1.3, sl = (bot - yb) * 0.45;
+        g.beginPath(); g.moveTo(a, yb - 0.5); g.lineTo(z, yb - 0.5); g.lineTo(z > W * 1.3 ? z : z + sl, bot); g.lineTo(a < -W * 0.3 ? a : a - sl, bot); g.closePath();
+      } else { g.beginPath(); g.rect(-W * 0.5, yb - 0.5, W * 2, Hh * 1.3 - yb); }
+      g.fillStyle = shade(L.bank ? L.mix - 0.06 : L.mix, false, 0.1, off); fl();
       if (L.row.length) {
         {
           const base = layerLab(sky.hor, L.mix), sideLit = mixLab(base, mixLab(D.sunLab, D.accent, 0.3), up ? 0.16 * (0.4 + b) : 0), sideDark = mixLab(base, BLACK, 0.2);
@@ -2849,7 +2868,7 @@ SUN = (() => {
             if (B.roof === 'curve' || B.roof === 'temple' || B.roof === 'gable' || B.roof === 'chalet') continue;
             const mid = B.x + B.w / 2 + off, toRight = mid < W / 2, sd = Math.min(B.w * 0.38, (Math.abs(mid - W / 2) / W) * B.w * 1.25), ex = toRight ? B.x + B.w : B.x, top = yb - B.h + (B.roof === 'step' ? B.h * 0.14 : B.roof === 'slant' ? (toRight ? 0 : B.w * 0.45) : 0);
             if (sd < 1) continue;
-            g.fillStyle = css((toRight ? sx > mid : sx < mid) ? sideLit : sideDark); g.beginPath(); g.moveTo(ex, yb + 80); g.lineTo(ex, top); g.lineTo(ex + (toRight ? sd : -sd), top + sd * 0.3); g.lineTo(ex + (toRight ? sd : -sd), yb + 80); g.closePath(); g.fill();
+            g.fillStyle = css((toRight ? sx > mid : sx < mid) ? sideLit : sideDark); g.beginPath(); g.moveTo(ex, yb + 1); g.lineTo(ex, top); g.lineTo(ex + (toRight ? sd : -sd), top + sd * 0.3); g.lineTo(ex + (toRight ? sd : -sd), yb + 1); g.closePath(); g.fill();
           }
         }
         const sB = Math.max(0.6, L.s * 2.5);
@@ -2894,7 +2913,7 @@ SUN = (() => {
       if (night > 0.02) { nightMark(M, yb, T, SINK ? 'static' : 'all'); if (SINK) live(T2 => nightMark(M, yb, T2, 'live')); }
     }
     // the lights landmarks are known for after dark
-    const FLOOD = new Set(['capitol', 'stpauls', 'invalides', 'notredame', 'sacrecoeur', 'bellas', 'hallgrim', 'arc', 'alamo', 'kyototower', 'opera', 'frame', 'burjalarab', 'museumfuture', 'heaven', 'gatetower', 'citadel', 'uttower', 'trinity', 'freedom', 'towerbridge', 'bigben', 'arctic', 'torii', 'grandearche', 'stadium', 'depot']);
+    const FLOOD = new Set(['customs', 'perlan', 'capitol', 'stpauls', 'invalides', 'notredame', 'sacrecoeur', 'bellas', 'hallgrim', 'arc', 'alamo', 'kyototower', 'opera', 'frame', 'burjalarab', 'museumfuture', 'heaven', 'gatetower', 'citadel', 'uttower', 'trinity', 'freedom', 'towerbridge', 'bigben', 'arctic', 'torii', 'grandearche', 'stadium', 'depot']);
     const NOWIN = new Set(['skytree', 'tokyotower', 'pagoda', 'needle', 'eiffel', 'mecha', 'pearl', 'cantontower', 'reunion', 'kicc', 'lotus', 'minaret', 'sydneytower', 'fukuokatower', 'hakataport', 'harborlight', 'cctv', 'kyototower', 'bofa']);
     // a landmark's own windows, clipped to its silhouette: floors every 3.6 m, bays every 4 m, lit more as the night deepens
     function markWindows(M, yb, path, T) {
@@ -2947,9 +2966,9 @@ SUN = (() => {
           dot(x - m, ty, 1.5, RED, blink); dot(x + m, ty, 1.5, RED, blink); break;
         }
         case 'mecha': {
-          for (const s of [-1, 1]) dot(x + s * 1.2 * u, yb - h * 0.86, Math.max(1, 0.6 * u), [255, 230, 120], 1);
-          dot(x, yb - h * 0.67, Math.max(1, 1 * u), [120, 220, 255], 0.8);
-          for (const s of [-1, 1]) beam(x + s * 13 * u, yb - h * 0.03, -PI / 2 + s * (0.25 + 0.12 * Math.sin(T * 0.4 + s)), Hh * 0.8, [220, 235, 255], 0.22, 0.03);
+          for (let k = -2; k <= 2; k++) dot(x + k * 0.75 * u, yb - h * 0.828, Math.max(0.8, 0.32 * u), [255, 230, 120], 0.9);
+          dot(x, yb - h * 0.68, Math.max(1, 0.8 * u), [120, 220, 255], 0.8);
+          for (const s of [-1, 1]) beam(x + s * 12 * u, yb - h * 0.025, -PI / 2 + s * (0.25 + 0.12 * Math.sin(T * 0.4 + s)), Hh * 0.8, [220, 235, 255], 0.22, 0.03);
           break;
         }
         case 'hongyadong': relit([255, 185, 70], 0.6); break;
@@ -2981,7 +3000,7 @@ SUN = (() => {
     function yatai(L, yb, T) {
       // Hakata's food stalls on the waterfront: a box, an awning and a string of red lanterns
       const s = L.s;
-      for (const u of [0.08, 0.2, 0.9]) {
+      for (const u of [0.48, 0.6, 0.92]) {
         const x = u * W, w = 4.5 * s, h = 2.6 * s;
         g.fillStyle = css(layerLab(D.sky.hor, 0.94)); g.beginPath(); g.rect(x - w, yb - h, 2 * w, h); g.moveTo(x - w * 1.15, yb - h); g.lineTo(x, yb - h * 1.5); g.lineTo(x + w * 1.15, yb - h); g.closePath(); fl();
         if (D.night > 0.02) for (let i = 0; i < 4; i++) glowDot(x - w * 0.75 + (i * w * 1.5) / 3, yb - h * 0.95, s * 2.2, [255, 90, 60], 0.95 * D.night);
@@ -3156,6 +3175,14 @@ SUN = (() => {
         g.strokeStyle = (css(K.mast)); g.lineWidth = lwOf(s) * 0.6; g.beginPath(); g.moveTo(xx - L * 0.1, yy - L * 0.07); g.lineTo(xx - L * 0.05, yy - L * 0.18); g.moveTo(xx + L * 0.18, yy - L * 0.07); g.lineTo(xx + L * 0.14, yy - L * 0.19); g.stroke();
         if (D.night > 0.05) { lamp(xx + L * 0.45, yy - L * 0.24, 1); g.fillStyle = `rgba(255,70,60,${D.night})`; g.fillRect(snap(xx - L * 0.5), snap(yy - L * 0.42), PIX ? px : 1.5, PIX ? px : 1.5); }
       },
+      wharf(o, x, y, s, T) {
+        // a wharf reaching out from the shore: a plank deck on pilings, gabled sheds near its root, a lamp at its end
+        const L = o.w * s, dk = 2.4 * s, x0 = x - L;
+        g.fillStyle = css(K.dark); g.beginPath(); g.rect(x0, y - dk, L + 4, dk * 0.45); for (let p = x0 + 1.5 * s; p < x; p += 6 * s) g.rect(p, y - dk * 0.6, Math.max(PIX ? px : 0.6, 0.5 * s), dk * 0.62); fl();
+        g.fillStyle = css(K.hull); g.beginPath(); for (const [f, w, hh] of [[0.04, 14, 10], [0.2, 11, 8], [0.36, 12, 8.5], [0.52, 9, 7]]) { const bx = x - L * f - w * s, by = y - dk; g.moveTo(bx, by); g.lineTo(bx, by - hh * s * 0.6); g.lineTo(bx + (w * s) / 2, by - hh * s); g.lineTo(bx + w * s, by - hh * s * 0.6); g.lineTo(bx + w * s, by); g.closePath(); } fl();
+        if (D.night > 0.05) { g.fillStyle = `rgba(255,214,150,${(0.85 * D.night).toFixed(3)})`; for (const f of [0.04, 0.2, 0.36]) g.fillRect(snap(x - L * f - 7 * s), snap(y - dk - 3.5 * s), PIX ? px : Math.max(1, s * 1.4), PIX ? px : Math.max(1.2, s * 1.6)); }
+        lamp(x0 + 1, y - dk - 3 * s, 1);
+      },
       raft(o, x, y, s, T) { const L = o.w * s;
         g.fillStyle = css(K.hull); g.beginPath(); g.moveTo(x - L * 0.5, y - L * 0.08); g.lineTo(x + L * 0.55, y - L * 0.12); g.lineTo(x + L * 0.5, y); g.lineTo(x - L * 0.5, y); g.closePath();
         g.rect(x - L * 0.12, y - L * 0.32, L * 0.06, L * 0.24); g.moveTo(x - L * 0.09 + L * 0.04, y - L * 0.36); g.arc(x - L * 0.09, y - L * 0.36, L * 0.04, 0, 2 * PI); g.moveTo(x - L * 0.16, y - L * 0.38); g.lineTo(x - L * 0.02, y - L * 0.38); g.lineTo(x - L * 0.09, y - L * 0.44); g.closePath();
@@ -3219,6 +3246,15 @@ SUN = (() => {
     }
     function quay(yq, T) {
       const c = layerLab(D.sky.hor, 0.9), path = () => { g.beginPath(); g.rect(-W * 0.3, yq, W * 1.6, Hh - yq + 40); };
+      if (C.shore === 'snow') {
+        const snow = mixLab(mixLab(SNOWC, D.sky.hor, 0.32), D.sky.ground, D.night * 0.6), sl = x => yq - Hh * 0.05 + (x / W) * Hh * 0.07 + Math.sin(x * 0.01) * Hh * 0.006;
+        g.fillStyle = css(snow); g.beginPath(); g.moveTo(-W * 0.3, Hh + 20); for (let x = -W * 0.3; x <= W * 1.3; x += 8) g.lineTo(x, sl(x)); g.lineTo(W * 1.3, Hh + 20); g.closePath(); g.fill();
+        const tree = css(mixLab(layerLab(D.sky.hor, 0.9), BLACK, 0.15)); g.fillStyle = tree; g.beginPath();
+        for (let x = -W * 0.3, i = 0; x < W * 1.3; i++) { const edge = x < W * 0.3 || x > W * 0.72; if (edge) { const th = Hh * (0.04 + hsh(i, 1) * 0.05), w = th * 0.3, by = sl(x) + 3; g.moveTo(x - w, by); g.lineTo(x, by - th); g.lineTo(x + w, by); g.closePath(); } x += edge ? 5 + hsh(i, 2) * 7 : 14; }
+        g.fill();
+        g.strokeStyle = css(mixLab(layerLab(D.sky.hor, 0.85), BLACK, 0.2)); g.lineWidth = PIX ? px : 1; g.beginPath(); const tw = [[0.38, 0.06], [0.6, 0.045]]; for (const [u, hh] of tw) { const x = u * W, by = sl(x); g.moveTo(x, by); g.lineTo(x, by - Hh * hh); g.moveTo(x - 4, by - Hh * hh); g.lineTo(x + 4, by - Hh * hh); } g.moveTo(W * 0.3, sl(W * 0.3) - Hh * 0.08); for (const [u, hh] of tw) g.lineTo(u * W, sl(u * W) - Hh * hh); g.lineTo(W * 0.75, sl(W * 0.75) - Hh * 0.03); g.stroke();
+        return;
+      }
       path(); g.fillStyle = css(C.shore === 'grass' ? mixLab(c, [0.45, -0.07, 0.06], 0.15) : c); fl();
       
       g.fillStyle = rgba(mixLab(D.sky.hor, WHITE, 0.3), 0.18 * (1 - D.night * 0.5)); g.fillRect(-W * 0.3, yq, W * 1.6, PIX ? px : 1.2);
@@ -3238,9 +3274,32 @@ SUN = (() => {
         return;
       }
       if (C.near === 'pines') extra('pines', 0, 0, 0, 34);
-      const off = lk.az * L.par * PAR, voff = lk.el * L.par * 0.4;
-      
+      const off = lk.az * L.par * PAR, voff = lk.el * L.par * 0.4, sky = D.sky;
+      if (C.near === 'promenade') {
+        // Copacabana: the beach, then the promenade's black-and-white waves along the avenue
+        const y0 = Hh * 0.875, sand = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.25 + D.night * 0.55);
+        g.fillStyle = css(mixLab(layerLab(sky.hor, 0.8), BLACK, 0.1)); g.fillRect(-W * 0.3, y0, W * 1.6, Hh * 0.025);
+        g.fillStyle = css(mixLab(sand, WHITE, 0.15)); g.fillRect(-W * 0.3, y0 + Hh * 0.025, W * 1.6, Hh * 0.02);
+        g.strokeStyle = css(mixLab(layerLab(sky.hor, 0.85), BLACK, 0.3)); g.lineWidth = PIX ? px : 1.2; g.beginPath(); for (let x = -W * 0.3; x <= W * 1.3; x += 3) { const y = y0 + Hh * 0.035 + Math.sin(x * 0.18) * Hh * 0.006; x > -W * 0.3 ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+        g.fillStyle = css(sand); g.fillRect(-W * 0.3, y0 + Hh * 0.045, W * 1.6, Hh);
+        return;
+      }
+      if (C.near === 'savanna') {
+        // Nairobi National Park: golden grass, flat-topped acacias, giraffes browsing
+        const S = { ...L, amp: 0.02, base: 0.93, sand: 1, mix: 0.62 }; drawLayer(S);
+        const col = css(mixLab(layerLab(sky.hor, 0.9), BLACK, 0.12)); g.fillStyle = col; g.strokeStyle = col; g.lineCap = 'round';
+        for (const [u, sc] of [[0.12, 1], [0.3, 0.7], [0.72, 0.85], [0.9, 1.15]]) { const x = u * W, by = ridgeAt(S, x, off) * Hh + voff + 2, th = Hh * 0.09 * sc; g.lineWidth = Math.max(PIX ? px : 1, th * 0.05); g.beginPath(); g.moveTo(x, by); g.lineTo(x - th * 0.06, by - th * 0.7); g.moveTo(x, by - th * 0.4); g.lineTo(x + th * 0.18, by - th * 0.78); g.stroke(); g.beginPath(); g.ellipse(x + th * 0.04, by - th * 0.82, th * 0.55, th * 0.12, 0, 0, 2 * PI); g.fill(); }
+        for (const [u, sc, dir] of [[0.22, 1, 1], [0.8, 0.8, -1]]) { const x = u * W, by = ridgeAt(S, x, off) * Hh + voff + 2, k = Hh * 0.0012 * sc * 100, P2 = pts => { g.beginPath(); g.moveTo(x + pts[0][0] * k * dir, by - pts[0][1] * k); for (const [a, b] of pts.slice(1)) g.lineTo(x + a * k * dir, by - b * k); g.closePath(); g.fill(); };
+          P2([[-0.3, 0.55], [0.3, 0.6], [0.35, 0.72], [-0.32, 0.66]]); for (const lx of [-0.26, -0.18, 0.2, 0.28]) P2([[lx, 0], [lx + 0.04, 0], [lx + 0.035, 0.58], [lx - 0.005, 0.58]]); P2([[0.24, 0.66], [0.33, 0.7], [0.5, 1.12], [0.44, 1.13]]); P2([[0.43, 1.1], [0.58, 1.12], [0.6, 1.16], [0.44, 1.18]]); }
+        return;
+      }
       drawLayer(L);
+      if (C.near === 'trees') {
+        // a park in front: the rounded crowns of its trees along the near ground
+        const col = css(mixLab(mixLab(layerLab(sky.hor, 0.84), [0.42, -0.07, 0.05], 0.2), BLACK, 0.05)); g.fillStyle = col; g.beginPath();
+        for (let x = -W * 0.3, i = 0; x < W * 1.3; i++) { const r = Hh * (0.018 + hsh(i, 3) * 0.022), y = ridgeAt(L, x, off) * Hh + voff - r * 0.35 + hsh(i, 4) * r * 0.4; g.moveTo(x + r, y); g.arc(x, y, r, 0, 2 * PI); x += r * (1 + hsh(i, 5) * 0.6); }
+        g.fill();
+      }
     }
 
     // Pixel: a palette drawn from this moment's sky and land, ordered dithering, and a hard nearest-neighbour blow-up
@@ -3305,7 +3364,7 @@ SUN = (() => {
       g.translate(snap(-look.az * W * OVER), snap(-look.el * Hh * OVER * 0.5));
       D.sx = axF(sp.az / rad); D.sy = hy - (sp.alt / (90 * rad)) * hy * 0.94;
       drawSky(T, hy, axF);
-      const back = lines.filter(L => !L.near && !L.quay), nearL = lines.filter(L => L.near), quayL = lines.filter(L => L.quay);
+      const back = lines.filter(L => !L.near && !L.quay && !L.bank), nearL = lines.filter(L => L.near), quayL = lines.filter(L => L.quay), bankL = lines.filter(L => L.bank);
       lines.forEach(L => { L.front = false; }); if (back.length) back[back.length - 1].front = true;
       // the layer images are redrawn only when the light changes (and every few seconds at night, for the windows)
       const rk = [state.place.id, scene, W, Hh, wstyle, dpr, Math.round(D.p * 300), Math.round(night * 40), Math.round((D.sx / W) * 40), D.up ? 1 : 0].join(':'), lnk = rk + ':' + (night > 0.02 ? Math.floor(T / 4) : 0);
@@ -3314,22 +3373,27 @@ SUN = (() => {
       const scenery = () => { for (let i = 0; i < layers.length; i++) ridge(i); for (const L of back) cityLine(L); };
       const fx = () => { if (C.lasers) lasers(T); if (C.ufo) ufo(T, hy); };
       if (C.water === 'sea') {
-        scenery(); const shore = Hh * 0.86;
-        drawWater(hy, shore + Hh * 0.02, T, scenery); squid(T, hy); drawOvers(hy, shore, T);
+        scenery(); const open = C.beach === false, shore = open ? Hh * 1.02 : Hh * 0.86;
+        drawWater(hy, shore + Hh * 0.02, T, scenery); squid(T, hy); drawOvers(hy, open ? Hh : shore, T);
+        for (const L of bankL) cityLine(L);
+        if (!open) {
         const sand = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.25 + night * 0.55), wave = x => shore + Math.sin(x * 0.006 + 1) * Hh * 0.012 + look.el * 5;
         const wet = g.createLinearGradient(0, shore - 4, 0, shore + Hh * 0.05); wet.addColorStop(0, css(mixLab(sand, sky.zen, 0.35))); wet.addColorStop(1, css(sand));
         g.fillStyle = wet; g.beginPath(); g.moveTo(-W * 0.3, Hh + 20); for (let x = -W * 0.3; x <= W * 1.3; x += 8) g.lineTo(x, wave(x)); g.lineTo(W * 1.3, Hh + 20); g.closePath(); g.fill();
         for (let k = 0; k < 2; k++) { const surge = Math.sin(T * 0.5 + k * 2.1) * Hh * 0.006; g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.65), (0.4 - k * 0.15) * (1 - night * 0.5)); g.lineWidth = PIX ? px : 1.6 - k * 0.5; g.beginPath(); for (let x = -W * 0.3; x <= W * 1.3; x += 6) { const y = wave(x) - 2 + surge + k * 4 + Math.sin(x * 0.045 + T * 1.1 + k) * 1.3; x > -W * 0.3 ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); }
+        }
       } else if (C.water === 'bay') {
         scenery(); fx();
         const F = back[back.length - 1], wTop = F ? F.y * Hh + look.el * F.par * 0.3 : Hh * 0.8, yq = Hh * 0.935 + look.el * 10;
         drawWater(wTop, yq, T, scenery); drawOvers(wTop, yq, T);
+        for (const L of bankL) cityLine(L);
         place(layerImg('quay', rk, 46, 10, () => quay(Hh * 0.935, T)), look.az * 46 * PAR, look.el * 10);
         for (const L of quayL) cityLine(L);
         if (C.bats) bats(T, W * 0.56 + look.az * 20, wTop + 2);
       } else {
         scenery(); fx();
-        place(layerImg('near', rk, 52, 20, () => nearGround(T), C.near === 'pines'), look.az * 52 * PAR, look.el * 20);
+        if (C.bats && back.length) bats(T, W * 0.52 + look.az * 20, back[0].y * Hh + look.el * back[0].par * 0.3);
+        place(layerImg('near', rk, 52, 20, () => nearGround(T), !!C.near), look.az * 52 * PAR, look.el * 20);
         for (const L of nearL) cityLine(L);
       }
       if (C.palms) place(layerImg('palms', rk, 90, 14, palms, true), -look.az * 90 * PAR, -look.el * 14);
@@ -3452,7 +3516,8 @@ SUN = (() => {
       : `<span>${tr('sunHeight')}<b>${deg(altAt(c.noon))}°</b></span>`;
     const [lo, hi] = tokiRange(c, c.idx);
     $('arcNote').textContent = `${tr('stepsNote', tGlyph(c.idx), tokiName(c.idx), tStr(c.b[c.idx]), tStr(c.b[c.idx + 1]), fmtA(lo), fmtA(hi))} ${tr('arcNote')}`;
-    $('winNote').textContent = tr(state.place.lat >= 0 ? 'windowNoteS' : 'windowNoteN');
+    const vf = scene === 'here' && PLACES[state.place.id] && PLACES[state.place.id].from;
+    $('winNote').textContent = tr(state.place.lat >= 0 ? 'windowNoteS' : 'windowNoteN') + (vf && state.lang === 'en' ? ` Seen from ${vf}.` : '');
     const here = document.querySelector('#sunScenes button[data-scene="here"]'); if (here) here.textContent = placeName(state.place);
     document.querySelectorAll('#sunScenes button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.scene === scene)));
     document.querySelectorAll('#sunStyles button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.style === wstyle)));
