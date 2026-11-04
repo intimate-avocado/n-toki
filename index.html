@@ -187,6 +187,7 @@ button{font:inherit;color:inherit}
 .di-bell .jp{margin-left:6px}
 .di-meta{font-size:12px;opacity:.75}
 .di-anchor{font-size:12.5px;margin-top:6px;font-weight:500}
+.di-btns{display:flex;gap:8px;justify-content:center;margin-top:12px}
 .dial-info p{margin:6px 0 12px;opacity:.85}
 .cycle .why{margin-inline:auto}
 .why.about{margin-top:22px;padding-top:16px;border-top:1px solid color-mix(in srgb,currentColor 18%,transparent)}
@@ -455,11 +456,6 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
         </div>
         <div class="legend" id="legend"></div>
         <div class="dial-info" id="dialInfo"></div>
-        <div class="why">
-          <h3 data-i18n="whyT">Why the bells count down</h3>
-          <p data-i18n="whyP1">Temple bells struck in multiples of nine: 9, 18, 27, 36, 45, 54. Only the last digit was kept, so the strikes run nine, eight, seven, six, five, four, then start again at noon and at midnight.</p>
-          <p data-i18n="whyP2">Each bell marks the middle of its toki, so the ninth bell at the sun's height is the exact middle of Horse. Japan kept time this way until the calendar reform of 1873, when it adopted equal Western hours.</p>
-        </div>
         <div class="why about">
           <h3 data-i18n="aboutT">About this view</h3>
           <p data-i18n="aboutCycleP"></p>
@@ -496,6 +492,21 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
 
 <div class="scrim" id="scrim" hidden></div>
 
+<div class="sheet" id="sheetLearn" role="dialog" aria-modal="true" aria-labelledby="lnName" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <div class="cd-k" id="lnK" lang="ja">卯</div>
+  <h3 id="lnName">Rabbit</h3>
+  <p class="sub" id="lnSub"></p>
+  <h4 id="lnWhyT"></h4>
+  <p id="lnWhy"></p>
+  <h4 data-i18n="lnLifeT">What the hour was for</h4>
+  <p id="lnLife"></p>
+  <h4 data-i18n="lnBellT">Its bell</h4>
+  <p id="lnBell"></p>
+  <p class="note" id="lnBells"></p>
+  <p class="note" data-i18n="cdNote"></p>
+</div>
+
 <div class="sheet" id="sheetCompanion" role="dialog" aria-modal="true" aria-labelledby="cdName" hidden>
   <button class="close" type="button" data-close data-i18n="close">Close</button>
   <div class="cd-k" id="cdK" lang="ja">卯</div>
@@ -503,6 +514,7 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
   <p class="sub" id="cdSub">U no koku · 卯の刻</p>
   <p id="cdDesc"></p>
   <dl class="cd-meta" id="cdMeta"></dl>
+  <div class="row-btns"><button class="btn" type="button" id="cdLearn" data-i18n="learn">Learn about this toki</button></div>
   <p class="note" data-i18n="cdNote">N-Toki is a modern system inspired by Edo-period timekeeping. Like the original, each toki is centered on a moment of the sun, calculated for where you are.</p>
 </div>
 
@@ -820,6 +832,53 @@ const glyph = i => (state.label === 'en' ? tokiAnimal(i) : state.label === 'bell
 const subName = i => (state.lang !== 'en' ? tokiName(i) : state.label === 'en' ? TOKI[i].k : TOKI[i].en);
 const glyphMode = () => (state.label === 'en' && state.lang === 'zh' ? 'kanji' : state.label);
 const nowMs = () => (state.override != null ? state.override : Date.now());
+
+/* ---------- toki lore: why each hour has its animal, what the hour was for ---------- */
+const LORE = {
+  en: [
+    ["Rabbits leave their burrows to graze in the first light, and the moon's jade rabbit is still faintly visible at dawn. Yin gives way to yang here.", "Edo's ward gates opened at the dawn bell. Fires were lit, water drawn, and the working day began. Markets took their first customers."],
+    ["Dragons were said to ride the morning mists and bring the rain; the hour when fog lifts off the fields belongs to them.", "Breakfast and the morning errands. Shops opened their shutters, craftsmen settled to their benches, and children walked to the temple school."],
+    ["Snakes come out to bask as the ground warms, hidden in the grass where they trouble no one. A quiet, warming hour.", "The busiest stretch of trade: deliveries, haggling, the fish market long since sold out, the rice and vegetable sellers at full cry."],
+    ["Yang reaches its height with the sun. Horses were held to be the most yang of animals, standing even to sleep; the hour of the sun's height is theirs. Noon is still written 正午, true Horse.", "The midday meal and a rest from the heat. Timekeepers set their instruments at this bell, and temple clocks were checked against the sun."],
+    ["Grass eaten by sheep and goats at this hour was said to grow back strongest, so herders turned their flocks out in the early afternoon.", "The eighth bell, 八つ, gave Japanese its word for the afternoon snack: oyatsu. Tea, sweets, and the second half of the day's work."],
+    ["Monkeys call loudest and move most in the late afternoon, when the day's heat has broken.", "Work wound down. Bathhouses filled, the day's accounts were tallied, and farmers walked home from the fields."],
+    ["Hens return to the coop as the sun sets, without being told. The evening gate bell shares its number, six, with the dawn bell.", "Lamps were lit and supper served. The dusk bell closed the day's business, and travelers made sure of lodging before the roads went dark."],
+    ["Dogs begin their watch at nightfall, ears up, guarding the house through the first dark.", "The evening hours of company and stories, lantern light, and bed for those who rose at Rabbit."],
+    ["Boars and pigs sleep most soundly at this hour, and nothing stirs them. It is the deepest rest before midnight.", "The ward gates closed at the fourth bell. After it, only the night watch, doctors and midwives had reason to be out."],
+    ["Rats are most active around midnight, and 子 is also the first of the twelve branches: the point where yang is born again in the deepest night.", "The middle of the night, marked by the ninth bell as noon was. The fire watch made its rounds and the town slept."],
+    ["Oxen chew the cud through the small hours and are ready for the plow before anyone else is awake. Farmers rose to feed them.", "The deepest hours. In old stories the third quarter of Ox, ushi-mitsu, belonged to ghosts, and shrine visits made at this hour carried uncanny power."],
+    ["Tigers prowl and hunt hardest before dawn, when the night is coldest and darkest.", "Travelers set out at the seventh bell to cover ground by daylight. Cooks and bakers lit their fires, and the first boats put out to fish."]
+  ],
+  ja: [
+    ['うさぎは夜明けの光とともに巣を出て草を食み、月の玉兎もまだ淡く見えています。陰が陽へ移る刻です。', '江戸の木戸は明け六つに開きました。火を起こし、水を汲み、働く一日が始まります。'],
+    ['龍は朝霧に乗って雨をもたらすと言われ、田から霧が晴れていく刻は龍のものです。', '朝餉と朝の用事。店は戸を開け、職人は仕事場につき、子どもは寺子屋へ向かいました。'],
+    ['地面が温まると蛇は草むらで日を浴び、人を害しません。静かで暖かな刻です。', '商いが最も忙しい時間。荷が届き、値を競い、米や野菜の売り声が通りに響きました。'],
+    ['太陽とともに陽が極まります。馬は最も陽の気が強い動物とされ、立ったまま眠るとも言われました。正午はいまも「真の午」と書きます。', '昼餉と暑さをしのぐ休み。時を測る者はこの鐘で道具を合わせ、寺の時計は太陽で確かめられました。'],
+    ['この刻に羊が食んだ草は最もよく育ち直すとされ、牧人は昼下がりに群れを放ちました。', '昼八つの鐘は「おやつ」という言葉を残しました。茶と菓子、そして午後の仕事の後半です。'],
+    ['猿は昼の暑さが引いた夕方に最もよく鳴き、よく動きます。', '仕事が終わりに向かいます。湯屋がにぎわい、その日の勘定が締められ、農夫は田から帰りました。'],
+    ['鶏は言われずとも日暮れに小屋へ戻ります。暮れ六つの鐘は、明け六つと同じ六つです。', '灯がともり、夕餉が出ます。暮れ六つで商いが締まり、旅人は道が暗くなる前に宿を決めました。'],
+    ['犬は夜の始まりに耳を立てて見張りにつき、宵の闇から家を守ります。', '人が集い、話に花が咲く宵の刻。行灯の明かり、そして卯に起きる人の寝る時間です。'],
+    ['猪や豚はこの刻に最も深く眠り、何事にも起きません。夜半前の最も深い休みです。', '夜四つの鐘で木戸が閉まりました。その後に出歩くのは夜回りと医者と産婆だけです。'],
+    ['鼠は真夜中に最もよく動き、子は十二支の最初でもあります。最も深い夜に陽がふたたび生まれる点です。', '夜の真ん中。正午と同じ九つの鐘が鳴り、火の番が見回り、町は眠りました。'],
+    ['牛は夜更けに反芻し、誰より早く鋤を引く用意ができています。百姓は牛に餌をやるために起きました。', '最も深い刻。昔話では丑三つ時は物の怪のもので、この刻の参詣は異様な力を持つとされました。'],
+    ['虎は夜明け前、最も寒く暗い時に最も激しく狩ります。', '旅人は暁七つに発ち、明るいうちに道を稼ぎました。料理人は火を起こし、最初の舟が漁に出ました。']
+  ],
+  zh: [
+    ['兔子在第一缕晨光中出窝吃草，月中玉兔在黎明时仍隐约可见。阴在此让位于阳。', '江户的坊门在明六钟开启。生火、汲水，劳作的一天开始，集市迎来第一批客人。'],
+    ['传说龙乘晨雾而行、布云施雨；雾气从田野散去的时辰属于龙。', '早饭与晨间杂务。店铺卸下门板，匠人坐到工作台前，孩子走向寺子屋。'],
+    ['地面回暖时，蛇出来晒太阳，藏在草间不伤人。一个安静而温暖的时辰。', '交易最繁忙的时段：送货、讨价还价，鱼市早已售罄，米贩菜贩叫卖正酣。'],
+    ['阳气随太阳达到顶点。马被视为最具阳气的动物，连睡觉也站着；日中之时属于它。正午至今写作“正午”，即真正的午。', '午饭与避暑小憩。计时者在此钟校准器具，寺院的时钟也对照太阳核验。'],
+    ['据说羊在此时吃过的草长得最旺，牧人因此在午后把羊群放出。', '昼八钟给了日语“おやつ”（点心）一词。茶、点心，以及下半日的劳作。'],
+    ['猴子在暑气退去的傍晚叫得最响、动得最多。', '劳作收尾。澡堂人满，一日账目结清，农人从田间走回家。'],
+    ['母鸡在日落时不用催促便回窝。暮六钟与明六钟同为六响。', '点灯用晚饭。暮六钟结束一天的买卖，旅人赶在道路变暗前找好住处。'],
+    ['狗在夜幕降临时竖起耳朵开始守夜，护卫家宅度过初夜。', '相聚讲故事的傍晚时光，灯笼微光，也是卯时早起之人的就寝时间。'],
+    ['猪在此时睡得最沉，什么也吵不醒。这是午夜前最深的休息。', '夜四钟坊门关闭。此后只有更夫、医生和产婆有理由外出。'],
+    ['老鼠在午夜前后最活跃，子也是十二支之首：阳气在最深的夜里重新萌发之点。', '夜之正中，与正午一样以九响标记。火更巡行，全城入睡。'],
+    ['牛在后半夜反刍，比任何人醒得都早，随时可以拉犁。农人起身喂牛。', '最深的时辰。旧时传说丑三时属于鬼怪，此时参拜神社带有诡异的力量。'],
+    ['老虎在黎明前最冷最黑的时候捕猎最凶。', '旅人在晓七钟出发，趁白昼赶路。厨子点起炉火，第一批渔船出海。']
+  ]
+};
+const lore = i => (LORE[state.lang] || LORE.en)[i] || LORE.en[i];
 /* ---------- languages ---------- */
 const LANGS = [['en', 'English'], ['ja', '日本語'], ['zh', '简体中文']];
 const LOCALE = { en: 'en-US', ja: 'ja-JP', zh: 'zh-CN' };
@@ -916,7 +975,7 @@ const STR = {
     screensH: 'Screens', screensSub: 'The living clock always comes first. Add, remove and reorder the rest.', scrFixed: 'Always first',
     scrArc: "The sun's path", scrArcD: 'Lantern steps on the arc of the day', scrWindow: 'The sky outside', scrWindowD: 'Your place, its land and skyline',
     scrCycleD: 'Twelve toki at their true lengths', scrYearD: 'The year read by the sun',
-    moveUp: 'Move up', st_painted: 'Painted', st_pixel: 'Pixel', st_crt: 'CRT', styleAria: 'Style', tilt: 'Tilt to look around', moveDown: 'Move down', addScr: 'Add', removeScr: 'Remove',
+    moveUp: 'Move up', learn: 'Learn about this toki', lnWhyT: a => `Why the ${a}`, lnLifeT: 'What the hour was for', lnBellT: 'Its bell', lnBellMid: 'The bell sounds at the middle of the toki.', st_painted: 'Painted', st_pixel: 'Pixel', st_crt: 'CRT', styleAria: 'Style', tilt: 'Tilt to look around', moveDown: 'Move down', addScr: 'Add', removeScr: 'Remove',
     aboutT: 'About this view',
     aboutArcP: "The sun's path draws today's arc of the sun from one Rabbit to the next. Each toki is a paper lantern: as wide as that toki lasts today, and as tall as the sun climbs or sinks during it. The lantern the sun is passing through lights up. Glance at it to see the shape of the day, and why toki stretch in summer and shrink in winter.",
     aboutWinP: "The sky outside is a window facing the sun's side of the sky, with the sun where it really stands right now. The sky takes the colors of the toki around this moment, and the land and skyline are a portrait of your place, not a literal view. It is meant to be glanced at, the way you would look out of a window to read the time of day.",
@@ -978,7 +1037,7 @@ const STR = {
     screensH: '画面', screensSub: '生きた時計はいつも最初。ほかの画面は追加・削除・並べ替えができます。', scrFixed: 'いつも最初',
     scrArc: '太陽の道', scrArcD: '一日の弧に浮かぶ灯りの段', scrWindow: '窓の外の空', scrWindowD: 'この土地の景色と街並み',
     scrCycleD: '本当の長さの十二刻', scrYearD: '太陽で読む一年',
-    moveUp: '上へ', st_painted: '絵', st_pixel: 'ドット', st_crt: 'ブラウン管', styleAria: '画風', tilt: '傾けて見回す', moveDown: '下へ', addScr: '追加', removeScr: '外す',
+    moveUp: '上へ', learn: 'この刻について', lnWhyT: a => `なぜ${a}なのか`, lnLifeT: 'この刻の暮らし', lnBellT: 'この刻の鐘', lnBellMid: '鐘は刻のまんなかで鳴ります。', st_painted: '絵', st_pixel: 'ドット', st_crt: 'ブラウン管', styleAria: '画風', tilt: '傾けて見回す', moveDown: '下へ', addScr: '追加', removeScr: '外す',
     aboutT: 'この画面について',
     aboutArcP: '太陽の道は、卯から次の卯までの今日の太陽の弧を描きます。それぞれの刻は紙の灯りで、幅はその刻の今日の長さ、高さはそのあいだに太陽が昇り降りする幅です。太陽が通っている灯りがともります。一日のかたちと、夏に刻が伸び冬に縮むわけがひと目でわかります。',
     aboutWinP: '窓の外の空は、太陽の側を向いた窓です。太陽はいま実際にある場所にあり、空はこの時の前後の刻の色に染まります。景色と街並みは写生ではなく、その土地の面影です。窓の外を見て一日の時を知るように、ふと眺めるための画面です。',
@@ -1040,7 +1099,7 @@ const STR = {
     screensH: '画面', screensSub: '活的时钟始终在最前。其余画面可添加、移除和重新排序。', scrFixed: '始终在最前',
     scrArc: '太阳的轨迹', scrArcD: '一日弧线上的灯笼台阶', scrWindow: '窗外的天空', scrWindowD: '此地的风景与天际线',
     scrCycleD: '真实长度的十二时辰', scrYearD: '用太阳读一年',
-    moveUp: '上移', st_painted: '绘画', st_pixel: '像素', st_crt: '显像管', styleAria: '风格', tilt: '倾斜以环顾', moveDown: '下移', addScr: '添加', removeScr: '移除',
+    moveUp: '上移', learn: '了解这个时辰', lnWhyT: a => `为什么是${a}`, lnLifeT: '这个时辰做什么', lnBellT: '它的钟声', lnBellMid: '钟声在时辰的正中响起。', st_painted: '绘画', st_pixel: '像素', st_crt: '显像管', styleAria: '风格', tilt: '倾斜以环顾', moveDown: '下移', addScr: '添加', removeScr: '移除',
     aboutT: '关于此画面',
     aboutArcP: '太阳的轨迹描绘今日从一个卯时到下一个卯时的太阳弧线。每个时辰是一盏纸灯笼：宽度是该时辰今日的时长，高度是其间太阳升降的幅度。太阳经过的那盏灯笼会亮起。一眼即可看出一天的形状，以及时辰为何夏长冬短。',
     aboutWinP: '窗外的天空是一扇面向太阳一侧的窗。太阳就在它此刻真实的位置，天空染上此刻前后时辰的颜色，风景与天际线是此地的写意而非实景。就像望向窗外便知一天的时分，这是一个用来随意一瞥的画面。',
@@ -1264,13 +1323,11 @@ function updateTrack() {
   const ik = key + ':' + sel + ':' + c.idx;
   if (ik !== infoKey) {
     infoKey = ik;
-    const bl = state.lang === 'en' ? `${T.bell} Bell <span lang="ja">${T.bj}</span> · ${T.br}` : bellLine(sel);
     const meta = state.lang === 'en' ? `${T.r} no koku · <span lang="ja">${T.k}の刻</span>` : tokiReading(sel);
-    $('dialInfo').innerHTML = `<div class="di-bell">${bl}</div>
-      <div class="di-meta">${meta} · ${dur(s1 - s0)}</div>
+    $('dialInfo').innerHTML = `<div class="di-meta">${meta} · ${dur(s1 - s0)}</div>
       <div class="di-anchor">${placeInDay(c, sel)}</div>
-      <p>${tokiDesc(sel)}</p>
-      ${sel !== c.idx ? `<button class="pill" type="button" id="backCur">${tr('showCurrent')}</button>` : ''}`;
+      <div class="row-btns di-btns"><button class="pill" type="button" id="learnBtn">${tr('learn')}</button>${sel !== c.idx ? `<button class="pill" type="button" id="backCur">${tr('showCurrent')}</button>` : ''}</div>`;
+    $('learnBtn').addEventListener('click', () => openLearn(sel));
     const bc = $('backCur'); if (bc) bc.addEventListener('click', () => { state.sel = null; updateTrack(); $('d' + state.cyc.idx).focus({ preventScroll: true }); });
   }
 }
@@ -1652,6 +1709,15 @@ function placeInDay(c, i = c.idx) {
     default: return i < 6 ? tr('daylight') : tr('night');
   }
 }
+function openLearn(i) {
+  const T = TOKI[i], L = lore(i);
+  $('lnK').textContent = T.k; $('lnName').textContent = tokiName(i);
+  $('lnSub').textContent = state.lang === 'en' ? `${T.r} no koku · ${T.k}の刻` : tokiReading(i);
+  $('lnWhyT').textContent = tr('lnWhyT', tokiAnimal(i)); $('lnWhy').textContent = L[0]; $('lnLife').textContent = L[1];
+  $('lnBell').innerHTML = state.lang === 'en' ? `${T.bell} Bell · <span lang="ja">${T.bj}</span> (${T.br}). ${tr('lnBellMid')}` : `${bellLine(i)}。${tr('lnBellMid')}`;
+  $('lnBells').textContent = tr('whyP1') + ' ' + tr('whyP2');
+  openSheet('sheetLearn');
+}
 $('seal').addEventListener('click', () => {
   const T = TOKI[state.cyc.idx];
   $('cdK').textContent = T.k;
@@ -1659,7 +1725,8 @@ $('seal').addEventListener('click', () => {
   $('cdName').textContent = tokiName(i);
   $('cdSub').textContent = state.lang === 'en' ? `${T.r} no koku · ${T.k}の刻` : tokiReading(i);
   $('cdDesc').textContent = tokiDesc(i);
-  $('cdMeta').innerHTML = `<dt>${tr('bell')}</dt><dd>${state.lang === 'en' ? `${T.bell} Bell · <span lang="ja">${T.bj}</span> (${T.br})` : bellLine(i)}</dd><dt>${tr('place')}</dt><dd>${placeInDay(state.cyc)}</dd>`;
+  $('cdMeta').innerHTML = `<dt>${tr('place')}</dt><dd>${placeInDay(state.cyc)}</dd>`;
+  $('cdLearn').onclick = () => openLearn(i);
   openSheet('sheetCompanion');
 });
 
@@ -2280,7 +2347,9 @@ SUN = (() => {
     };
     // bridge pylons that go with the stroked harbour bridge
     M.harbourpylons = (g, x, yb, h, u) => { for (const s of [-1, 1]) for (const k of [0.5, 0.42]) { const px = x + s * 200 * u * k; g.rect(px - 5 * u, yb - h * 0.62, 10 * u, h * 0.62); } };
-    return { fill: M, stroke: S };
+    // footprint half-widths in u, so each landmark gets a footing down to the ground; [left, right] when asymmetric
+    const FOOT = { capitol: 40, stpauls: 42, alamo: 22, bellas: 34, mosque: 34, sacrecoeur: 60, opera: [46, 54], notredame: [24, 40], invalides: 30, arc: 16, towerbridge: 51, tmg: 28, gothic: 28, pennzoil: 26, chase: 17, box: 19, prism: 14, reunion: 6, empire: 26, owtc: 16, chrysler: 15, spire: 24, steinway: 6.5, park432: 9.5, khalifa: 26, emirates: 22, twinspire: 20, watertower: 7, gable: 16, mecha: 16, hakataport: 11, fukuokatower: 12, bigdome: 60, kyototower: 24, towerlife: 13, needle: 6, frost: 13, jenga: 16, slimslant: 8, curvetop: 11, uttower: 24, heritage: 15, xcrown: 12, usbank: 13, wilshire: 13, register: 13, dfclock: 5.5, angel: 8, shard: 18, gherkin: 10, walkie: 11, wedge: 14, bigben: 7, clock: 7, churchspire: 24, hallgrim: 20, arctic: 38, aframe: 30, kicc: 12, minaret: 4, lotus: 9, eiffel: 36, sydneytower: 9, skytree: 17, tokyotower: 24, pagoda: 14 };
+    return { fill: M, stroke: S, foot: FOOT };
   })();
 
   function WindowView(el) {
@@ -2437,6 +2506,7 @@ SUN = (() => {
         if (MARKS.stroke[type]) { g.beginPath(); const lw = MARKS.stroke[type](g, x, yb, h, u); g.strokeStyle = css(layerLab(sky.hor, 0.56)); g.lineWidth = lw; g.stroke(); if (type === 'harbourbridge') { g.beginPath(); MARKS.fill.harbourpylons(g, x, yb, h, u); g.fillStyle = dark; g.fill(); } continue; }
         const fn = MARKS.fill[type]; if (!fn) continue;
         g.beginPath(); fn(g, x, yb, h, u); g.fillStyle = tone === 'light' ? css(white) : dark; g.fill(['eiffel', 'arc'].includes(type) ? 'evenodd' : 'nonzero');
+        const f = MARKS.foot[type]; if (f) { const [l, r] = Array.isArray(f) ? f : [f, f]; g.fillRect(x - l * u, yb - 1, (l + r) * u, Hh - yb + 90); }
       }
       if (night > 0.02) for (const m of P.marks) { const [type, mu] = m, hm = hOf(m); if (['skytree', 'tokyotower', 'needle', 'kyototower', 'empire', 'owtc', 'chrysler', 'steinway', 'park432', 'khalifa', 'sydneytower', 'shard', 'usbank', 'wilshire', 'lotus', 'reunion', 'box', 'chase', 'xcrown'].includes(type)) { const blink = 0.55 + 0.45 * Math.sin(T * 2.4 + mu * 9); g.fillStyle = `rgba(255,90,70,${(night * blink).toFixed(3)})`; g.beginPath(); g.arc(mu * W, yb - hm * Hh * (type === 'needle' ? 1.06 : type === 'xcrown' ? 1.04 : 1.0) - 1, 2, 0, 2 * PI); g.fill(); } }
       g.restore();
