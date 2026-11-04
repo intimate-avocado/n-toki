@@ -791,7 +791,9 @@ const CITIES = [
   { id: 'guilin', name: 'Guilin', sub: 'China · Li River', lat: 25.2736, lng: 110.29, tz: 'Asia/Shanghai' },
   { id: 'miami', name: 'Miami', sub: 'Florida', lat: 25.7617, lng: -80.1918, tz: 'America/New_York' },
   { id: 'anchorage', name: 'Anchorage', sub: 'Alaska', lat: 61.2181, lng: -149.9003, tz: 'America/Anchorage' },
-  { id: 'area51', name: 'Area 51', sub: 'Nevada · Groom Lake', lat: 37.235, lng: -115.8111, tz: 'America/Los_Angeles' }
+  { id: 'area51', name: 'Area 51', sub: 'Nevada · Groom Lake', lat: 37.235, lng: -115.8111, tz: 'America/Los_Angeles' },
+  { id: 'marfa', name: 'Marfa', sub: 'Texas · high desert', lat: 30.3094, lng: -104.0206, tz: 'America/Chicago' },
+  { id: 'antarctica', name: 'Antarctica', sub: 'McMurdo Station', lat: -77.8463, lng: 166.6681, tz: 'Antarctica/McMurdo' }
 ];
 
 /* ---------- colour: OKLab LUT over the 12-toki cycle ---------- */
@@ -2233,8 +2235,10 @@ SUN = (() => {
     dubai: { from: 'Deira', land: 'desert',
       city: { style: 'towers', gen: [40, 250], dens: 0.6, cx: 0.6, top: 0.62, lines: [L2(0.85, 0.6), L2(0.865, 0.8), L2(0.885, 1)],
         marks: [['cayan', 0.74, 306, 34, 0], ['burjalarab', 0.83, 321, 60, 0, 'light'], ['khalifa', 0.62, 828, 100, 1], ['frame', 0.38, 150, 95, 2], ['museumfuture', 0.47, 77, 70, 2, 'light'], ['emirates', 0.53, 355, 90, 2]] } },
-    rio: { from: 'Copacabana beach', land: 'hills', near: 'promenade', palms: true, cable: true, ridges: [R('hills', 41, 0.745, 0.05, 0.3, 5)], extras: [['corcovado', 0.3, 0.3], ['sugarloaf', 0.8, 0.22]],
-      city: { style: 'mid', gen: [15, 45], dens: 0.85, top: 0.12, lines: [L2(0.86, 1)], marks: [] } },
+    rio: { from: 'the top of Sugarloaf', land: 'hills', water: 'bay', ridges: [R('peaks', 401, 0.74, 0.12, 0.26, 5, { span: [-0.3, 0.48] }), R('hills', 403, 0.75, 0.04, 0.3, 6, { span: [0.56, 1.4] })], extras: [['corcovado', 0.14, 0.3]],
+      city: { style: 'mid', gen: [15, 45], dens: 0.85, cx: 0.3, top: 0.14, lines: [L2(0.775, 0.6, { x0: 0.56, gen: [10, 40], dens: 0.6 }), L2(0.79, 0.75, { x1: 0.5 }), L2(0.84, 1.2, { bank: true, x1: 0.42, gen: [12, 40] })],
+        marks: [['rnbridge', 0.5, 30, 760, 0]] },
+      over: [['yacht', 0.3, 10, 30, 1.2, 0.5], ['sloop', 0.38, 14, 9, 1.1, 0.3], ['sloop', 0.62, 12, 8, 1.4, 0.62], ['ferry', 0.7, 8, 40, 0.9, 0.2]] },
     capetown: { from: 'the slopes of Table Mountain', land: 'flat', water: 'sea', beach: false, ridges: SEA_RIDGE([0.62, 1.3]), extras: [['lionshead', 0.13, 0.22], ['island', 0.46, 0.012]],
       city: { style: 'mid', gen: [12, 70], dens: 0.75, cx: 0.55, top: 0.22, lines: [L2(0.8, 0.9, { bank: true, x0: -0.2, x1: 1.2 }), L2(0.87, 1.3, { bank: true, x0: -0.2, x1: 1.2, gen: [6, 30] })],
         marks: [['stadium', 0.3, 50, 250, 0, 'light'], ['wheel', 0.55, 40, 40, 0], ['portside', 0.62, 139, 40, 1]] } },
@@ -2286,7 +2290,12 @@ SUN = (() => {
     anchorage: { from: 'Government Hill', land: 'mountains', water: 'sea', beach: false, ridges: [R('peaks', 13, 0.745, 0.38, 0.24, 5, { snow: 1, span: [-0.3, 0.52] }), R('peaks', 23, 0.775, 0.12, 0.4, 12, { snow: 0.7, span: [-0.3, 0.42] })], extras: [['fuji', 0.86, 0.06]],
       city: { style: 'mid', gen: [10, 50], dens: 0.55, cx: 0.45, top: 0.16, lines: [L2(0.8, 1, { bank: true, x0: -0.2, x1: 0.72 })], marks: [['atwood', 0.38, 80, 40, 0], ['box', 0.45, 90, 45, 0], ['captaincook', 0.54, 67, 60, 0]] },
       over: [['floatplane', 0.8, 4, 12, 2.2, 0.4]] },
-    area51: { from: 'the north end of Groom Lake', land: 'desert', playa: true, ufo: true, ridges: [R('peaks', 91, 0.75, 0.14, 0.34, 5, { sand: 1 }), R('peaks', 95, 0.775, 0.07, 0.46, 9, { sand: 1 })],
+    marfa: { from: 'north of town', land: 'desert', near: 'grass', marfa: true, darksky: true, ridges: [R('peaks', 201, 0.752, 0.1, 0.24, 5, { sand: 1, span: [0.6, 1.4] }), R('hills', 203, 0.755, 0.03, 0.3, 7, { sand: 1, span: [-0.3, 0.4] }), R('hills', 47, 0.785, 0.008, 0.42, 10, { sand: 1 })],
+      city: { style: 'houses', gen: [4, 10], dens: 0.7, top: 0.12, lines: [L2(0.85, 0.85, { x0: 0.25, x1: 0.7 }), L2(0.875, 1, { x0: 0.22, x1: 0.72 })], marks: [['watertower', 0.64, 30, 12, 0], ['courthouse', 0.5, 30, 34, 1, 'light']] } },
+    antarctica: { from: 'McMurdo Station', land: 'mountains', near: 'ice', smoke: true, darksky: true, ridges: [R('peaks', 301, 0.74, 0.2, 0.2, 4, { ice: 1, snow: 1, span: [-0.3, 0.45] }), R('hills', 303, 0.775, 0.03, 0.34, 9, { ice: 1 })], extras: [['erebus', 0.7, 0.2], ['fuji', 0.93, 0.09]],
+      city: { style: 'mid', gen: [4, 12], dens: 0.7, cx: 0.35, top: 0.1, lines: [L2(0.86, 1, { x0: 0.04, x1: 0.62 })],
+        marks: [['radome', 0.14, 18, 18, 0, 'light'], ['tanks', 0.26, 12, 40, 0], ['chapel', 0.4, 14, 16, 0], ['turbine', 0.5, 50, 34, 0], ['turbine', 0.56, 50, 34, 0], ['turbine', 0.62, 50, 34, 0]] } },
+    area51: { from: 'the north end of Groom Lake', land: 'desert', playa: true, ufo: true, darksky: true, ridges: [R('peaks', 91, 0.75, 0.14, 0.34, 5, { sand: 1 }), R('peaks', 95, 0.775, 0.07, 0.46, 9, { sand: 1 })],
       city: { style: 'mid', gen: false, top: 0.07, lines: [L2(0.8, 1)], marks: [['hangar', 0.28, 28, 120, 0], ['hangar', 0.46, 22, 90, 0], ['controltower', 0.6, 32, 10, 0], ['radar', 0.72, 30, 22, 0], ['watertower', 0.84, 30, 12, 0]] } }
   };
   const TOWN = { land: 'hills', calm: 0.8, city: { style: 'houses', gen: [5, 10], dens: 0.5, top: 0.035, marks: [] } };
@@ -2560,6 +2569,11 @@ SUN = (() => {
       ccity: sym([[0, 1], [9, 1], [14, 0.96], [14, 0]]),
       perlan: (g, x, yb, h, u) => { for (let i = 0; i < 4; i++) g.rect(x + (i * 11.5 - 22) * u, yb - h * 0.62, 9.5 * u, h * 0.62); g.moveTo(x + 23 * u, yb - h * 0.6); g.ellipse(x, yb - h * 0.6, 23 * u, h * 0.4, 0, PI, 0); g.closePath(); },
       customs: (g, x, yb, h, u) => { g.rect(x - 20 * u, yb - h * 0.42, 40 * u, h * 0.42); g.rect(x - 6 * u, yb - h * 0.84, 12 * u, h * 0.43); g.moveTo(x - 6.6 * u, yb - h * 0.84); g.lineTo(x, yb - h); g.lineTo(x + 6.6 * u, yb - h * 0.84); g.closePath(); },
+      // Marfa: the Presidio County Courthouse; McMurdo: the radome, fuel tanks and the Chapel of the Snows
+      courthouse: (g, x, yb, h, u) => { g.rect(x - 18 * u, yb - h * 0.45, 36 * u, h * 0.45); g.rect(x - 18 * u, yb - h * 0.5, 6 * u, h * 0.06); g.rect(x + 12 * u, yb - h * 0.5, 6 * u, h * 0.06); g.rect(x - 7 * u, yb - h * 0.62, 14 * u, h * 0.18); g.moveTo(x - 7 * u, yb - h * 0.62); g.quadraticCurveTo(x - 6.5 * u, yb - h * 0.8, x - 2.5 * u, yb - h * 0.84); g.lineTo(x + 2.5 * u, yb - h * 0.84); g.quadraticCurveTo(x + 6.5 * u, yb - h * 0.8, x + 7 * u, yb - h * 0.62); g.closePath(); g.rect(x - 1.8 * u, yb - h * 0.92, 3.6 * u, h * 0.085); g.rect(x - 0.5 * u, yb - h, u, h * 0.085); },
+      radome: (g, x, yb, h, u) => { g.rect(x - 6 * u, yb - h * 0.4, 12 * u, h * 0.4); g.moveTo(x + 9 * u, yb - h * 0.5); g.arc(x, yb - h * 0.5, 9 * u, 0, 2 * PI); },
+      tanks: (g, x, yb, h, u) => { for (let i = 0; i < 3; i++) { const cx = x + (i - 1) * 14 * u; g.rect(cx - 6 * u, yb - h * 0.82, 12 * u, h * 0.82); g.moveTo(cx + 6 * u, yb - h * 0.82); g.ellipse(cx, yb - h * 0.82, 6 * u, h * 0.18, 0, PI, 0); g.closePath(); } },
+      chapel: (g, x, yb, h, u) => { g.moveTo(x - 8 * u, yb); g.lineTo(x - 8 * u, yb - h * 0.45); g.lineTo(x - 2 * u, yb - h * 0.75); g.lineTo(x + 4 * u, yb - h * 0.45); g.lineTo(x + 4 * u, yb); g.closePath(); g.rect(x + 4 * u, yb - h * 0.9, 3.5 * u, h * 0.9); g.moveTo(x + 3.6 * u, yb - h * 0.9); g.lineTo(x + 5.75 * u, yb - h); g.lineTo(x + 7.9 * u, yb - h * 0.9); g.closePath(); },
       // Anchorage
       atwood: sym([[0, 1], [16, 1], [16, 0]]),
       captaincook: (g, x, yb, h, u) => { for (const [dx, f] of [[-16, 0.75], [0, 1], [16, 0.85]]) g.rect(x + (dx - 6) * u, yb - h * f, 12 * u, h * f); },
@@ -2581,6 +2595,9 @@ SUN = (() => {
         for (const s of [-1, 1]) { for (let i = 1; i < 5; i++) { const t = i / 5, bx = x + s * (m + sd * t), cy = q(top + 1, yb - h * 0.66, yb - h * 0.46, t), dy = dk + (yb - h * 0.44 - dk) * t; g.moveTo(bx, cy); g.lineTo(bx, dy); } for (let k = 1; k < 6; k++) { const bx = x + s * (m + sd + ((100 * u - m - sd) * k) / 6), dy = yb - h * 0.44 + (h * 0.32 * k) / 6; g.moveTo(bx, dy); g.lineTo(bx, yb); } }
         return 0.8 * u + 0.45;
       },
+      // McMurdo's wind turbines, turning; the Rio–Niterói Bridge, low across the bay with its raised central span
+      turbine: (g, x, yb, h, u) => { const hy2 = yb - h * 0.68, r = h * 0.32, a0 = MT * 1.1 + x * 0.01; g.moveTo(x, yb); g.lineTo(x, hy2); for (let k = 0; k < 3; k++) { const a = a0 + (k * 2 * PI) / 3; g.moveTo(x, hy2); g.lineTo(x + Math.cos(a) * r, hy2 + Math.sin(a) * r); } return 1.1 * u + 0.4; },
+      rnbridge: (g, x, yb, h, u) => { g.moveTo(x - 300 * u, yb - h * 0.35); g.lineTo(x - 50 * u, yb - h * 0.6); g.quadraticCurveTo(x, yb - h * 1.2, x + 50 * u, yb - h * 0.6); g.lineTo(x + 300 * u, yb - h * 0.35); for (let k = -14; k <= 14; k++) { const bx = x + k * 21 * u, d = Math.abs(k * 21), f = d < 50 ? 0.6 + 0.4 * (1 - (d / 50) ** 2) : 0.6 - ((d - 50) / 250) * 0.25; g.moveTo(bx, yb); g.lineTo(bx, yb - h * f); } return 0.9 * u + 0.4; },
       // the Margaret Hunt Hill Bridge: a single white arch with its harp of cables
       huntbridge: (g, x, yb, h, u) => { const span = 100 * u, dk = yb - h * 0.12; g.moveTo(x - span * 1.4, dk); g.lineTo(x + span * 1.4, dk); g.moveTo(x - span, dk); g.quadraticCurveTo(x, yb - h * 1.9, x + span, dk); for (let i = 1; i < 14; i++) { const t = i / 14, bx = x - span + 2 * span * t, by = dk - 4 * t * (1 - t) * (h * 0.89); g.moveTo(bx, by); g.lineTo(x - span + 2 * span * (0.12 + t * 0.76), dk); } return 1.4 * u + 0.5; }
     };
@@ -2589,7 +2606,7 @@ SUN = (() => {
     M.pelltowers = (g, x, yb, h, u) => { for (const s of [-1, 1]) { const px = x + s * 50 * u; g.rect(px - 3.4 * u, yb - h, 1.7 * u, h); g.rect(px + 1.7 * u, yb - h, 1.7 * u, h); for (const f of [0.98, 0.74, 0.5]) g.rect(px - 3.4 * u, yb - h * f, 6.8 * u, h * 0.025); } };
     // footprint half-widths in u ([left, right] when asymmetric): a landmark's width in metres spans exactly this
     const FOOT = { skytree: 17, tokyotower: 24, tmg: 28, kyototower: 24, pagoda: 14, needle: 6, towerlife: 13, alamo: 22, capitol: 40, frost: 13, jenga: 16, slimslant: 8, curvetop: 11, uttower: 24, gothic: 28, heritage: 15, pennzoil: 26, chase: 17, reunion: 10, prism: 14, xcrown: 12, box: 19, steinway: 6.5, park432: 9.5, empire: 26, owtc: 16, chrysler: 15, spire: 24, usbank: 13, wilshire: 13, register: 13, dfclock: 5.5, bellas: 34, angel: 8, shard: 18, gherkin: 12, walkie: 14, wedge: 14, stpauls: 42, bigben: 7, towerbridge: 51, eiffel: 36, notredame: [24, 40], invalides: 30, arc: 16, sacrecoeur: 60, hallgrim: 20, arctic: [20, 32], kicc: 12, minaret: 4, mosque: 34, lotus: 9, khalifa: 26, emirates: [22, 19], twinspire: 20, watertower: 11, gable: 16, fukuokatower: 12, bigdome: 60, mecha: 18, hakataport: 11, sydneytower: 9, opera: [46, 54],
-      waterline: 20, sixguad: 21, docomo: 19, cocoon: 22, azabudai: 25, torii: 15, kiyomizu: [26, 34], frostsa: 20, wellsfargo: 24, williams: 12, bofa: 17, chasedallas: 20, centralpark: [10, 15], vanderbilt: 17, hudson30: 18, spruce8: 14, woolworth: 21, aon: 18, notch: 18, alohatower: 7, mitikah: 12, reforma: 16, latino: 11, bishops22: 17, montparnasse: 18, grandearche: 27, harpa: 30, britam: 14, times: 15, citadel: 60, burjalarab: [26, 24], frame: 24, museumfuture: 32, cayan: 14, portside: 16, stadium: 50, crown: 18, belltower: 8, trinity: [5, 22], harborlight: 5, depot: 34, hangar: 30, controltower: 6, radar: 11, pearl: 18, shanghaitower: 24, swfc: 22, jinmao: 19, cctv: [38, 40], chinazun: 26, cwtc3: 18, heaven: 24, gatetower: 33, ifc2: 16, boc: 17, centralplaza: 14, thecenter: 14, cheungkong: 15, cantontower: 26, ctf: 14, gzifc: 14, raffles: 46, hongyadong: 65, pingan: 16, kk100: 14, springbamboo: 15, panorama: 14, ccity: 14, perlan: 23, customs: 20, astonmartin: 16, museum1000: 14, miamitower: 20, freedom: 20, atwood: 16, captaincook: 22,
+      waterline: 20, sixguad: 21, docomo: 19, cocoon: 22, azabudai: 25, torii: 15, kiyomizu: [26, 34], frostsa: 20, wellsfargo: 24, williams: 12, bofa: 17, chasedallas: 20, centralpark: [10, 15], vanderbilt: 17, hudson30: 18, spruce8: 14, woolworth: 21, aon: 18, notch: 18, alohatower: 7, mitikah: 12, reforma: 16, latino: 11, bishops22: 17, montparnasse: 18, grandearche: 27, harpa: 30, britam: 14, times: 15, citadel: 60, burjalarab: [26, 24], frame: 24, museumfuture: 32, cayan: 14, portside: 16, stadium: 50, crown: 18, belltower: 8, trinity: [5, 22], harborlight: 5, depot: 34, hangar: 30, controltower: 6, radar: 11, pearl: 18, shanghaitower: 24, swfc: 22, jinmao: 19, cctv: [38, 40], chinazun: 26, cwtc3: 18, heaven: 24, gatetower: 33, ifc2: 16, boc: 17, centralplaza: 14, thecenter: 14, cheungkong: 15, cantontower: 26, ctf: 14, gzifc: 14, raffles: 46, hongyadong: 65, pingan: 16, kk100: 14, springbamboo: 15, panorama: 14, courthouse: 18, radome: 9, tanks: 20, chapel: 8, turbine: 12, rnbridge: 300, ccity: 14, perlan: 23, customs: 20, astonmartin: 16, museum1000: 14, miamitower: 20, freedom: 20, atwood: 16, captaincook: 22,
       wheel: 24, eye: 24, harbourbridge: 156, cantilever: 110, pell: 100, huntbridge: 140 };
     return { fill: M, stroke: S, foot: FOOT, pair: { harbourbridge: 'harbourpylons', pell: 'pelltowers' }, evenodd: new Set(['eiffel', 'arc', 'chasedallas', 'grandearche', 'frame', 'museumfuture', 'swfc', 'cctv']) };
   })();
@@ -2681,7 +2698,7 @@ SUN = (() => {
     function drawLayer(L) {
       const { sky, up, b, night, sunLab } = D, off = lk.az * L.par * PAR, voff = lk.el * L.par * 0.4, k = Math.round(L.mix * 4);
       
-      ridgePath(L, off, voff); g.fillStyle = shade(L.mix, L.sand, 0.22 - L.mix * 0.1, 0); g.fill();
+      ridgePath(L, off, voff); g.fillStyle = L.ice ? css(mixLab(mixLab(SNOWC, sky.hor, 0.3 + 0.2 * L.mix), sky.ground, 0.2 + L.mix * 0.35 + night * 0.45)) : shade(L.mix, L.sand, 0.22 - L.mix * 0.1, 0); g.fill();
       if (L.snow) {
         g.save(); ridgePath(L, off, voff); g.clip();
         const top = (L.base - L.amp) * Hh + voff, sn = g.createLinearGradient(0, top, 0, top + L.amp * Hh * 0.5), snow = mixLab(mixLab(SNOWC, sky.hor, 0.3 + 0.2 * L.mix), sky.ground, night * 0.65);
@@ -2820,6 +2837,10 @@ SUN = (() => {
         // Denali, far off: a massive, almost wholly white range
         const p = () => { g.beginPath(); g.moveTo(x - W * 0.2, yb); g.quadraticCurveTo(x - W * 0.12, yb - h * 0.5, x - W * 0.06, yb - h * 0.82); g.lineTo(x - W * 0.035, yb - h * 0.78); g.lineTo(x, yb - h); g.lineTo(x + W * 0.03, yb - h * 0.88); g.lineTo(x + W * 0.06, yb - h * 0.9); g.quadraticCurveTo(x + W * 0.12, yb - h * 0.5, x + W * 0.2, yb); g.closePath(); };
         g.fillStyle = shade(0.2, false, 0.12, 0); p(); fl(); fillSnow(p, 0.5);
+      } else if (type === 'erebus') {
+        // Mount Erebus: a broad volcano under snow almost to its foot, steam rising from the summit crater
+        const p = () => { g.beginPath(); g.moveTo(x - W * 0.34, yb); g.quadraticCurveTo(x - W * 0.16, yb - h * 0.62, x - W * 0.05, yb - h * 0.97); g.lineTo(x - W * 0.025, yb - h); g.lineTo(x - W * 0.01, yb - h * 0.975); g.lineTo(x + W * 0.012, yb - h * 0.98); g.lineTo(x + W * 0.03, yb - h * 0.995); g.lineTo(x + W * 0.06, yb - h * 0.95); g.quadraticCurveTo(x + W * 0.18, yb - h * 0.6, x + W * 0.36, yb); g.closePath(); };
+        g.fillStyle = shade(0.22, false, 0.12, 0); p(); fl(); fillSnow(p, 0.12); if (C.smoke) live(() => smokeAt(x, yb - h, h));
       } else if (type === 'pyramids') {
         const stone = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.32 + night * 0.3);
         for (const [du, s] of [[0, 1], [0.075, 0.94], [0.14, 0.52]]) {
@@ -2896,7 +2917,7 @@ SUN = (() => {
       }
       if (C.neon) { g.fillStyle = `rgba(255,110,210,${(0.5 * night).toFixed(3)})`; for (const B of L.row) if (B.h > Hh * 0.12) g.fillRect(snap(B.x), snap(yb - B.h), B.w, PIX ? px : 1.4); }
     }
-    const LIVEM = new Set(['wheel', 'eye', 'radar']);
+    const LIVEM = new Set(['wheel', 'eye', 'radar', 'turbine']);
     function drawMark(M, yb, L, T) {
       if (SINK && LIVEM.has(M.type)) { live(T2 => drawMark(M, yb, L, T2)); return; }
       const { sky, night } = D, tone = M.tone === 'light' ? mixLab(WHITE, sky.hor, 0.45) : null, ta = M.tone === 'light' ? 0.16 * (1 - 0.5 * night) : 0.2 * (1 - 0.6 * night);
@@ -3041,6 +3062,19 @@ SUN = (() => {
         for (let x = -W * 0.2; x < W * 1.2; x += step) { const ph = x / W, y = baseY + Math.sin(ph * 5 + T * 0.15 + band * 2) * amp + Math.sin(ph * 13 - T * 0.3) * amp * 0.3; g.globalAlpha = 0.35 + 0.65 * Math.pow(Math.abs(Math.sin(ph * 9 + T * 0.4 + band)), 2); g.fillRect(x - lk.az * 4 * PAR, y - hgt, step + 0.5, hgt + amp * 0.3); }
       }
       g.restore();
+    }
+    // under dark skies, the Milky Way: a faint band thick with small stars
+    function milkyWay(T, hy) {
+      const k = D.night; if (!C.darksky || k < 0.2) return;
+      g.save(); g.globalCompositeOperation = 'screen'; g.translate(W * 0.55 - lk.az * 3 * PAR, hy * 0.45); g.rotate(-0.9);
+      const gr = g.createLinearGradient(0, -Hh * 0.12, 0, Hh * 0.12); gr.addColorStop(0, 'rgba(200,210,255,0)'); gr.addColorStop(0.5, `rgba(215,220,255,${(0.14 * k).toFixed(3)})`); gr.addColorStop(1, 'rgba(200,210,255,0)'); g.fillStyle = gr; g.fillRect(-W, -Hh * 0.12, W * 2, Hh * 0.24);
+      g.fillStyle = '#fff'; for (let i = 0; i < 260; i++) { const xx = (hsh(i, 1) - 0.5) * W * 1.8, yy = (hsh(i, 2) - 0.5) * hsh(i, 3) * Hh * 0.22, s = PIX ? px : 0.6 + hsh(i, 5) * 0.6; g.globalAlpha = k * (0.15 + 0.5 * hsh(i, 4)) * (0.85 + 0.15 * Math.sin(T * 1.3 + i)); g.fillRect(xx, yy, s, s); }
+      g.restore();
+    }
+    // Marfa: the Marfa Lights, glowing and fading low over the grassland toward the Chinati Mountains
+    function marfaLights(T) {
+      const n = D.night; if (n < 0.3) return;
+      for (let i = 0; i < 4; i++) { const ph = T * (0.013 + i * 0.004) + i * 1.7, on = Math.max(0, Math.sin(ph * 3.1) * Math.sin(ph * 1.3 + i)); if (on < 0.05) continue; glowDot(W * (0.72 + 0.08 * Math.sin(ph) + i * 0.04) - lk.az * 8 * PAR, Hh * 0.77 - Hh * 0.008 * (1 + Math.sin(ph * 2 + i)), 6 + 4 * on, [255, 225, 170], 0.9 * on * n); }
     }
     // Austin: the bats leaving the Congress Avenue Bridge at dusk, spring to fall
     function bats(T, x0, y0) {
@@ -3261,6 +3295,23 @@ SUN = (() => {
       }
       if (C.near === 'pines') extra('pines', 0, 0, 0, 34);
       const off = lk.az * L.par * PAR, voff = lk.el * L.par * 0.4, sky = D.sky;
+      if (C.near === 'ice') {
+        // the frozen sound: flat sea ice, its pressure ridges catching the light, emperor penguins on their way
+        const S = { ...L, amp: 0.012, base: 0.925 }, ice = mixLab(mixLab(SNOWC, sky.hor, 0.38), sky.ground, D.night * 0.6);
+        const ig = g.createLinearGradient(0, Hh * 0.91, 0, Hh); ig.addColorStop(0, css(ice)); ig.addColorStop(1, css(mixLab(mixLab(ice, sky.zen, 0.45), BLACK, 0.12))); ridgePath(S, off, voff); g.fillStyle = ig; g.fill();
+        g.strokeStyle = rgba(mixLab(ice, WHITE, 0.45), 0.6); g.lineWidth = PIX ? px : 1; g.beginPath(); for (let i = 0; i < 7; i++) { const y0 = Hh * (0.93 + i * 0.011), x0 = (hsh(i, 1) * 1.2 - 0.1) * W, len = W * (0.1 + hsh(i, 2) * 0.25); g.moveTo(x0, y0); for (let k = 1; k <= 8; k++) g.lineTo(x0 + (len * k) / 8, y0 - (k % 2 ? 1.5 : 0)); } g.stroke();
+        const dark = css(mixLab(layerLab(sky.hor, 0.95), BLACK, 0.25)), belly = css(mixLab(ice, WHITE, 0.25));
+        for (let i = 0; i < 7; i++) { const x = W * (0.66 + i * 0.035 + hsh(i, 3) * 0.012), y = Hh * (0.955 + hsh(i, 4) * 0.012), hh = Hh * 0.032 * (0.85 + hsh(i, 5) * 0.3); g.fillStyle = dark; g.beginPath(); g.ellipse(x, y - hh * 0.45, hh * 0.2, hh * 0.45, 0, 0, 2 * PI); g.moveTo(x + hh * 0.13, y - hh * 0.92); g.arc(x, y - hh * 0.92, hh * 0.13, 0, 2 * PI); g.fill(); g.fillStyle = belly; g.beginPath(); g.ellipse(x + hh * 0.06, y - hh * 0.42, hh * 0.1, hh * 0.3, 0, 0, 2 * PI); g.fill(); }
+        return;
+      }
+      if (C.near === 'grass') {
+        // high desert grassland: golden grass, yuccas, a ranch fence along the road
+        const S = { ...L, amp: 0.015, base: 0.93, sand: 1, mix: 0.62 }; drawLayer(S);
+        const col = css(mixLab(layerLab(sky.hor, 0.9), BLACK, 0.12)); g.fillStyle = col; g.strokeStyle = col; g.lineWidth = PIX ? px : 1;
+        const fy = x => ridgeAt(S, x, off) * Hh + voff - Hh * 0.014; g.beginPath(); for (let i = 0; i < 18; i++) { const x = (i / 17) * W * 1.3 - W * 0.15; g.moveTo(x, fy(x) + Hh * 0.016); g.lineTo(x, fy(x) - Hh * 0.004); } g.moveTo(-W * 0.15, fy(-W * 0.15)); for (let x = -W * 0.15; x <= W * 1.15; x += 10) g.lineTo(x, fy(x)); g.stroke();
+        for (const [u, sc] of [[0.08, 1], [0.27, 0.7], [0.8, 0.9], [0.93, 1.2]]) { const x = u * W, by = ridgeAt(S, x, off) * Hh + voff + 3, th = Hh * 0.06 * sc; g.beginPath(); g.moveTo(x - th * 0.04, by); g.lineTo(x - th * 0.02, by - th * 0.55); g.lineTo(x + th * 0.02, by - th * 0.55); g.lineTo(x + th * 0.04, by); g.closePath(); g.fill(); g.beginPath(); for (let k = 0; k < 9; k++) { const a = -PI / 2 + (k - 4) * 0.28; g.moveTo(x, by - th * 0.55); g.lineTo(x + Math.cos(a) * th * 0.45, by - th * 0.55 + Math.sin(a) * th * 0.45); } g.stroke(); }
+        return;
+      }
       if (C.near === 'promenade') {
         // Copacabana: the beach, then the promenade's black-and-white waves along the avenue
         const y0 = Hh * 0.875, sand = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.25 + D.night * 0.55);
@@ -3320,7 +3371,7 @@ SUN = (() => {
       const glowLab = mixLab(sunLab, D.accent, 0.3);
       if (up || sp.alt > -14 * rad) { const gy = up ? sy : hy, R = W * (up ? 0.22 + 0.42 * b : 0.45) * (1 + 0.04 * Math.sin(T * 0.9)), a = (up ? 0.28 + 0.4 * b : 0.45 * smooth(-14 * rad, 0, sp.alt)) * ((1)); const gr = g.createRadialGradient(sx, gy, 0, sx, gy, R); gr.addColorStop(0, rgba(glowLab, a)); gr.addColorStop(0.4, rgba(glowLab, a * 0.35)); gr.addColorStop(1, rgba(glowLab, 0)); g.globalCompositeOperation = 'screen'; g.fillStyle = gr; g.fillRect(-W * 0.3, 0, W * 1.6, Hh); g.globalCompositeOperation = 'source-over'; }
       if (night > 0.01) { g.fillStyle = ('#fff'); for (const [u, v, r, a] of STARS) { g.globalAlpha = night * (0.3 + 0.65 * a) * (0.85 + 0.15 * Math.sin(T * 1.7 + a * 40)); const x = u * W - pxo * 3 * PAR, y = v * Hh - pyo * 2; if (PIX) { const s = r > 1.2 ? 2 * px : px; g.fillRect(snap(x), snap(y), s, s); } else { g.beginPath(); g.arc(x, y, (r), 0, 2 * PI); g.fill(); } } g.globalAlpha = 1; }
-      aurora(T, hy);
+      aurora(T, hy); milkyWay(T, hy);
       if (c.mode === 'solar') { g.beginPath(); for (let i = 0; i <= 48; i++) { const s = sunPos(c.rise + ((c.set - c.rise) * i) / 48, state.place.lat, state.place.lng), x = axF(s.az / rad), y = hy - (s.alt / (90 * rad)) * hy * 0.94; i ? g.lineTo(x, y) : g.moveTo(x, y); } g.setLineDash(PIX ? [px, px * 3] : [1.5, 7]); g.lineCap = 'round'; g.lineWidth = PIX ? px : 1.6; g.strokeStyle = inkOn(mixLab(sky.hor, sky.zen, 0.5)) === '#1c1a29' ? 'rgba(28,26,41,.32)' : 'rgba(247,242,232,.32)'; g.stroke(); g.setLineDash([]); }
       drawClouds(T, hy);
       if (!up) return;
@@ -3361,7 +3412,7 @@ SUN = (() => {
       const ridge = i => place(layerImg('r' + i, rk, layers[i].par, layers[i].par * 0.4, () => drawRidge(i, hy)), look.az * layers[i].par * PAR, look.el * layers[i].par * 0.4);
       const cityLine = L => place(layerImg('l' + L.i, lnk, L.par, L.par * 0.3, () => drawLine(L, T), L.near || L.quay), look.az * L.par * PAR, look.el * L.par * 0.3);
       const scenery = () => { for (let i = 0; i < layers.length; i++) ridge(i); for (const L of back) cityLine(L); };
-      const fx = () => { if (C.lasers) lasers(T); if (C.ufo) ufo(T, hy); };
+      const fx = () => { if (C.lasers) lasers(T); if (C.ufo) ufo(T, hy); if (C.marfa) marfaLights(T); };
       if (C.water === 'sea') {
         scenery(); const open = C.beach === false, shore = open ? Hh * 1.02 : Hh * 0.86;
         drawWater(hy, shore + Hh * 0.02, T, scenery); squid(T, hy); drawOvers(hy, open ? Hh : shore, T);
@@ -3387,7 +3438,7 @@ SUN = (() => {
         for (const L of nearL) cityLine(L);
       }
       if (C.palms) place(layerImg('palms', rk, 90, 14, palms, true), -look.az * 90 * PAR, -look.el * 14);
-      const labels = () => { g.font = `700 ${W < 500 ? 11 : 12.5}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`; g.textAlign = 'center'; g.fillStyle = 'rgba(247,242,232,.7)'; g.shadowColor = 'rgba(0,0,0,.35)'; g.shadowBlur = PIX ? 0 : 3; g.shadowOffsetY = PIX ? 1 : 0;
+      const labels = () => { g.font = `700 ${W < 500 ? 11 : 12.5}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`; g.textAlign = 'center'; const dk = C.near === 'ice' && D.night < 0.5; g.fillStyle = dk ? 'rgba(28,26,41,.78)' : 'rgba(247,242,232,.78)'; g.shadowColor = dk ? 'rgba(255,255,255,.55)' : 'rgba(0,0,0,.6)'; g.shadowBlur = PIX ? 0 : 4; g.shadowOffsetY = 1;
         for (const az of south ? [90, 180, 270] : [270, 0, 90]) g.fillText(`${DIRK[Math.round(az / 30) % 12]} ${tr('dir' + az)}`, axF(az) - look.az * 70, Hh - 14 + look.el * Hh * OVER * 0.5);
         g.shadowColor = 'transparent'; g.shadowBlur = 0; g.shadowOffsetY = 0; };
       // Pixel: quantize the low-resolution frame, blow it up hard, then set the type crisp on top so it stays readable
