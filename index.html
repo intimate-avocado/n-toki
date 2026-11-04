@@ -215,6 +215,10 @@ button{font:inherit;color:inherit}
 .sp-lb.step{font-size:14px;color:var(--sp-up,#f7f2e8)}
 .sp-lb.step.cur{font-size:19px}
 .sp-lb.step.dim{color:#f7f2e8;opacity:.6}
+.sp-lb.fanlbl{font-size:15px;text-shadow:none;transition:font-size .2s}
+.sp-lb.fanlbl.cur{font-size:21px}
+.sp-lb.fanlbl.dim{opacity:.7}
+.fan-stage .sp-lbls{z-index:1}
 .sp-hud{position:absolute;left:16px;top:14px;pointer-events:none;display:flex;flex-direction:column;gap:3px}
 .sp-hud b{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1}
 .sp-hud span{font-size:13px;font-weight:700}
@@ -223,6 +227,7 @@ button{font:inherit;color:inherit}
 #arcLegend span{white-space:nowrap}
 #arcNote,#winNote{margin:4px 0 0}
 #sunScenes{flex-wrap:wrap;justify-content:center;margin:12px auto 0;border-radius:18px}
+#sunStyles{margin:8px auto 0}
 
 html[lang|="zh"]{--f-display:"Noto Serif SC","Songti SC","SimSun",serif;--f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif}
 .langs{display:grid;gap:6px;margin:0;padding:0;list-style:none}
@@ -419,6 +424,11 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
           <button type="button" role="radio" data-scene="beach" aria-checked="false">Beach</button>
           <button type="button" role="radio" data-scene="hills" aria-checked="false">Hills</button>
           <button type="button" role="radio" data-scene="desert" aria-checked="false">Desert</button>
+        </div>
+        <div class="seg-ctl" id="sunStyles" role="radiogroup" aria-label="Style" data-i18n-aria="styleAria">
+          <button type="button" role="radio" data-style="painted" aria-checked="true">Painted</button>
+          <button type="button" role="radio" data-style="pixel" aria-checked="false">Pixel</button>
+          <button type="button" role="radio" data-style="crt" aria-checked="false">CRT</button>
         </div>
         <div class="dial-info"><p id="winNote"></p></div>
         <div class="why about">
@@ -901,7 +911,7 @@ const STR = {
     screensH: 'Screens', screensSub: 'The living clock always comes first. Add, remove and reorder the rest.', scrFixed: 'Always first',
     scrArc: "The sun's path", scrArcD: 'Lantern steps on the arc of the day', scrWindow: 'The sky outside', scrWindowD: 'Your place, its land and skyline',
     scrCycleD: 'Twelve toki at their true lengths', scrYearD: 'The year read by the sun',
-    moveUp: 'Move up', tilt: 'Tilt to look around', moveDown: 'Move down', addScr: 'Add', removeScr: 'Remove',
+    moveUp: 'Move up', st_painted: 'Painted', st_pixel: 'Pixel', st_crt: 'CRT', styleAria: 'Style', tilt: 'Tilt to look around', moveDown: 'Move down', addScr: 'Add', removeScr: 'Remove',
     aboutT: 'About this view',
     aboutArcP: "The sun's path draws today's arc of the sun from one Rabbit to the next. Each toki is a paper lantern: as wide as that toki lasts today, and as tall as the sun climbs or sinks during it. The lantern the sun is passing through lights up. Glance at it to see the shape of the day, and why toki stretch in summer and shrink in winter.",
     aboutWinP: "The sky outside is a window facing the sun's side of the sky, with the sun where it really stands right now. The sky takes the colors of the toki around this moment, and the land and skyline are a portrait of your place, not a literal view. It is meant to be glanced at, the way you would look out of a window to read the time of day.",
@@ -963,7 +973,7 @@ const STR = {
     screensH: '画面', screensSub: '生きた時計はいつも最初。ほかの画面は追加・削除・並べ替えができます。', scrFixed: 'いつも最初',
     scrArc: '太陽の道', scrArcD: '一日の弧に浮かぶ灯りの段', scrWindow: '窓の外の空', scrWindowD: 'この土地の景色と街並み',
     scrCycleD: '本当の長さの十二刻', scrYearD: '太陽で読む一年',
-    moveUp: '上へ', tilt: '傾けて見回す', moveDown: '下へ', addScr: '追加', removeScr: '外す',
+    moveUp: '上へ', st_painted: '絵', st_pixel: 'ドット', st_crt: 'ブラウン管', styleAria: '画風', tilt: '傾けて見回す', moveDown: '下へ', addScr: '追加', removeScr: '外す',
     aboutT: 'この画面について',
     aboutArcP: '太陽の道は、卯から次の卯までの今日の太陽の弧を描きます。それぞれの刻は紙の灯りで、幅はその刻の今日の長さ、高さはそのあいだに太陽が昇り降りする幅です。太陽が通っている灯りがともります。一日のかたちと、夏に刻が伸び冬に縮むわけがひと目でわかります。',
     aboutWinP: '窓の外の空は、太陽の側を向いた窓です。太陽はいま実際にある場所にあり、空はこの時の前後の刻の色に染まります。景色と街並みは写生ではなく、その土地の面影です。窓の外を見て一日の時を知るように、ふと眺めるための画面です。',
@@ -1025,7 +1035,7 @@ const STR = {
     screensH: '画面', screensSub: '活的时钟始终在最前。其余画面可添加、移除和重新排序。', scrFixed: '始终在最前',
     scrArc: '太阳的轨迹', scrArcD: '一日弧线上的灯笼台阶', scrWindow: '窗外的天空', scrWindowD: '此地的风景与天际线',
     scrCycleD: '真实长度的十二时辰', scrYearD: '用太阳读一年',
-    moveUp: '上移', tilt: '倾斜以环顾', moveDown: '下移', addScr: '添加', removeScr: '移除',
+    moveUp: '上移', st_painted: '绘画', st_pixel: '像素', st_crt: '显像管', styleAria: '风格', tilt: '倾斜以环顾', moveDown: '下移', addScr: '添加', removeScr: '移除',
     aboutT: '关于此画面',
     aboutArcP: '太阳的轨迹描绘今日从一个卯时到下一个卯时的太阳弧线。每个时辰是一盏纸灯笼：宽度是该时辰今日的时长，高度是其间太阳升降的幅度。太阳经过的那盏灯笼会亮起。一眼即可看出一天的形状，以及时辰为何夏长冬短。',
     aboutWinP: '窗外的天空是一扇面向太阳一侧的窗。太阳就在它此刻真实的位置，天空染上此刻前后时辰的颜色，风景与天际线是此地的写意而非实景。就像望向窗外便知一天的时分，这是一个用来随意一瞥的画面。',
@@ -1082,6 +1092,7 @@ function applyStatic() {
   const mode = { kanji: 'mKanji', en: 'mAnimal', bell: 'mBell' };
   document.querySelectorAll('.seg-ctl button[data-label]').forEach(b => { b.innerHTML = tr(mode[b.dataset.label]); });
   document.querySelectorAll('#sunScenes button').forEach(b => { b.textContent = b.dataset.scene === 'here' ? placeName(state.place) : tr('sc_' + b.dataset.scene); });
+  document.querySelectorAll('#sunStyles button').forEach(b => { b.textContent = tr('st_' + b.dataset.style); });
   $('cityLbl').textContent = placeName(state.place);
 }
 function setLang(l) {
@@ -1878,7 +1889,7 @@ SUN = (() => {
   const GYRO = { on: false, az: 0, el: 0, base: null };
   function gyroStart() {
     if (GYRO.on) return; GYRO.on = true;
-    addEventListener('deviceorientation', e => { if (e.gamma == null) return; const land = Math.abs(window.orientation || (screen.orientation && screen.orientation.angle) || 0) === 90; const g = land ? e.beta : e.gamma, b = land ? e.gamma : e.beta; if (GYRO.base == null) GYRO.base = [g, b]; GYRO.az = clamp((g - GYRO.base[0]) / 28, -1, 1); GYRO.el = clamp((b - GYRO.base[1]) / 28, -1, 1); GYRO.base = [GYRO.base[0] * 0.995 + g * 0.005, GYRO.base[1] * 0.995 + b * 0.005]; });
+    addEventListener('deviceorientation', e => { if (e.gamma == null) return; const land = Math.abs(window.orientation || (screen.orientation && screen.orientation.angle) || 0) === 90; const g = land ? e.beta : e.gamma, b = land ? e.gamma : e.beta; if (GYRO.base == null) GYRO.base = [g, b]; GYRO.az = clamp((g - GYRO.base[0]) / 40, -1, 1); GYRO.el = clamp((b - GYRO.base[1]) / 40, -1, 1); GYRO.base = [GYRO.base[0] * 0.995 + g * 0.005, GYRO.base[1] * 0.995 + b * 0.005]; });
   }
   function gyroAsk() { const D = window.DeviceOrientationEvent; if (!D) return; if (typeof D.requestPermission === 'function') D.requestPermission().then(r => { if (r === 'granted') gyroStart(); }).catch(() => {}); else gyroStart(); }
   if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function' && 'ontouchstart' in window) gyroStart();
@@ -1892,7 +1903,7 @@ SUN = (() => {
     el.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') L.drag = [e.clientX, e.clientY]; });
     const end = () => { L.drag = null; }; el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
     el.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') { L.taz = 0; L.tel = 0; } });
-    L.step = () => { const taz = GYRO.on && !L.drag ? clamp(L.taz + GYRO.az * azR, -azR, azR) : L.taz, tel = GYRO.on && !L.drag ? clamp(L.tel + GYRO.el * elR, -elR, elR) : L.tel; if (reduced.matches) { L.az = taz; L.el = tel; return false; } const da = taz - L.az, de = tel - L.el; L.az += da * 0.08; L.el += de * 0.08; return Math.abs(da) + Math.abs(de) > 1e-4; };
+    L.step = () => { const taz = GYRO.on && !L.drag ? clamp(L.taz + GYRO.az * azR, -azR, azR) : L.taz, tel = GYRO.on && !L.drag ? clamp(L.tel + GYRO.el * elR, -elR, elR) : L.tel; if (reduced.matches) { L.az = taz; L.el = tel; return false; } const da = taz - L.az, de = tel - L.el; L.az += da * 0.035; L.el += de * 0.035; return Math.abs(da) + Math.abs(de) > 1e-4; };
     return L;
   }
   function sizeTo(renderer, camera, el) { const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return null; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); return [w, h]; }
@@ -1970,8 +1981,9 @@ SUN = (() => {
     const day = new THREE.Group(); scene.add(day);
     const ink = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.22, depthWrite: false }); ink.keep = true;
     const halo = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.2, depthWrite: false }); halo.keep = true;
-    const sun = makeSun(scene), labels = makeLabels(el), look = makeLook(el, 14 * rad, 6 * rad);
+    const sun = makeSun(scene), labels = makeLabels(el), look = makeLook(el, 9 * rad, 4 * rad);
     const stepLabels = TOKI.map(() => labels.add('step'));
+    const hud = document.createElement('div'); hud.className = 'sp-hud'; hud.innerHTML = '<b></b><span></span>'; el.appendChild(hud);
     let size = null, dirty = true, lastAnim = 0, X = () => 0, Y = () => 0, edges = [], stepU = [], auras = [];
     function build(D) {
       clearGroup(day); edges = []; stepU = []; auras = [];
@@ -2006,8 +2018,7 @@ SUN = (() => {
         };
         if (hi > 0) block(Y(Math.max(lo, 0)), Y(hi), true);
         if (lo < 0) block(Y(lo), Y(Math.min(hi, 0)), false);
-        const L = stepLabels[k]; L.el.textContent = tGlyph(k); L.el.classList.toggle('cur', cur); L.el.classList.toggle('dim', hi <= 0);
-        L.pos.set(cx, hi > 0 ? Y(hi) + 0.36 : Y(lo) - 0.36, DEP / 2);
+        const L = stepLabels[k]; L.show = false;
       }
       if (posts.length) { const pl = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(posts), ink); pl.renderOrder = 4; day.add(pl); }
     }
@@ -2028,6 +2039,7 @@ SUN = (() => {
         const light = mixLab(D.sky.hor, D.sky.zen, 0.5)[0] > 0.62;
         ink.color.set(light ? 0x1c1a29 : 0xf7f2e8); halo.color.set(light ? 0x2a2433 : 0x000000); halo.opacity = light ? 0.2 : 0.32;
         el.style.setProperty('--sp-up', light ? '#1c1a29' : '#f7f2e8');
+        hud.style.color = light ? '#1c1a29' : '#f7f2e8'; hud.firstChild.textContent = tGlyph(D.c.idx); hud.lastChild.textContent = `${tokiName(D.c.idx)} · ${tStr(D.c.b[D.c.idx])} – ${tStr(D.c.b[D.c.idx + 1])}`;
         for (const e of edges) { const { k, above, cur } = e.userData, dark = light && above; setCol(e.material.color, dark ? mixLab(PAL[k], BLACK, 0.5) : mixLab(lift(PAL[k]), WHITE, 0.55)); e.material.opacity = cur ? 0.7 : dark ? 0.4 : 0.28; }
         // the sun lights the step it is passing through; under the glass it glows in the toki's color
         const sunCol = D.up ? mixLab(D.sunLab, D.accent, 0.3) : mixLab(D.accent, BLACK, 0.35), amt = D.up ? 0.35 + 0.85 * D.b : 0.12 + 0.12 * (1 - D.night);
@@ -2056,7 +2068,7 @@ SUN = (() => {
   /* Window: the sky facing the equator over a scene (2D canvas, no WebGL).
      Each place is a portrait of its best-known view, not a literal one: its land, natural landmarks,
      a generated skyline and simplified silhouettes of its signature buildings. */
-  const SAND = hexToLab('#D9B67E'), SNOWC = [0.97, -0.004, -0.012], PAR = 2.4, OVER = 0.1;
+  const SAND = hexToLab('#D9B67E'), SNOWC = [0.97, -0.004, -0.012], PAR = 1.1, OVER = 0.035;
   // marks: [shape, x (0..1 of the view), height (fraction of the view), 'light' for white buildings]
   // marks: [shape, x (0..1 of the view), real height in metres, 'light' for pale buildings]; `top` is the view fraction the tallest gets
   const PLACES = {
@@ -2111,8 +2123,8 @@ SUN = (() => {
       { kind: 'hills', w: mkWaves(101, 4, 0.5, 0.85, 1.5), base: 0.72, amp: 0.07 * calm, mix: 0.26, par: 6 },
       { kind: 'hills', w: mkWaves(154, 4, 0.7, 0.9, 1.5), base: 0.78, amp: 0.08 * calm, mix: 0.44, par: 14 }];
   }
-  const NEAR = { kind: 'hills', w: mkWaves(207, 4, 0.6, 0.9, 1.5), base: 0.955, amp: 0.045, mix: 0.9, par: 42 };
-  const NEAR_DUNE = { kind: 'dunes', w: mkWaves(211, 3, 0.8, 1, 1.2), base: 0.935, amp: 0.075, mix: 0.7, par: 36, sand: 1 };
+  const NEAR = { kind: 'hills', w: mkWaves(207, 4, 0.6, 0.9, 1.5), base: 0.955, amp: 0.045, mix: 0.9, par: 60 };
+  const NEAR_DUNE = { kind: 'dunes', w: mkWaves(211, 3, 0.8, 1, 1.2), base: 0.935, amp: 0.075, mix: 0.7, par: 52, sand: 1 };
 
   // One row of buildings, generated from the place's character.
   function genRow(P, seed, W, Hh, o) {
@@ -2221,7 +2233,14 @@ SUN = (() => {
       emirates: (g, x, yb, h, u) => { g.moveTo(x - 22 * u, yb); g.lineTo(x - 22 * u, yb - h * 0.82); g.lineTo(x - 12 * u, yb - h); g.lineTo(x - 5 * u, yb - h * 0.86); g.lineTo(x - 5 * u, yb); g.closePath(); g.moveTo(x + 5 * u, yb); g.lineTo(x + 5 * u, yb - h * 0.7); g.lineTo(x + 12 * u, yb - h * 0.84); g.lineTo(x + 19 * u, yb - h * 0.72); g.lineTo(x + 19 * u, yb); g.closePath(); },
       // Sydney
       sydneytower: sym([[0, 1], [0.6, 0.93], [2, 0.91], [8, 0.88], [9.5, 0.84], [8, 0.8], [2, 0.78], [2.5, 0.12], [7, 0.04], [9, 0]]),
-      opera: (g, x, yb, h, u) => { g.rect(x - 40 * u, yb - h * 0.14, 86 * u, h * 0.14); for (const [dx, w, f] of [[-34, 18, 0.62], [-22, 16, 0.5], [-6, 26, 1], [10, 24, 0.86], [24, 20, 0.7]]) { const x0 = x + dx * u, ww = w * u, y0 = yb - h * 0.12, hh = h * f; g.moveTo(x0, y0); g.quadraticCurveTo(x0 + ww * 0.05, y0 - hh * 1.05, x0 + ww * 0.62, y0 - hh); g.quadraticCurveTo(x0 + ww * 0.72, y0 - hh * 0.45, x0 + ww, y0); g.closePath(); } }
+      opera: (g, x, yb, h, u) => {
+        // a podium, then two nested groups of sails leaning toward the harbour and a small group leaning back
+        g.rect(x - 46 * u, yb - h * 0.16, 100 * u, h * 0.16);
+        const sail = (x0, w, hh, lean) => { const tip = x0 + w * (0.5 + lean * 0.42), y0 = yb - h * 0.14; g.moveTo(x0, y0); g.bezierCurveTo(x0 + w * 0.05, y0 - hh * 0.55, tip - w * 0.25, y0 - hh * 0.98, tip, y0 - hh); g.bezierCurveTo(tip + w * 0.12, y0 - hh * 0.6, x0 + w * 0.92, y0 - hh * 0.18, x0 + w, y0); g.closePath(); };
+        for (const [dx, w, f] of [[-40, 26, 0.62], [-28, 30, 0.82], [-14, 34, 1]]) sail(x + dx * u, w * u, h * f, 1);
+        for (const [dx, w, f] of [[16, 22, 0.52], [26, 26, 0.68]]) sail(x + dx * u, w * u, h * f, 1);
+        sail(x + 44 * u, 14 * u, h * 0.3, -1);
+      },
     };
     // stroked structures (wheels, bridges): return a line width, or 0 if the shape is filled
     const S = {
@@ -2243,8 +2262,9 @@ SUN = (() => {
     const look = makeLook(el, 1, 1);
     const STARS = (() => { const r = seeded(17); return Array.from({ length: 90 }, () => [r(), r() * 0.62, 0.4 + r() * 1.2, r()]); })();
     const CLOUDS = (() => { const r = seeded(29); return Array.from({ length: 8 }, (_, i) => { const depth = i / 7, n = 8 + Math.floor(r() * 5), puffs = []; for (let j = 0; j < n; j++) { const t = j / (n - 1), crown = Math.sin(t * PI); puffs.push([t - 0.5 + (r() - 0.5) * 0.08, -crown * (0.12 + r() * 0.16) - r() * 0.04, (0.08 + crown * 0.1 + r() * 0.05) * (j % 3 === 1 ? 1.2 : 1)]); } return { u: r() * 1.5, v: 0.12 + r() * 0.42, s: (0.14 + r() * 0.16) * (0.55 + depth * 0.7), depth, speed: 0.0012 + depth * 0.0026, puffs, a: 0.3 + depth * 0.32 }; }); })();
-    let D = null, W = 0, Hh = 0, dpr = 1, dirty = true, last = 0, key = '', C = TOWN, layers = [], rows = null, south = true, H5 = [];
-    function resize() { const w = el.clientWidth, h = el.clientHeight; dpr = Math.min(2, devicePixelRatio || 1); W = w; Hh = h; cv.width = refl.width = Math.round(w * dpr); cv.height = refl.height = Math.round(h * dpr); key = ''; dirty = true; }
+    let D = null, W = 0, Hh = 0, dpr = 1, dirty = true, last = 0, key = '', C = TOWN, layers = [], rows = null, south = true, H5 = [], pixel = false, styleKey = '';
+    const post = document.createElement('canvas'), pg = post.getContext('2d');
+    function resize() { const w = el.clientWidth, h = el.clientHeight; pixel = wstyle === 'pixel'; dpr = pixel ? Math.min(0.34, 132 / w) : Math.min(3, devicePixelRatio || 1); W = w; Hh = h; cv.width = refl.width = post.width = Math.round(w * dpr); cv.height = refl.height = post.height = Math.round(h * dpr); cv.style.imageRendering = pixel ? 'pixelated' : 'auto'; key = ''; styleKey = wstyle; dirty = true; }
     function ensure() {
       const k = state.place.id + ':' + scene + ':' + W + 'x' + Hh; if (k === key) return; key = k;
       C = compOf(scene); layers = landLayers(C); rows = null;
@@ -2289,7 +2309,7 @@ SUN = (() => {
 
     // natural landmarks
     function extra(type, u, hf, yb) {
-      const { sky, up, b, night } = D, sx = D.sx, off = look.az * 5 * PAR, x = u * W + off, h = hf * Hh;
+      const { sky, up, b, night } = D, sx = D.sx, off = look.az * 2 * PAR, x = u * W + off, h = hf * Hh;
       const snow = mixLab(mixLab(SNOWC, sky.hor, 0.32), sky.ground, night * 0.65);
       const fillSnow = (path, line) => { g.save(); path(); g.clip(); g.fillStyle = css(snow); g.beginPath(); g.moveTo(x - W, yb - h * 2); g.lineTo(x + W, yb - h * 2); for (let i = 0; i <= 24; i++) { const t = i / 24, xx = x + W * (0.5 - t) * 0.6; g.lineTo(xx, yb - h * line + Math.sin(i * 2.7) * h * 0.04 + (i % 2 ? h * 0.05 : 0)); } g.closePath(); g.fill(); g.restore(); };
       g.fillStyle = shade(0.28, false, 0.15, 0);
@@ -2364,7 +2384,7 @@ SUN = (() => {
     function drawMarks(P, yb, off, T) {
       const { sky, up, b, night } = D, u = u1();
       g.save(); g.translate(off, 0);
-      const dark = shade(0.56, false, 0.15, off), white = mixLab(mixLab(layerLab(sky.hor, 0.4), mixLab(WHITE, sky.hor, 0.35), 0.6 * (1 - night * 0.6)), D.sunLab, up ? 0.12 * b : 0);
+      const dark = shade(0.7, false, 0.15, off), white = mixLab(mixLab(layerLab(sky.hor, 0.4), mixLab(WHITE, sky.hor, 0.35), 0.6 * (1 - night * 0.6)), D.sunLab, up ? 0.12 * b : 0);
       const hOf = markH(P);
       for (const m of P.marks) {
         const [type, mu, , tone] = m, x = mu * W, h = hOf(m) * Hh;
@@ -2429,19 +2449,48 @@ SUN = (() => {
       for (let i = 0; i < 6; i++) { const y0 = yTop + (yBot - yTop) * (0.12 + i * 0.15), t = (y0 - yTop) / (yBot - yTop); g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.4), (0.08 + 0.1 * t) * (1 - night * 0.5)); g.lineWidth = 0.8 + t; g.beginPath(); for (let x = 0; x <= W; x += 8) { const yy = y0 + Math.sin(x * (0.02 + i * 0.004) + T * (0.6 + i * 0.1) + i) * (0.8 + t * 1.6); x ? g.lineTo(x, yy) : g.moveTo(x, yy); } g.stroke(); }
       g.restore();
     }
+    function crt(now) {
+      const p = D.p, dark = mixLab(lut(p + 0.5), BLACK, 0.72), lite = mixLab(lift(lut(p - 0.3)), WHITE, 0.15), T = animOn() ? now / 1000 : 0;
+      pg.setTransform(1, 0, 0, 1, 0, 0); pg.clearRect(0, 0, post.width, post.height);
+      pg.filter = 'grayscale(1) contrast(1.25) brightness(1.05)'; pg.drawImage(cv, 0, 0); pg.filter = 'none';
+      pg.globalCompositeOperation = 'multiply'; pg.fillStyle = css(lite); pg.fillRect(0, 0, post.width, post.height);
+      pg.globalCompositeOperation = 'lighten'; pg.fillStyle = css(dark); pg.fillRect(0, 0, post.width, post.height);
+      pg.globalCompositeOperation = 'source-over';
+      g = main; g.setTransform(1, 0, 0, 1, 0, 0);
+      // slight color fringing: the duotone shifted a pixel each way
+      g.globalAlpha = 1; g.drawImage(post, 0, 0);
+      g.globalAlpha = 0.35; g.globalCompositeOperation = 'screen'; g.drawImage(post, 1.5 * dpr, 0); g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // scanlines and a slow rolling bar
+      g.fillStyle = 'rgba(0,0,0,.22)'; for (let y = 0; y < Hh; y += 3) g.fillRect(0, y, W, 1);
+      const roll = ((T * 40) % (Hh + 120)) - 60; let gr = g.createLinearGradient(0, roll - 40, 0, roll + 40); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, 'rgba(255,255,255,.06)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, roll - 40, W, 80);
+      // hex grid, very faint
+      g.strokeStyle = rgba(lite, 0.08); g.lineWidth = 1; const hs = W * 0.045; for (let r = -1; r < Hh / (hs * 0.87) + 1; r++) for (let q = -1; q < W / (hs * 1.5) + 1; q++) { const cx = q * hs * 1.5, cy = r * hs * 1.732 + (q % 2 ? hs * 0.866 : 0); g.beginPath(); for (let k = 0; k < 6; k++) { const a = (k / 6) * 2 * PI; k ? g.lineTo(cx + hs * Math.cos(a), cy + hs * Math.sin(a)) : g.moveTo(cx + hs * Math.cos(a), cy + hs * Math.sin(a)); } g.closePath(); g.stroke(); }
+      // vignette and a curved-glass edge
+      gr = g.createRadialGradient(W / 2, Hh / 2, Hh * 0.35, W / 2, Hh / 2, Hh * 0.95); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,.55)'); g.fillStyle = gr; g.fillRect(0, 0, W, Hh);
+      // readouts
+      const mono = getComputedStyle(document.documentElement).getPropertyValue('--f-mono'), c = D.c, ink = css(lite);
+      g.font = `500 ${W < 500 ? 10 : 11.5}px ${mono}`; g.fillStyle = ink; g.textAlign = 'right'; g.textBaseline = 'alphabetic';
+      const lines = [`${TOKI[c.idx].k} ${TOKI[c.idx].en.toUpperCase()}  ${Math.round(c.progress * 100)}%`, `ALT ${D.up ? '+' : ''}${deg(D.sp.alt)}°  AZ ${deg(D.sp.az)}°`, `${tStr(c.b[c.idx])} – ${tStr(c.b[c.idx + 1])}`];
+      lines.forEach((t, i) => g.fillText(t, W - 14, 24 + i * 15));
+      g.textAlign = 'left'; g.fillText(`${placeName(state.place).toUpperCase()}  ${(state.place.lat).toFixed(2)}N ${(state.place.lng).toFixed(2)}E`, 14, Hh - 32);
+      g.strokeStyle = rgba(lite, 0.6); g.lineWidth = 1; g.strokeRect(8.5, 8.5, W - 17, Hh - 17);
+      for (const [x, y] of [[8.5, 8.5], [W - 8.5, 8.5], [8.5, Hh - 8.5], [W - 8.5, Hh - 8.5]]) { g.beginPath(); g.moveTo(x - 6, y); g.lineTo(x + 6, y); g.moveTo(x, y - 6); g.lineTo(x, y + 6); g.stroke(); }
+      hud.style.color = ink;
+    }
     function draw(now) {
       if (!D || !W) return;
       ensure();
       const { c, sp, up, b, sky, sunLab, night } = D, face = state.place.lat >= 0 ? 180 : 0, hy = Hh * 0.7;
       south = state.place.lat >= 0;
       const ax = az => W / 2 + ((((az - face + 540) % 360) - 180) / 115) * W * 0.48;
-      g = main; g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g = main; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.imageSmoothingEnabled = !pixel;
       g.fillStyle = css(sky.ground); g.fillRect(0, 0, W, Hh);
       g.translate(-look.az * W * OVER, -look.el * Hh * OVER * 0.5);
       const sx = ax(sp.az / rad), sy = hy - (sp.alt / (90 * rad)) * hy * 0.94, pxo = look.az, pyo = look.el, T = animOn() ? now / 1000 : 0;
       D.sx = sx; D.sy = sy;
       paintSky(D.p);
-      g.imageSmoothingEnabled = true; g.drawImage(skyCv, -W * 0.15, -Hh * 0.1, W * 1.3, hy * 1.1 + 2); g.drawImage(skyCv, 0, skyCv.height - 1, skyCv.width, 1, -W * 0.15, hy, W * 1.3, Hh * 1.1 - hy);
+      g.imageSmoothingEnabled = !pixel; g.drawImage(skyCv, -W * 0.15, -Hh * 0.1, W * 1.3, hy + Hh * 0.1 + 2); g.drawImage(skyCv, 0, skyCv.height - 1, skyCv.width, 1, -W * 0.15, hy, W * 1.3, Hh * 1.1 - hy);
       const glowLab = mixLab(sunLab, D.accent, 0.3);
       if (up || sp.alt > -14 * rad) {
         const gy = up ? sy : hy, R = W * (up ? 0.22 + 0.42 * b : 0.45) * (1 + 0.04 * Math.sin(T * 0.9)), a = up ? 0.28 + 0.4 * b : 0.45 * smooth(-14 * rad, 0, sp.alt);
@@ -2471,13 +2520,13 @@ SUN = (() => {
       if (rows) {
         if (beachy) drawRow(rows.back, hy + 1, 0.42, pxo * 6 * PAR);
         else if (land === 'harbor') {
-          const yb = Hh * 0.8, o1 = pxo * 18 * PAR, o2 = pxo * 24 * PAR, scenery = () => { drawRow(rows.back, yb, 0.5, o1); drawMarks(P, yb, o1, T); drawRow(rows.front, yb, 0.62, o2); };
+          const yb = Hh * 0.8, o1 = pxo * 18 * PAR, o2 = pxo * 24 * PAR, scenery = () => { drawRow(rows.back, yb, 0.5, o1); drawRow(rows.front, yb, 0.62, o2); drawMarks(P, yb, o2, T); };
           scenery(); drawWater(yb, Hh * 0.94, T, scenery);
           g.fillStyle = css(layerLab(sky.hor, 0.92)); g.fillRect(0, Hh * 0.94, W, Hh * 0.06);
         } else {
-          const yb = Hh * 0.86 + pyo * 9;
-          drawRow(rows.back, yb, 0.55, pxo * 20 * PAR); drawMarks(P, yb, pxo * 20 * PAR, T);
-          drawRow(rows.front, Hh * 0.885 + pyo * 12, 0.72, pxo * 30 * PAR);
+          const yb = Hh * 0.86 + pyo * 9, yf = Hh * 0.885 + pyo * 12;
+          drawRow(rows.back, yb, 0.55, pxo * 20 * PAR);
+          drawRow(rows.front, yf, 0.72, pxo * 30 * PAR); drawMarks(P, yf, pxo * 26 * PAR, T);
           haze(yb - P.h * Hh);
         }
       }
@@ -2490,7 +2539,7 @@ SUN = (() => {
         for (let k = 0; k < 2; k++) { const surge = Math.sin(T * 0.5 + k * 2.1) * Hh * 0.006; g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.65), (0.4 - k * 0.15) * (1 - night * 0.5)); g.lineWidth = 1.6 - k * 0.5; g.beginPath(); for (let x = 0; x <= W; x += 6) { const y = wave(x) - 2 + surge + k * 4 + Math.sin(x * 0.045 + T * 1.1 + k) * 1.3; x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); }
       } else if (land === 'desert') drawLayer(NEAR_DUNE);
       else if (land !== 'harbor') drawLayer(NEAR);
-      if (C.palms) { const col = css(mixLab(layerLab(sky.hor, 0.95), BLACK, 0.15)); palm(W * 0.06 - pxo * 80, Hh + 2, Hh * 0.27, 0.45, col); palm(W * 0.12 - pxo * 76, Hh + 2, Hh * 0.2, 0.15, col); palm(W * 0.94 - pxo * 80, Hh + 2, Hh * 0.24, -0.4, col); }
+      if (C.palms) { const col = css(mixLab(layerLab(sky.hor, 0.95), BLACK, 0.15)); palm(W * 0.06 - pxo * 90 * PAR, Hh + 2 - pyo * 14, Hh * 0.27, 0.45, col); palm(W * 0.12 - pxo * 84 * PAR, Hh + 2 - pyo * 12, Hh * 0.2, 0.15, col); palm(W * 0.94 - pxo * 90 * PAR, Hh + 2 - pyo * 14, Hh * 0.24, -0.4, col); }
       g.font = `700 ${W < 500 ? 11 : 12.5}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`; g.textAlign = 'center'; g.fillStyle = 'rgba(247,242,232,.62)';
       for (const az of south ? [90, 180, 270] : [270, 0, 90]) g.fillText(`${DIRK[Math.round(az / 30) % 12]} ${tr('dir' + az)}`, ax(az) - pxo * 70, Hh - 14 + look.el * Hh * OVER * 0.5);
       hud.style.color = inkOn(mixLab(sky.zen, lut(D.p + 0.4), 0.5));
@@ -2498,10 +2547,10 @@ SUN = (() => {
     return {
       update(d) { D = d; hud.firstChild.textContent = tGlyph(d.c.idx); hud.lastChild.textContent = `${scene === 'here' ? placeName(state.place) : tr('sc_' + scene)} · ${tokiName(d.c.idx)}`; dirty = true; },
       render(force, now) {
-        if (!W || force) resize();
-        const moving = look.step(), drift = animOn() && now - last > 50;
+        if (!W || force || styleKey !== wstyle) resize();
+        const moving = look.step(), drift = animOn() && now - last > (pixel ? 90 : 50);
         if (!(dirty || moving || drift || force)) return;
-        last = now; draw(now); dirty = false;
+        last = now; draw(now); if (wstyle === 'crt') crt(now); dirty = false;
       },
       resize() { W = 0; }
     };
@@ -2512,53 +2561,57 @@ SUN = (() => {
      glows, a hand and the sun mark now. Taps hit the ribs directly. */
   function FanView(el) {
     texInit();
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1)); renderer.setClearColor(0, 0); el.prepend(renderer.domElement);
-    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-    const RO = 1.74, RI = 1.2, TH = 0.14;
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x303040, 0.9));
-    const key = new THREE.DirectionalLight(0xffffff, 0.7); key.position.set(-2, 4, 3); scene.add(key);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setPixelRatio(Math.min(3, devicePixelRatio || 1)); renderer.setClearColor(0, 0); el.prepend(renderer.domElement);
+    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+    const RO = 1.74, RI = 1.22, TH = 0.12;
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x303040, 0.95));
+    const key = new THREE.DirectionalLight(0xffffff, 0.65); key.position.set(-2, 4, 3); scene.add(key);
     const ribs = new THREE.Group(); scene.add(ribs);
-    const hand = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.02, RO - RI + 0.3), new THREE.MeshBasicMaterial({ color: 0xf7f2e8 })); scene.add(hand);
-    const sun = makeSun(scene), look = makeLook(el, 10 * rad, 6 * rad);
-    let size = null, dirty = true, meshes = [], c = null, raycaster = new THREE.Raycaster(), ptr = new THREE.Vector2(), down = null, onPick = null;
+    // the horizon: a thin bar through the ring from sunrise to sunset, as in the first fan sketch
+    const horizon = new THREE.Mesh(new THREE.BoxGeometry(2 * RO + 0.5, 0.012, 0.03), new THREE.MeshBasicMaterial({ color: 0xf7f2e8, transparent: true, opacity: 0.45 })); horizon.position.y = -TH / 2 - 0.02; scene.add(horizon);
+    const hand = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.016, RO - RI + 0.24), new THREE.MeshBasicMaterial({ color: 0xf7f2e8 })); scene.add(hand);
+    const sun = makeSun(scene), labels = makeLabels(el), lbl = TOKI.map(() => labels.add('fanlbl'));
+    let size = null, dirty = true, meshes = [], c = null, raycaster = new THREE.Raycaster(), ptr = new THREE.Vector2(), down = null, onPick = null, last = 0;
     const ang = t => ((t - c.noon) / (c.b[12] - c.b[0])) * 2 * PI;
     function wedge(a1, a2) {
       const sh = new THREE.Shape(), n = 14;
-      // the shape's y becomes world -z after rotateX(-90°), so noon (angle 0) sits on the far side, at the top of the view
       for (let i = 0; i <= n; i++) { const a = a1 + ((a2 - a1) * i) / n, x = RO * Math.sin(a), y = RO * Math.cos(a); i ? sh.lineTo(x, y) : sh.moveTo(x, y); }
       for (let i = n; i >= 0; i--) { const a = a1 + ((a2 - a1) * i) / n; sh.lineTo(RI * Math.sin(a), RI * Math.cos(a)); }
       sh.closePath();
-      const g = new THREE.ExtrudeGeometry(sh, { depth: TH, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.015, bevelSegments: 2, curveSegments: 4 });
+      const g = new THREE.ExtrudeGeometry(sh, { depth: TH, bevelEnabled: true, bevelThickness: 0.018, bevelSize: 0.014, bevelSegments: 3, curveSegments: 4 });
       g.rotateX(-PI / 2); g.translate(0, -TH / 2, 0); return g;
     }
     function build(C) {
       c = C; clearGroup(ribs); meshes = [];
       for (let i = 0; i < 12; i++) {
-        const a1 = ang(c.b[i]) + 0.013, a2 = ang(c.b[i + 1]) - 0.013, m = new THREE.Mesh(wedge(a1, a2), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x000000, roughness: 0.55, metalness: 0.05 }));
-        setCol(m.material.color, PAL[i]); m.userData = { i, am: (a1 + a2) / 2 }; ribs.add(m); meshes.push(m);
+        const a1 = ang(c.b[i]) + 0.014, a2 = ang(c.b[i + 1]) - 0.014, night = i >= 6;
+        const m = new THREE.Mesh(wedge(a1, a2), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x000000, roughness: night ? 0.75 : 0.5, metalness: 0.04 }));
+        setCol(m.material.color, PAL[i]); m.userData = { i, am: (a1 + a2) / 2, night }; m.position.y = night ? -0.05 : 0; ribs.add(m); meshes.push(m);
+        const L = lbl[i], r = (RO + RI) / 2; L.pos.set(Math.sin(m.userData.am) * r, TH / 2 + 0.02 + (night ? -0.05 : 0), -Math.cos(m.userData.am) * r); L.el.textContent = glyph(i); L.el.style.color = inkOn(PAL[i]);
       }
       dirty = true;
     }
     function update(C, sel, t) {
       if (!c || C !== c) build(C);
       for (const m of meshes) {
-        const { i, am } = m.userData, lift = i === sel ? 0.16 : 0, out = i === sel ? 0.06 : 0;
-        m.position.set(Math.sin(am) * out, lift, -Math.cos(am) * out);
-        setCol(m.material.emissive, i === c.idx ? mixLab(PAL[i], BLACK, 0.55) : i === sel ? mixLab(PAL[i], BLACK, 0.8) : [0, 0, 0]);
+        const { i, am, night } = m.userData, big = i === sel ? 1.1 : 1, out = i === sel ? 0.1 : 0;
+        m.scale.setScalar(big); m.position.set(Math.sin(am) * out, (night ? -0.05 : 0) + (i === sel ? 0.04 : 0), -Math.cos(am) * out);
+        setCol(m.material.emissive, i === c.idx ? mixLab(PAL[i], BLACK, 0.5) : i === sel ? mixLab(PAL[i], BLACK, 0.78) : [0, 0, 0]);
+        lbl[i].el.classList.toggle('cur', i === sel); lbl[i].el.classList.toggle('dim', night && i !== sel && i !== c.idx);
+        const r = (RO + RI) / 2 + out; lbl[i].pos.set(Math.sin(am) * r, TH / 2 + 0.02 + m.position.y, -Math.cos(am) * r);
       }
       const a = ang(t), r = (RO + RI) / 2;
       hand.position.set(Math.sin(a) * r, TH / 2 + 0.03, -Math.cos(a) * r); hand.rotation.y = -a;
-      sun.set(new THREE.Vector3(Math.sin(a) * (RO + 0.22), 0.1, -Math.cos(a) * (RO + 0.22)), compute(), 0.55);
+      sun.set(new THREE.Vector3(Math.sin(a) * (RO + 0.2), 0.08, -Math.cos(a) * (RO + 0.2)), compute(), 0.5);
       dirty = true;
     }
-    function render(force) {
-      const moving = look.step();
+    function render(force, now) {
       if (!size || force) size = sizeTo(renderer, camera, el);
-      if (!size || !(dirty || moving || force)) return;
-      const tf = Math.tan((camera.fov / 2) * rad), asp = camera.aspect, dist = Math.max(2.15 / tf, 2.15 / (tf * asp)) * 1.02;
-      const az = look.az, elv = 52 * rad + look.el;
-      camera.position.set(dist * Math.cos(elv) * Math.sin(az), dist * Math.sin(elv), dist * Math.cos(elv) * Math.cos(az)); camera.lookAt(0, 0, 0);
-      renderer.render(scene, camera); dirty = false;
+      const pulse = now - last > 50 && sun.anim(now); if (pulse) last = now;
+      if (!size || !(dirty || force || pulse)) return;
+      const tf = Math.tan((camera.fov / 2) * rad), asp = camera.aspect, dist = Math.max(2.1 / tf, 2.1 / (tf * asp)) * 1.03, elv = 50 * rad;
+      camera.position.set(0, dist * Math.sin(elv), dist * Math.cos(elv)); camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera); labels.place(camera, size[0], size[1]); dirty = false;
       const v = new THREE.Vector3(0, 0, 0).project(camera), dc = $('dialCenter'); if (dc) { dc.style.left = (((v.x + 1) / 2) * 100).toFixed(2) + '%'; dc.style.top = (((1 - v.y) / 2) * 100).toFixed(2) + '%'; }
     }
     el.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
@@ -2577,6 +2630,7 @@ SUN = (() => {
     fan: { page: 'cyclePage', stage: 'fanStage', make: FanView, needs3d: true }
   };
   let scene = ['here', 'mountains', 'beach', 'hills', 'desert'].includes(store.get('ntoki.sunScene')) ? store.get('ntoki.sunScene') : 'here';
+  let wstyle = ['painted', 'pixel', 'crt'].includes(store.get('ntoki.sunStyle')) ? store.get('ntoki.sunStyle') : 'painted';
   let D = null, key = '';
   for (const id in PAGES) Object.assign(PAGES[id], { view: undefined, key: '', visible: false });
   function ensure(id) {
@@ -2604,8 +2658,10 @@ SUN = (() => {
     $('winNote').textContent = tr(state.place.lat >= 0 ? 'windowNoteS' : 'windowNoteN');
     const here = document.querySelector('#sunScenes button[data-scene="here"]'); if (here) here.textContent = placeName(state.place);
     document.querySelectorAll('#sunScenes button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.scene === scene)));
+    document.querySelectorAll('#sunStyles button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.style === wstyle)));
   }
   document.querySelectorAll('#sunScenes button').forEach(b => b.addEventListener('click', () => { scene = b.dataset.scene; store.set('ntoki.sunScene', scene); PAGES.window.key = ''; refresh('window'); writeText(); }));
+  document.querySelectorAll('#sunStyles button').forEach(b => b.addEventListener('click', () => { wstyle = b.dataset.style; store.set('ntoki.sunStyle', wstyle); PAGES.window.key = ''; refresh('window'); writeText(); }));
   const io = new IntersectionObserver(es => es.forEach(e => {
     const id = e.target.id === 'arcPage' ? 'arc' : e.target.id === 'cyclePage' ? 'fan' : 'window', P = PAGES[id], was = P.visible; P.visible = e.isIntersecting;
     if (P.visible && !was) { update(); const V = ensure(id); if (V) V.resize(); }
