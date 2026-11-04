@@ -185,6 +185,7 @@ button{font:inherit;color:inherit}
 .di-anchor{font-size:12.5px;margin-top:6px;font-weight:500}
 .dial-info p{margin:6px 0 12px;opacity:.85}
 .cycle .why{margin-inline:auto}
+.why.about{margin-top:22px;padding-top:16px;border-top:1px solid color-mix(in srgb,currentColor 18%,transparent)}
 
 /* label switch */
 .seg-ctl{display:flex;width:max-content;max-width:100%;margin:0 auto 6px;padding:3px;gap:2px;border-radius:999px;border:1px solid color-mix(in srgb,currentColor 22%,transparent);background:color-mix(in srgb,currentColor 7%,transparent)}
@@ -394,6 +395,10 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
           <h3 data-i18n="sunWhyT">Why winter toki are short</h3>
           <p data-i18n="sunWhyP"></p>
         </div>
+        <div class="why about">
+          <h3 data-i18n="aboutT">About this view</h3>
+          <p data-i18n="aboutArcP"></p>
+        </div>
       </div>
     </section>
 
@@ -411,6 +416,10 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
           <button type="button" role="radio" data-scene="desert" aria-checked="false">Desert</button>
         </div>
         <div class="dial-info"><p id="winNote"></p></div>
+        <div class="why about">
+          <h3 data-i18n="aboutT">About this view</h3>
+          <p data-i18n="aboutWinP"></p>
+        </div>
       </div>
     </section>
 
@@ -435,6 +444,10 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
           <p data-i18n="whyP1">Temple bells struck in multiples of nine: 9, 18, 27, 36, 45, 54. Only the last digit was kept, so the strikes run nine, eight, seven, six, five, four, then start again at noon and at midnight.</p>
           <p data-i18n="whyP2">Each bell marks the middle of its toki, so the ninth bell at the sun's height is the exact middle of Horse. Japan kept time this way until the calendar reform of 1873, when it adopted equal Western hours.</p>
         </div>
+        <div class="why about">
+          <h3 data-i18n="aboutT">About this view</h3>
+          <p data-i18n="aboutCycleP"></p>
+        </div>
       </div>
     </section>
     <section class="page cycle-page" id="yearPage" aria-label="The 72 seasons" data-i18n-aria="yearAria">
@@ -448,6 +461,10 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
         <div class="legend" id="yLegend"></div>
         <div class="dial-info" id="yInfo"></div>
         <div class="why"><p data-i18n="koNote"></p></div>
+        <div class="why about">
+          <h3 data-i18n="aboutT">About this view</h3>
+          <p data-i18n="aboutYearP"></p>
+        </div>
       </div>
     </section>
   </main>
@@ -879,6 +896,11 @@ const STR = {
     scrArc: "The sun's path", scrArcD: 'Lantern steps on the arc of the day', scrWindow: 'The sky outside', scrWindowD: 'Your place, its land and skyline',
     scrCycleD: 'Twelve toki at their true lengths', scrYearD: 'The year read by the sun',
     moveUp: 'Move up', moveDown: 'Move down', addScr: 'Add', removeScr: 'Remove',
+    aboutT: 'About this view',
+    aboutArcP: "The sun's path draws today's arc of the sun from one Rabbit to the next. Each toki is a paper lantern: as wide as that toki lasts today, and as tall as the sun climbs or sinks during it. The lantern the sun is passing through lights up. Glance at it to see the shape of the day, and why toki stretch in summer and shrink in winter.",
+    aboutWinP: "The sky outside is a window facing the sun's side of the sky, with the sun where it really stands right now. The sky takes the colors of the toki around this moment, and the land and skyline are a portrait of your place, not a literal view. It is meant to be glanced at, the way you would look out of a window to read the time of day.",
+    aboutCycleP: "The full cycle puts today's twelve toki on one ring, each at its true length, read like the sky facing south. Tap a toki to see when it falls, its bell and its story.",
+    aboutYearP: 'The year ring shows the 72 micro-seasons of about five days each, grouped into the 24 solar terms. It places today in the year the way the cycle places this moment in the day.',
     stepsNote: (k, n, a, b, lo, hi) => `Now: ${k} ${n}, ${a} – ${b}, the sun between ${lo} and ${hi}.`,
     sunWhyT: 'Why winter toki are short',
     sunWhyP: 'Daylight is always six toki, so a short, low arc means short toki. In winter the sun rises late, climbs only partway and sets early. In summer the arc is long and high, and each daylight toki stretches with it.',
@@ -936,6 +958,11 @@ const STR = {
     scrArc: '太陽の道', scrArcD: '一日の弧に浮かぶ灯りの段', scrWindow: '窓の外の空', scrWindowD: 'この土地の景色と街並み',
     scrCycleD: '本当の長さの十二刻', scrYearD: '太陽で読む一年',
     moveUp: '上へ', moveDown: '下へ', addScr: '追加', removeScr: '外す',
+    aboutT: 'この画面について',
+    aboutArcP: '太陽の道は、卯から次の卯までの今日の太陽の弧を描きます。それぞれの刻は紙の灯りで、幅はその刻の今日の長さ、高さはそのあいだに太陽が昇り降りする幅です。太陽が通っている灯りがともります。一日のかたちと、夏に刻が伸び冬に縮むわけがひと目でわかります。',
+    aboutWinP: '窓の外の空は、太陽の側を向いた窓です。太陽はいま実際にある場所にあり、空はこの時の前後の刻の色に染まります。景色と街並みは写生ではなく、その土地の面影です。窓の外を見て一日の時を知るように、ふと眺めるための画面です。',
+    aboutCycleP: '一日の巡りは、今日の十二刻を本当の長さで一つの輪に並べたものです。南を向いた空のように読みます。刻をタップすると、その時間帯、鐘、由来が見られます。',
+    aboutYearP: '一年の輪は、約五日ずつの七十二候を二十四節気ごとにまとめたものです。巡りが一日の中のいまを示すように、一年の中の今日を示します。',
     stepsNote: (k, n, a, b, lo, hi) => `いまは${n}、${a}〜${b}。太陽は${lo}から${hi}のあいだ。`,
     sunWhyT: '冬の刻が短いわけ',
     sunWhyP: '昼はいつも六つの刻。弧が低く短ければ、刻も短くなります。冬の太陽は遅く昇り、高くは上がらず、早く沈みます。夏は弧が長く高く、昼の刻もそれに合わせて伸びます。',
@@ -993,6 +1020,11 @@ const STR = {
     scrArc: '太阳的轨迹', scrArcD: '一日弧线上的灯笼台阶', scrWindow: '窗外的天空', scrWindowD: '此地的风景与天际线',
     scrCycleD: '真实长度的十二时辰', scrYearD: '用太阳读一年',
     moveUp: '上移', moveDown: '下移', addScr: '添加', removeScr: '移除',
+    aboutT: '关于此画面',
+    aboutArcP: '太阳的轨迹描绘今日从一个卯时到下一个卯时的太阳弧线。每个时辰是一盏纸灯笼：宽度是该时辰今日的时长，高度是其间太阳升降的幅度。太阳经过的那盏灯笼会亮起。一眼即可看出一天的形状，以及时辰为何夏长冬短。',
+    aboutWinP: '窗外的天空是一扇面向太阳一侧的窗。太阳就在它此刻真实的位置，天空染上此刻前后时辰的颜色，风景与天际线是此地的写意而非实景。就像望向窗外便知一天的时分，这是一个用来随意一瞥的画面。',
+    aboutCycleP: '完整周期把今日的十二时辰按真实长度排在一个圆环上，像面向南方的天空那样阅读。点击任一时辰，可查看它的时段、钟声和故事。',
+    aboutYearP: '年环显示七十二候，每候约五天，按二十四节气分组。正如周期标出一天中的此刻，它标出一年中的今天。',
     stepsNote: (k, n, a, b, lo, hi) => `现在是${n}，${a}–${b}，太阳高度在${lo}到${hi}之间。`,
     sunWhyT: '冬季的时辰为何较短',
     sunWhyP: '白昼总是六个时辰。弧线又低又短，时辰也就短。冬天太阳升得晚、升得低、落得早；夏天弧线又长又高，白昼的每个时辰也随之拉长。',
@@ -1853,23 +1885,33 @@ const SUN = (() => {
 
   // Lantern steps: a translucent box with washi-paper fibres, a soft rim, and the sun's light scattering through it.
   const STEP_VS = 'varying vec3 vW; varying vec3 vN; varying vec3 vP; void main(){ vP = position; vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * w; }';
-  const STEP_FS = `uniform vec3 uCol, uRim, uSun, uSunCol; uniform float uAmt, uCur, uAlpha, uNight, uLight, uBack, uAbove;
+  const STEP_FS = `uniform vec3 uCol, uGlow, uRim, uSun, uSunCol, uHalf; uniform vec2 uCell; uniform float uAmt, uCur, uAlpha, uNight, uLight, uBack, uAbove, uSelf;
     varying vec3 vW; varying vec3 vN; varying vec3 vP;
     float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
     float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h1(i), h1(i + vec2(1.0, 0.0)), f.x), mix(h1(i + vec2(0.0, 1.0)), h1(i + vec2(1.0, 1.0)), f.x), f.y); }
     void main(){
       vec3 V = normalize(cameraPosition - vW), N = normalize(vN);
       float fr = pow(1.0 - abs(dot(N, V)), 2.0);
+      float face = step(0.5, abs(N.z));
       vec2 uv = abs(N.z) > 0.5 ? vP.xy : (abs(N.x) > 0.5 ? vP.zy : vP.xz);
       float fib = vn(uv * vec2(2.5, 30.0)) * 0.5 + vn(uv * vec2(22.0, 3.5) + 7.0) * 0.32 + vn(uv * 70.0) * 0.18;
+      // a paper lantern: light from inside, brightest in the middle of each face
+      vec2 q = vP.xy / uHalf.xy;
+      float inner = 1.0 - smoothstep(0.1, 1.1, length(q * vec2(0.8, 1.0)));
+      // shoji lattice on the front and back, and a dark wooden frame at top and bottom
+      vec2 gc = abs(fract(vP.xy / uCell + 0.5) - 0.5) * uCell;
+      float lattice = face * (1.0 - smoothstep(0.007, 0.018, min(gc.x, gc.y))) * step(abs(vP.y), uHalf.y - 0.06) * step(abs(vP.x), uHalf.x - 0.03);
+      float frame = smoothstep(uHalf.y - 0.065, uHalf.y - 0.04, abs(vP.y));
+      vec3 paper = uCol * mix(1.0, 0.8, uLight * uAbove) * (0.84 + 0.26 * fib);
+      vec3 col = paper + uGlow * inner * uSelf * (0.85 + 0.5 * uCur);
       float d = distance(vW, uSun);
-      float sc = exp(-d * d / 0.9) + 0.35 * exp(-d * d / 5.0);
-      vec3 col = uCol * mix(1.0, 0.8, uLight * uAbove) * (0.8 + 0.32 * fib);
+      float sc = exp(-d * d / 0.9) + 0.3 * exp(-d * d / 5.0);
       col += uSunCol * sc * uAmt * (0.75 + 0.45 * uCur) * (1.0 - 0.4 * uBack);
-      col += uRim * fr * (0.3 + 0.35 * uCur);
-      col += uCol * uNight * 0.07 * (0.55 + 0.45 * fib);
-      float a = uAlpha * (0.7 + 0.3 * fib) + fr * 0.22 * (1.0 - uBack) + sc * uAmt * 0.4;
-      gl_FragColor = vec4(col, clamp(a, 0.0, 0.94));
+      col += uRim * fr * (0.22 + 0.3 * uCur);
+      col = mix(col, col * 0.5, lattice * 0.55);
+      col = mix(col, uCol * 0.3 + vec3(0.04, 0.03, 0.02), frame * 0.85);
+      float a = uAlpha * (0.9 + 0.1 * fib) + fr * 0.06 + frame * 0.25 + lattice * 0.1;
+      gl_FragColor = vec4(col, clamp(a, 0.0, 0.97));
     }`;
   /* Arc: the day's curve on a small stage, with each toki as a step floating on it.
      A step is as wide as its toki lasts and spans the sun's lowest to highest point during it. */
@@ -1912,9 +1954,9 @@ const SUN = (() => {
     const halo = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.2, depthWrite: false }); halo.keep = true;
     const sun = makeSun(scene), labels = makeLabels(el), look = makeLook(el, 14 * rad, 6 * rad);
     const stepLabels = TOKI.map(() => labels.add('step'));
-    let size = null, dirty = true, lastAnim = 0, X = () => 0, Y = () => 0, edges = [], stepU = [];
+    let size = null, dirty = true, lastAnim = 0, X = () => 0, Y = () => 0, edges = [], stepU = [], auras = [];
     function build(D) {
-      clearGroup(day); edges = []; stepU = [];
+      clearGroup(day); edges = []; stepU = []; auras = [];
       const c = D.c; X = t => -XW + (2 * XW * (t - c.b[0])) / (c.b[12] - c.b[0]); Y = a => (a / D.maxA) * AMP;
       const N = 240, pts = [];
       for (let i = 0; i <= N; i++) { const t = c.b[0] + ((c.b[12] - c.b[0]) * i) / N; pts.push(new THREE.Vector3(X(t), Y(altAt(t)), 0)); }
@@ -1923,7 +1965,8 @@ const SUN = (() => {
       tube.setAttribute('color', new THREE.BufferAttribute(cc, 3));
       const core = new THREE.Mesh(tube, new THREE.MeshBasicMaterial({ vertexColors: true })); core.renderOrder = 5;
       const hm = new THREE.Mesh(new THREE.TubeGeometry(curve, N, 0.13, RS, false), halo); hm.renderOrder = 4;
-      day.add(hm, core);
+      const shine = new THREE.Mesh(tube, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false })); shine.renderOrder = 8; shine.material.keep = false;
+      day.add(hm, core, shine);
       const posts = [];
       for (let k = 0; k < 12; k++) {
         const [lo, hi] = tokiRange(c, k), cur = k === c.idx;
@@ -1932,15 +1975,16 @@ const SUN = (() => {
         const block = (y0, y1, above) => {
           const h = Math.max(0.1, y1 - y0), lab = above ? PAL[k] : mixLab(lift(PAL[k]), [0.3, 0, 0], 0.2);
           const geo = new THREE.BoxGeometry(w, h, DEP);
-          let m;
-          for (const back of [1, 0]) {   // inside faces first, then the outside, so the step reads as a volume
-            const u = { uCol: { value: setCol(new THREE.Color(), lab) }, uRim: { value: setCol(new THREE.Color(), mixLab(lift(PAL[k]), WHITE, 0.45)) }, uSun: { value: new THREE.Vector3(0, -99, 0) }, uSunCol: { value: new THREE.Color() },
-              uAmt: { value: 0 }, uCur: { value: cur ? 1 : 0 }, uAlpha: { value: (cur ? 0.5 : above ? 0.38 : 0.3) * (back ? 0.55 : 1) }, uNight: { value: 0 }, uLight: { value: 0 }, uBack: { value: back }, uAbove: { value: above ? 1 : 0 } };
-            m = new THREE.Mesh(geo, new THREE.ShaderMaterial({ uniforms: u, vertexShader: STEP_VS, fragmentShader: STEP_FS, transparent: true, depthWrite: false, side: back ? THREE.BackSide : THREE.FrontSide }));
+          const cell = new THREE.Vector2(w / Math.max(1, Math.round(w / 0.34)), h / Math.max(1, Math.round(h / 0.3)));
+          for (const back of [1, 0]) {   // inside faces first, then the outside, so the step reads as a lantern
+            const u = { uCol: { value: setCol(new THREE.Color(), lab) }, uGlow: { value: setCol(new THREE.Color(), mixLab(lift(PAL[k]), WHITE, 0.35)) }, uRim: { value: setCol(new THREE.Color(), mixLab(lift(PAL[k]), WHITE, 0.45)) }, uHalf: { value: new THREE.Vector3(w / 2, h / 2, DEP / 2) }, uCell: { value: cell },
+              uSun: { value: new THREE.Vector3(0, -99, 0) }, uSunCol: { value: new THREE.Color() }, uAmt: { value: 0 }, uCur: { value: cur ? 1 : 0 }, uAlpha: { value: back ? 0.38 : cur ? 0.86 : 0.78 }, uNight: { value: 0 }, uLight: { value: 0 }, uBack: { value: back }, uAbove: { value: above ? 1 : 0 }, uSelf: { value: 0.16 } };
+            const m = new THREE.Mesh(geo, new THREE.ShaderMaterial({ uniforms: u, vertexShader: STEP_VS, fragmentShader: STEP_FS, transparent: true, depthWrite: false, side: back ? THREE.BackSide : THREE.FrontSide }));
             m.position.set(cx, y0 + h / 2, 0); m.renderOrder = (above ? 6 : 1) + (back ? 0 : 0.1); m.castShadow = above && !back; day.add(m); stepU.push(u);
           }
-          const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: cur ? 0.9 : 0.42, depthWrite: false }));
-          e.userData = { k, above, cur }; edges.push(e); e.position.copy(m.position); e.renderOrder = above ? 7 : 1; day.add(e);
+          // a soft glow of the step's own color behind it
+          const aura = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.9 + 0.5, h * 1.6 + 0.6), new THREE.MeshBasicMaterial({ map: GLOW, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+          setCol(aura.material.color, lift(PAL[k])); aura.position.set(cx, y0 + h / 2, -DEP / 2 - 0.08); aura.renderOrder = above ? 5 : 0.5; aura.userData = { cur, above }; auras.push(aura); day.add(aura);
         };
         if (hi > 0) block(Y(Math.max(lo, 0)), Y(hi), true);
         if (lo < 0) block(Y(lo), Y(Math.min(hi, 0)), false);
@@ -1969,7 +2013,10 @@ const SUN = (() => {
         for (const e of edges) { const { k, above, cur } = e.userData, dark = light && above; setCol(e.material.color, dark ? mixLab(PAL[k], BLACK, 0.5) : mixLab(lift(PAL[k]), WHITE, 0.55)); e.material.opacity = cur ? 0.7 : dark ? 0.4 : 0.28; }
         // the sun lights the step it is passing through; under the glass it glows in the toki's color
         const sunCol = D.up ? mixLab(D.sunLab, D.accent, 0.3) : mixLab(D.accent, BLACK, 0.35), amt = D.up ? 0.35 + 0.85 * D.b : 0.12 + 0.12 * (1 - D.night);
-        for (const u of stepU) { u.uSun.value.copy(pos); setCol(u.uSunCol.value, sunCol); u.uAmt.value = amt; u.uNight.value = D.night; u.uLight.value = light ? 1 : 0; }
+        // each lantern glows on its own: softly by day, barely after dark
+        const self = 0.16 - 0.12 * D.night;
+        for (const u of stepU) { u.uSun.value.copy(pos); setCol(u.uSunCol.value, sunCol); u.uAmt.value = amt; u.uNight.value = D.night; u.uLight.value = light ? 1 : 0; u.uSelf.value = self; }
+        for (const a of auras) a.material.opacity = (a.userData.cur ? 0.32 : 0.16) * (light ? 0.6 : 1) * (1 - 0.65 * D.night);
         dirty = true;
       },
       render(force, now) {
@@ -1988,31 +2035,32 @@ const SUN = (() => {
   }
 
   /* Window: the sky facing the equator over a scene (2D canvas, no WebGL).
-     Scenes are stylized portraits, not literal views. Each place gets its land (hills, mountains, desert, sea),
-     its natural landmarks, and a skyline built from generic building and landmark shapes. */
-  const SAND = hexToLab('#D9B67E'), SNOWC = [0.97, -0.004, -0.012];
+     Each place is a portrait of its best-known view, not a literal one: its land, natural landmarks,
+     a generated skyline and simplified silhouettes of its signature buildings. */
+  const SAND = hexToLab('#D9B67E'), SNOWC = [0.97, -0.004, -0.012], PAR = 1.7;
+  // marks: [shape, x (0..1 of the view), height (fraction of the view), 'light' for white buildings]
   const PLACES = {
-    tokyo: { land: 'hills', calm: 0.6, extras: [['fuji', 0.86, 0.15]], city: { h: 0.2, dens: 0.95, style: 'towers', cx: 0.45, marks: [['needle2', 0.2, 0.5], ['lattice', 0.64, 0.29]] } },
-    kyoto: { land: 'hills', calm: 1.7, city: { h: 0.03, dens: 0.9, style: 'roofs', marks: [['needle', 0.46, 0.17], ['pagoda', 0.7, 0.19]] } },
-    sanantonio: { land: 'hills', calm: 0.8, city: { h: 0.11, dens: 0.6, style: 'mid', cx: 0.42, marks: [['needle', 0.62, 0.3], ['dome', 0.3, 0.07]] } },
-    austin: { land: 'hills', calm: 1.1, city: { h: 0.17, dens: 0.7, style: 'mid', cx: 0.4, marks: [['dome', 0.58, 0.15]] } },
-    houston: { land: 'flat', city: { h: 0.24, dens: 0.75, style: 'towers', marks: [['taper', 0.5, 0.3]] } },
-    dallas: { land: 'flat', city: { h: 0.21, dens: 0.72, style: 'towers', cx: 0.55, marks: [['needle', 0.26, 0.24]] } },
-    nyc: { land: 'flat', city: { h: 0.3, dens: 1, style: 'towers', tanks: true, spread: 0.12, marks: [['spire', 0.38, 0.44], ['taper', 0.64, 0.52]] } },
-    la: { land: 'hills', calm: 1.4, palms: true, city: { h: 0.16, dens: 0.45, style: 'mid', marks: [] } },
-    denver: { land: 'mountains', city: { h: 0.16, dens: 0.6, style: 'mid', marks: [] } },
+    tokyo: { land: 'hills', calm: 0.6, extras: [['fuji', 0.86, 0.15]], city: { h: 0.2, dens: 0.95, style: 'towers', cx: 0.45, marks: [['skytree', 0.2, 0.52], ['tmg', 0.42, 0.3], ['tokyotower', 0.66, 0.28]] } },
+    kyoto: { land: 'hills', calm: 1.7, city: { h: 0.03, dens: 0.9, style: 'roofs', marks: [['pagoda', 0.27, 0.12], ['kyototower', 0.47, 0.21, 'light'], ['pagoda', 0.71, 0.18]] } },
+    sanantonio: { land: 'hills', calm: 0.8, city: { h: 0.11, dens: 0.6, style: 'mid', cx: 0.46, marks: [['alamo', 0.26, 0.05, 'light'], ['towerlife', 0.42, 0.17], ['needle', 0.64, 0.32]] } },
+    austin: { land: 'hills', calm: 1.1, city: { h: 0.16, dens: 0.7, style: 'mid', cx: 0.44, marks: [['curvetop', 0.28, 0.23], ['jenga', 0.36, 0.26], ['slimslant', 0.43, 0.27], ['frost', 0.51, 0.25], ['capitol', 0.62, 0.17, 'light'], ['uttower', 0.84, 0.14]] } },
+    houston: { land: 'flat', city: { h: 0.22, dens: 0.75, style: 'towers', marks: [['gothic', 0.36, 0.26], ['pennzoil', 0.46, 0.21], ['chase', 0.53, 0.34], ['heritage', 0.62, 0.29]] } },
+    dallas: { land: 'flat', city: { h: 0.2, dens: 0.72, style: 'towers', cx: 0.52, marks: [['reunion', 0.22, 0.24], ['box', 0.42, 0.32], ['prism', 0.51, 0.27], ['xcrown', 0.62, 0.29]] } },
+    nyc: { land: 'flat', city: { h: 0.27, dens: 1, style: 'towers', tanks: true, spread: 0.12, marks: [['steinway', 0.3, 0.5], ['empire', 0.43, 0.43], ['owtc', 0.53, 0.52], ['park432', 0.6, 0.48], ['chrysler', 0.69, 0.36]] } },
+    la: { land: 'hills', calm: 1.4, palms: true, city: { h: 0.15, dens: 0.45, style: 'mid', marks: [['usbank', 0.48, 0.3], ['wilshire', 0.56, 0.32]] } },
+    denver: { land: 'mountains', city: { h: 0.15, dens: 0.6, style: 'mid', marks: [['dfclock', 0.36, 0.18], ['register', 0.48, 0.24], ['box', 0.56, 0.27]] } },
     honolulu: { land: 'beach', palms: true, extras: [['crater', 0.17, 0.09]], city: { h: 0.13, dens: 0.7, style: 'mid', marks: [] } },
-    cdmx: { land: 'hills', calm: 0.8, extras: [['volcanoes', 0.2, 0.15]], city: { h: 0.18, dens: 0.82, style: 'mid', marks: [['taper', 0.56, 0.28], ['dome', 0.32, 0.09]] } },
-    london: { land: 'flat', city: { h: 0.15, dens: 0.75, style: 'mid', marks: [['shard', 0.28, 0.36], ['dome', 0.47, 0.16], ['wheel', 0.68, 0.18], ['clock', 0.82, 0.26]] } },
-    paris: { land: 'flat', city: { h: 0.06, dens: 0.95, style: 'mansard', marks: [['box', 0.47, 0.2], ['dome', 0.6, 0.12], ['eiffel', 0.76, 0.36]] } },
-    reykjavik: { land: 'mountains', calm: 0.6, city: { h: 0.04, dens: 0.6, style: 'houses', marks: [['churchspire', 0.5, 0.22]] } },
-    tromso: { land: 'mountains', city: { h: 0.035, dens: 0.5, style: 'houses', marks: [['bridge', 0.3, 0.07], ['aframe', 0.64, 0.12]] } },
-    nairobi: { land: 'hills', calm: 1.2, city: { h: 0.2, dens: 0.6, style: 'towers', marks: [['drum', 0.46, 0.25]] } },
-    cairo: { land: 'desert', extras: [['pyramids', 0.74, 0.13]], city: { h: 0.11, dens: 0.82, style: 'mid', cx: 0.4, marks: [['mosque', 0.2, 0.15], ['minaret', 0.36, 0.17], ['lotus', 0.52, 0.27], ['minaret', 0.6, 0.13]] } },
-    dubai: { land: 'desert', city: { h: 0.22, dens: 0.6, style: 'towers', cx: 0.55, marks: [['supertall', 0.52, 0.62]] } },
-    rio: { land: 'beach', palms: true, extras: [['peaks', 0.2, 0.24], ['sugarloaf', 0.82, 0.2]], city: { h: 0.1, dens: 0.75, style: 'mid', marks: [] } },
+    cdmx: { land: 'hills', calm: 0.8, extras: [['volcanoes', 0.2, 0.15]], city: { h: 0.18, dens: 0.82, style: 'mid', marks: [['bellas', 0.4, 0.1, 'light'], ['spire', 0.5, 0.28], ['prism', 0.63, 0.34], ['angel', 0.75, 0.12]] } },
+    london: { land: 'flat', city: { h: 0.14, dens: 0.75, style: 'mid', marks: [['towerbridge', 0.15, 0.14], ['shard', 0.27, 0.4], ['wedge', 0.36, 0.28], ['gherkin', 0.41, 0.24], ['walkie', 0.47, 0.21], ['stpauls', 0.56, 0.17, 'light'], ['wheel', 0.71, 0.18], ['bigben', 0.84, 0.26]] } },
+    paris: { land: 'flat', city: { h: 0.06, dens: 0.95, style: 'mansard', marks: [['sacrecoeur', 0.16, 0.13, 'light'], ['notredame', 0.38, 0.13], ['box', 0.52, 0.2], ['invalides', 0.63, 0.14], ['eiffel', 0.77, 0.36], ['arc', 0.9, 0.08]] } },
+    reykjavik: { land: 'mountains', calm: 0.6, city: { h: 0.04, dens: 0.6, style: 'houses', marks: [['hallgrim', 0.5, 0.24, 'light']] } },
+    tromso: { land: 'mountains', city: { h: 0.035, dens: 0.5, style: 'houses', marks: [['cantilever', 0.3, 0.08], ['arctic', 0.64, 0.12, 'light']] } },
+    nairobi: { land: 'hills', calm: 0.9, extras: [['ngong', 0.82, 0.08]], city: { h: 0.2, dens: 0.6, style: 'towers', marks: [['kicc', 0.46, 0.25]] } },
+    cairo: { land: 'desert', extras: [['pyramids', 0.74, 0.13]], city: { h: 0.11, dens: 0.82, style: 'mid', cx: 0.4, marks: [['mosque', 0.2, 0.17], ['minaret', 0.34, 0.15], ['lotus', 0.52, 0.27], ['minaret', 0.6, 0.13]] } },
+    dubai: { land: 'desert', city: { h: 0.2, dens: 0.6, style: 'towers', cx: 0.55, marks: [['emirates', 0.36, 0.26], ['khalifa', 0.53, 0.62]] } },
+    rio: { land: 'beach', palms: true, extras: [['corcovado', 0.24, 0.27], ['sugarloaf', 0.82, 0.2]], city: { h: 0.1, dens: 0.75, style: 'mid', marks: [] } },
     capetown: { land: 'flat', extras: [['table', 0.5, 0.2]], city: { h: 0.1, dens: 0.6, style: 'mid', marks: [] } },
-    sydney: { land: 'harbor', city: { h: 0.2, dens: 0.7, style: 'towers', cx: 0.58, marks: [['bridge', 0.26, 0.12]] } }
+    sydney: { land: 'harbor', city: { h: 0.2, dens: 0.7, style: 'towers', cx: 0.5, marks: [['sydneytower', 0.5, 0.36], ['harbourbridge', 0.75, 0.14], ['opera', 0.27, 0.11, 'light']] } }
   };
   const TOWN = { land: 'hills', calm: 0.8, city: { h: 0.03, dens: 0.5, style: 'houses', marks: [] } };
   const STD = { mountains: { land: 'mountains' }, beach: { land: 'beach', palms: true }, hills: { land: 'hills' }, desert: { land: 'desert' } };
@@ -2031,19 +2079,19 @@ const SUN = (() => {
     const k = C.land, calm = C.calm || 1;
     if (k === 'mountains') return [
       { kind: 'peaks', w: mkWaves(11, 3, 1.3, 1.1, 0.7), base: 0.74, amp: 0.3 * calm + 0.04, mix: 0.24, par: 5, snow: 1 },
-      { kind: 'peaks', w: mkWaves(23, 3, 1.9, 1.6, 0.8), base: 0.78, amp: 0.16, mix: 0.42, par: 11, snow: 0.5 }];
+      { kind: 'peaks', w: mkWaves(23, 3, 1.9, 1.6, 0.8), base: 0.78, amp: 0.16, mix: 0.42, par: 12, snow: 0.5 }];
     if (k === 'desert') return [
       { kind: 'dunes', w: mkWaves(31, 3, 0.7, 0.9, 1.2), base: 0.735, amp: 0.05, mix: 0.2, par: 6, sand: 1 },
-      { kind: 'dunes', w: mkWaves(37, 3, 1.0, 1.1, 1.2), base: 0.8, amp: 0.065, mix: 0.36, par: 12, sand: 1 }];
+      { kind: 'dunes', w: mkWaves(37, 3, 1.0, 1.1, 1.2), base: 0.8, amp: 0.065, mix: 0.36, par: 13, sand: 1 }];
     if (k === 'beach') return [{ kind: 'hills', w: mkWaves(41, 3, 0.8, 1.2, 1.4), base: 0.705, amp: 0.02, mix: 0.3, par: 4, span: [-0.1, 0.42] }];
     if (k === 'harbor') return [{ kind: 'hills', w: mkWaves(43, 4, 0.6, 1, 1.4), base: 0.74, amp: 0.03, mix: 0.3, par: 5 }];
     if (k === 'flat') return [{ kind: 'hills', w: mkWaves(47, 4, 0.6, 1, 1.4), base: 0.735, amp: 0.022, mix: 0.3, par: 6 }];
     return [
       { kind: 'hills', w: mkWaves(101, 4, 0.5, 0.85, 1.5), base: 0.72, amp: 0.07 * calm, mix: 0.26, par: 6 },
-      { kind: 'hills', w: mkWaves(154, 4, 0.7, 0.9, 1.5), base: 0.78, amp: 0.08 * calm, mix: 0.44, par: 13 }];
+      { kind: 'hills', w: mkWaves(154, 4, 0.7, 0.9, 1.5), base: 0.78, amp: 0.08 * calm, mix: 0.44, par: 14 }];
   }
-  const NEAR = { kind: 'hills', w: mkWaves(207, 4, 0.6, 0.9, 1.5), base: 0.955, amp: 0.045, mix: 0.9, par: 40 };
-  const NEAR_DUNE = { kind: 'dunes', w: mkWaves(211, 3, 0.8, 1, 1.2), base: 0.935, amp: 0.075, mix: 0.7, par: 34, sand: 1 };
+  const NEAR = { kind: 'hills', w: mkWaves(207, 4, 0.6, 0.9, 1.5), base: 0.955, amp: 0.045, mix: 0.9, par: 42 };
+  const NEAR_DUNE = { kind: 'dunes', w: mkWaves(211, 3, 0.8, 1, 1.2), base: 0.935, amp: 0.075, mix: 0.7, par: 36, sand: 1 };
 
   // One row of buildings, generated from the place's character.
   function genRow(P, seed, W, Hh, o) {
@@ -2074,14 +2122,108 @@ const SUN = (() => {
     return out;
   }
 
+  /* Landmark silhouettes. Each draws a path on the current context at (x, base yb) with height h; u is 1/1000 of the view width.
+     Shapes are simplified from each building's outline; heights follow their real proportions roughly. */
+  const MARKS = (() => {
+    const poly = (g, pts) => { g.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]); g.closePath(); };
+    // half-profile, top to bottom, mirrored: [[dx (u), y as a fraction of h], ...]
+    const sym = prof => (g, x, yb, h, u) => { const R = prof.map(([dx, f]) => [x + dx * u, yb - h * f]), L = prof.map(([dx, f]) => [x - dx * u, yb - h * f]).reverse(); poly(g, L.concat(R)); };
+    // a profile given left to right as [[dx, f], ...] (asymmetric)
+    const outline = pts => (g, x, yb, h, u) => poly(g, pts.map(([dx, f]) => [x + dx * u, yb - h * f]));
+    const M = {
+      // Tokyo
+      skytree: sym([[0, 1], [0.6, 0.9], [1.5, 0.8], [5.5, 0.79], [6, 0.77], [3.2, 0.765], [3.8, 0.62], [9, 0.605], [9.5, 0.57], [8.5, 0.55], [5, 0.54], [7, 0.3], [11, 0.12], [17, 0]]),
+      tokyotower: sym([[0, 1], [0.7, 0.86], [5, 0.86], [5, 0.83], [1.6, 0.82], [3, 0.62], [10, 0.61], [10, 0.56], [5, 0.55], [12, 0.3], [24, 0]]),
+      tmg: outline([[-28, 0], [-28, 0.96], [-24, 1], [-12, 1], [-8, 0.96], [-8, 0.68], [8, 0.68], [8, 0.96], [12, 1], [24, 1], [28, 0.96], [28, 0]]),
+      // Kyoto
+      kyototower: sym([[0, 1], [0.8, 0.88], [3, 0.84], [9, 0.81], [9, 0.75], [4.5, 0.73], [6, 0.27], [24, 0.25], [24, 0]]),
+      pagoda: (g, x, yb, h, u) => { let y = yb; for (let i = 0; i < 5; i++) { const bw = (14 - i * 2) * u, rw = bw * 1.75, th = (h * 0.8) / 5; g.moveTo(x - bw, y); g.lineTo(x - bw, y - th * 0.55); g.lineTo(x - rw, y - th * 0.6); g.quadraticCurveTo(x - bw * 0.6, y - th * 0.72, x - bw * 0.5, y - th); g.lineTo(x + bw * 0.5, y - th); g.quadraticCurveTo(x + bw * 0.6, y - th * 0.72, x + rw, y - th * 0.6); g.lineTo(x + bw, y - th * 0.55); g.lineTo(x + bw, y); g.closePath(); y -= th; } g.moveTo(x - 1.2 * u, y); g.lineTo(x, y - h * 0.2); g.lineTo(x + 1.2 * u, y); g.closePath(); },
+      // San Antonio
+      needle: sym([[0, 1.06], [1.2, 0.93], [3, 0.92], [11, 0.885], [12, 0.85], [5, 0.81], [4, 0.79], [6, 0]]),
+      towerlife: sym([[0, 1], [2, 0.93], [7, 0.86], [7, 0.8], [10, 0.78], [10, 0.68], [13, 0.66], [13, 0]]),
+      alamo: (g, x, yb, h, u) => { g.moveTo(x - 22 * u, yb); g.lineTo(x - 22 * u, yb - h * 0.6); g.lineTo(x - 12 * u, yb - h * 0.6); g.quadraticCurveTo(x - 10 * u, yb - h * 0.96, x - 5 * u, yb - h * 0.96); g.quadraticCurveTo(x, yb - h * 1.06, x + 5 * u, yb - h * 0.96); g.quadraticCurveTo(x + 10 * u, yb - h * 0.96, x + 12 * u, yb - h * 0.6); g.lineTo(x + 22 * u, yb - h * 0.6); g.lineTo(x + 22 * u, yb); g.closePath(); },
+      // Austin
+      capitol: (g, x, yb, h, u) => { g.moveTo(x - 40 * u, yb); g.lineTo(x - 40 * u, yb - h * 0.22); g.lineTo(x - 14 * u, yb - h * 0.24); g.lineTo(x - 14 * u, yb - h * 0.46); g.lineTo(x - 11 * u, yb - h * 0.48); g.ellipse(x, yb - h * 0.5, 11 * u, h * 0.3, 0, PI, 0); g.lineTo(x + 14 * u, yb - h * 0.46); g.lineTo(x + 14 * u, yb - h * 0.24); g.lineTo(x + 40 * u, yb - h * 0.22); g.lineTo(x + 40 * u, yb); g.closePath(); g.moveTo(x - 2.5 * u, yb - h * 0.78); g.lineTo(x - 2.5 * u, yb - h * 0.9); g.lineTo(x, yb - h); g.lineTo(x + 2.5 * u, yb - h * 0.9); g.lineTo(x + 2.5 * u, yb - h * 0.78); g.closePath(); },
+      frost: sym([[0, 1], [1.2, 0.97], [2, 0.9], [4.5, 0.87], [5, 0.93], [7.5, 0.87], [10, 0.83], [13, 0.79], [13, 0]]),
+      jenga: (g, x, yb, h, u) => { const offs = [-3, 4, -4, 3, -2, 4], w = 12; const L = [], R = []; offs.forEach((o, i) => { const y0 = yb - (h * i) / offs.length, y1 = yb - (h * (i + 1)) / offs.length; R.push([x + (o + w) * u, y0], [x + (o + w) * u, y1]); L.push([x + (o - w) * u, y0], [x + (o - w) * u, y1]); }); poly(g, L.concat(R.reverse())); },
+      slimslant: outline([[-8, 0], [-8, 0.9], [8, 1], [8, 0]]),
+      curvetop: (g, x, yb, h, u) => { g.moveTo(x - 11 * u, yb); g.lineTo(x - 11 * u, yb - h * 0.82); g.quadraticCurveTo(x + 2 * u, yb - h * 0.84, x + 11 * u, yb - h); g.lineTo(x + 11 * u, yb); g.closePath(); },
+      uttower: sym([[0, 1], [1.5, 0.95], [4, 0.9], [4, 0.86], [6.5, 0.85], [6.5, 0.14], [24, 0.12], [24, 0]]),
+      // Houston
+      gothic: (g, x, yb, h, u) => { for (const [a, b, top] of [[-28, -12, 0.62], [-14, 7, 0.86], [5, 24, 0.72]]) { const m = (a + b) / 2; g.moveTo(x + a * u, yb); g.lineTo(x + a * u, yb - h * top); g.lineTo(x + (a + 1.5) * u, yb - h * (top + 0.05)); g.lineTo(x + (a + 3) * u, yb - h * top); g.lineTo(x + m * u, yb - h * (top + 0.14)); g.lineTo(x + (b - 3) * u, yb - h * top); g.lineTo(x + (b - 1.5) * u, yb - h * (top + 0.05)); g.lineTo(x + b * u, yb - h * top); g.lineTo(x + b * u, yb); g.closePath(); } },
+      heritage: sym([[0, 1], [4, 1], [4, 0.96], [8, 0.96], [8, 0.92], [12, 0.92], [12, 0.88], [15, 0.88], [15, 0]]),
+      pennzoil: (g, x, yb, h, u) => { g.moveTo(x - 26 * u, yb); g.lineTo(x - 26 * u, yb - h * 0.84); g.lineTo(x - 3 * u, yb - h); g.lineTo(x - 3 * u, yb); g.closePath(); g.moveTo(x + 3 * u, yb); g.lineTo(x + 3 * u, yb - h); g.lineTo(x + 26 * u, yb - h * 0.84); g.lineTo(x + 26 * u, yb); g.closePath(); },
+      chase: outline([[-17, 0], [-17, 1], [10, 1], [17, 0.96], [17, 0]]),
+      // Dallas
+      reunion: (g, x, yb, h, u) => { g.moveTo(x - 6 * u, yb); g.lineTo(x - 3 * u, yb - h * 0.8); g.lineTo(x + 3 * u, yb - h * 0.8); g.lineTo(x + 6 * u, yb); g.closePath(); g.moveTo(x + 10 * u, yb - h * 0.88); g.arc(x, yb - h * 0.88, 10 * u, 0, 2 * PI); g.closePath(); g.moveTo(x - 1 * u, yb - h * 0.95); g.lineTo(x, yb - h); g.lineTo(x + 1 * u, yb - h * 0.95); g.closePath(); },
+      prism: outline([[-14, 0], [-14, 0.72], [-4, 1], [14, 0.62], [14, 0]]),
+      xcrown: sym([[0, 1.04], [0.8, 1.04], [0.8, 0.95], [3, 0.94], [3, 0.99], [4, 0.99], [5.5, 0.92], [12, 0.88], [12, 0]]),
+      box: sym([[0, 1.02], [19, 1.02], [19, 0]]),
+      // New York
+      steinway: outline([[-6.5, 0], [-6.5, 1], [-4, 0.985], [-1.5, 0.96], [1, 0.93], [3.5, 0.9], [6.5, 0.86], [6.5, 0]]),
+      park432: sym([[0, 1], [9.5, 1], [9.5, 0]]),
+      empire: sym([[0, 1], [1.2, 0.86], [3, 0.85], [4.5, 0.82], [4.5, 0.78], [7, 0.77], [7, 0.72], [10, 0.71], [10, 0.66], [13, 0.65], [13, 0.2], [20, 0.19], [20, 0.07], [26, 0.06], [26, 0]]),
+      owtc: sym([[0, 1], [0.8, 0.85], [6, 0.84], [7, 0.81], [16, 0.12], [16, 0]]),
+      chrysler: sym([[0, 1], [0.8, 0.88], [2, 0.86], [3, 0.84], [3.5, 0.82], [4.5, 0.81], [5, 0.79], [6, 0.78], [6.5, 0.76], [7.5, 0.75], [8, 0.73], [9, 0.71], [9, 0.62], [11, 0.6], [11, 0.3], [15, 0.28], [15, 0]]),
+      spire: sym([[0, 1], [1.2, 0.86], [5, 0.85], [5, 0.8], [9, 0.79], [9, 0.72], [13, 0.71], [13, 0.6], [17, 0.59], [17, 0.25], [24, 0.24], [24, 0]]),
+      // Los Angeles, Denver
+      usbank: sym([[0, 1.02], [0.6, 1.02], [0.6, 0.97], [6, 0.96], [8, 0.93], [10, 0.9], [13, 0.86], [13, 0]]),
+      wilshire: (g, x, yb, h, u) => { g.moveTo(x - 13 * u, yb); g.lineTo(x - 13 * u, yb - h * 0.82); g.quadraticCurveTo(x - 2 * u, yb - h * 0.84, x + 6 * u, yb - h * 0.9); g.lineTo(x + 6.5 * u, yb - h); g.lineTo(x + 7.5 * u, yb - h * 0.9); g.lineTo(x + 13 * u, yb - h * 0.88); g.lineTo(x + 13 * u, yb); g.closePath(); },
+      register: (g, x, yb, h, u) => { g.moveTo(x - 13 * u, yb); g.lineTo(x - 13 * u, yb - h * 0.8); g.ellipse(x, yb - h * 0.8, 13 * u, h * 0.2, 0, PI, 0); g.lineTo(x + 13 * u, yb); g.closePath(); },
+      dfclock: sym([[0, 1], [1.5, 0.9], [5, 0.8], [5, 0.74], [7, 0.73], [7, 0.62], [5.5, 0.61], [5.5, 0]]),
+      // Mexico City
+      bellas: (g, x, yb, h, u) => { g.moveTo(x - 34 * u, yb); g.lineTo(x - 34 * u, yb - h * 0.45); g.lineTo(x - 14 * u, yb - h * 0.45); g.ellipse(x, yb - h * 0.45, 14 * u, h * 0.42, 0, PI, 0); g.lineTo(x + 34 * u, yb - h * 0.45); g.lineTo(x + 34 * u, yb); g.closePath(); for (const s of [-1, 1]) { const cx = x + s * 25 * u; g.moveTo(cx - 6 * u, yb - h * 0.45); g.ellipse(cx, yb - h * 0.45, 6 * u, h * 0.2, 0, PI, 0); g.closePath(); } g.moveTo(x - 2 * u, yb - h * 0.85); g.lineTo(x, yb - h); g.lineTo(x + 2 * u, yb - h * 0.85); g.closePath(); },
+      angel: sym([[0, 1], [1.4, 0.97], [3, 0.92], [1.5, 0.9], [2.2, 0.86], [3.4, 0.84], [2.2, 0.82], [2.2, 0.14], [8, 0.12], [8, 0]]),
+      // London
+      shard: (g, x, yb, h, u) => { g.moveTo(x - 18 * u, yb); g.lineTo(x - 2 * u, yb - h); g.lineTo(x + 1 * u, yb - h * 0.93); g.lineTo(x + 4 * u, yb - h * 0.96); g.lineTo(x + 18 * u, yb); g.closePath(); },
+      gherkin: (g, x, yb, h, u) => { g.moveTo(x - 10 * u, yb); g.bezierCurveTo(x - 16 * u, yb - h * 0.45, x - 13 * u, yb - h * 0.86, x, yb - h); g.bezierCurveTo(x + 13 * u, yb - h * 0.86, x + 16 * u, yb - h * 0.45, x + 10 * u, yb); g.closePath(); },
+      walkie: (g, x, yb, h, u) => { g.moveTo(x - 11 * u, yb); g.quadraticCurveTo(x - 12 * u, yb - h * 0.55, x - 17 * u, yb - h * 0.94); g.lineTo(x - 15 * u, yb - h); g.lineTo(x + 15 * u, yb - h * 0.97); g.quadraticCurveTo(x + 13 * u, yb - h * 0.5, x + 11 * u, yb); g.closePath(); },
+      wedge: outline([[-14, 0], [-14, 1], [-10, 1], [14, 0.14], [14, 0]]),
+      stpauls: (g, x, yb, h, u) => { g.moveTo(x - 42 * u, yb); g.lineTo(x - 42 * u, yb - h * 0.3); for (const s of [-1]) { g.lineTo(x - 38 * u, yb - h * 0.3); g.lineTo(x - 38 * u, yb - h * 0.52); g.lineTo(x - 36 * u, yb - h * 0.6); g.lineTo(x - 34 * u, yb - h * 0.52); g.lineTo(x - 34 * u, yb - h * 0.3); } g.lineTo(x - 15 * u, yb - h * 0.3); g.lineTo(x - 15 * u, yb - h * 0.46); g.lineTo(x - 13 * u, yb - h * 0.48); g.ellipse(x, yb - h * 0.5, 13 * u, h * 0.26, 0, PI, 0); g.lineTo(x + 15 * u, yb - h * 0.46); g.lineTo(x + 15 * u, yb - h * 0.3); g.lineTo(x + 34 * u, yb - h * 0.3); g.lineTo(x + 34 * u, yb - h * 0.52); g.lineTo(x + 36 * u, yb - h * 0.6); g.lineTo(x + 38 * u, yb - h * 0.52); g.lineTo(x + 38 * u, yb - h * 0.3); g.lineTo(x + 42 * u, yb - h * 0.3); g.lineTo(x + 42 * u, yb); g.closePath(); g.moveTo(x - 3 * u, yb - h * 0.74); g.lineTo(x - 3 * u, yb - h * 0.88); g.lineTo(x, yb - h); g.lineTo(x + 3 * u, yb - h * 0.88); g.lineTo(x + 3 * u, yb - h * 0.74); g.closePath(); },
+      bigben: sym([[0, 1], [1.5, 0.9], [6, 0.78], [7, 0.77], [7, 0.72], [9, 0.71], [9, 0.6], [7, 0.59], [7, 0]]),
+      towerbridge: (g, x, yb, h, u) => { for (const s of [-1, 1]) { const cx = x + s * 42 * u; g.moveTo(cx - 9 * u, yb); g.lineTo(cx - 9 * u, yb - h * 0.82); for (const t of [-9, -3, 3, 9]) { g.lineTo(cx + (t - 1.6) * u, yb - h * 0.82); g.lineTo(cx + t * u, yb - h * 0.96); g.lineTo(cx + (t + 1.6) * u, yb - h * 0.82); } g.lineTo(cx + 9 * u, yb - h * 0.82); g.lineTo(cx + 9 * u, yb); g.closePath(); } g.rect(x - 33 * u, yb - h * 0.74, 66 * u, h * 0.05); g.rect(x - 33 * u, yb - h * 0.25, 66 * u, h * 0.06); },
+      // Paris
+      eiffel: (g, x, yb, h, u) => { sym([[0, 1], [1.2, 0.92], [3, 0.65], [8, 0.62], [8, 0.6], [5, 0.59], [11, 0.36], [17, 0.34], [17, 0.31], [14, 0.3], [26, 0.08], [36, 0]])(g, x, yb, h, u); g.moveTo(x + 18 * u, yb); g.quadraticCurveTo(x + 12 * u, yb - h * 0.2, x, yb - h * 0.21); g.quadraticCurveTo(x - 12 * u, yb - h * 0.2, x - 18 * u, yb); g.closePath(); },
+      notredame: (g, x, yb, h, u) => { g.moveTo(x - 24 * u, yb); g.lineTo(x - 24 * u, yb - h * 0.62); g.lineTo(x - 12 * u, yb - h * 0.62); g.lineTo(x - 12 * u, yb - h * 0.5); g.lineTo(x - 6 * u, yb - h * 0.5); g.lineTo(x - 6 * u, yb - h * 0.62); g.lineTo(x + 6 * u, yb - h * 0.62); g.lineTo(x + 6 * u, yb - h * 0.42); g.lineTo(x + 11 * u, yb - h * 0.42); g.lineTo(x + 12 * u, yb - h * 0.55); g.lineTo(x + 13 * u, yb - h); g.lineTo(x + 14 * u, yb - h * 0.55); g.lineTo(x + 15 * u, yb - h * 0.42); g.lineTo(x + 40 * u, yb - h * 0.42); g.lineTo(x + 40 * u, yb); g.closePath(); },
+      invalides: (g, x, yb, h, u) => { g.moveTo(x - 30 * u, yb); g.lineTo(x - 30 * u, yb - h * 0.3); g.lineTo(x - 12 * u, yb - h * 0.3); g.lineTo(x - 12 * u, yb - h * 0.45); g.lineTo(x - 11 * u, yb - h * 0.46); g.ellipse(x, yb - h * 0.47, 11 * u, h * 0.26, 0, PI, 0); g.lineTo(x + 12 * u, yb - h * 0.45); g.lineTo(x + 12 * u, yb - h * 0.3); g.lineTo(x + 30 * u, yb - h * 0.3); g.lineTo(x + 30 * u, yb); g.closePath(); g.moveTo(x - 2 * u, yb - h * 0.7); g.lineTo(x - 2 * u, yb - h * 0.8); g.lineTo(x, yb - h); g.lineTo(x + 2 * u, yb - h * 0.8); g.lineTo(x + 2 * u, yb - h * 0.7); g.closePath(); },
+      arc: (g, x, yb, h, u) => { g.moveTo(x - 16 * u, yb); g.lineTo(x - 16 * u, yb - h); g.lineTo(x + 16 * u, yb - h); g.lineTo(x + 16 * u, yb); g.closePath(); g.moveTo(x + 6 * u, yb); g.lineTo(x + 6 * u, yb - h * 0.45); g.quadraticCurveTo(x + 6 * u, yb - h * 0.68, x, yb - h * 0.68); g.quadraticCurveTo(x - 6 * u, yb - h * 0.68, x - 6 * u, yb - h * 0.45); g.lineTo(x - 6 * u, yb); g.closePath(); },
+      sacrecoeur: (g, x, yb, h, u) => { g.moveTo(x - 60 * u, yb); g.quadraticCurveTo(x - 30 * u, yb - h * 0.36, x - 22 * u, yb - h * 0.38); g.lineTo(x - 18 * u, yb - h * 0.5); g.ellipse(x - 13 * u, yb - h * 0.5, 5 * u, h * 0.12, 0, PI, 0); g.lineTo(x - 8 * u, yb - h * 0.55); g.ellipse(x, yb - h * 0.56, 8 * u, h * 0.26, 0, PI, 0); g.lineTo(x + 8 * u, yb - h * 0.52); g.ellipse(x + 13 * u, yb - h * 0.5, 5 * u, h * 0.12, 0, PI, 0); g.lineTo(x + 20 * u, yb - h * 0.46); g.lineTo(x + 21 * u, yb - h * 0.7); g.lineTo(x + 24 * u, yb - h * 0.7); g.lineTo(x + 25 * u, yb - h * 0.4); g.quadraticCurveTo(x + 32 * u, yb - h * 0.36, x + 60 * u, yb); g.closePath(); g.moveTo(x - 1.5 * u, yb - h * 0.8); g.lineTo(x, yb - h); g.lineTo(x + 1.5 * u, yb - h * 0.8); g.closePath(); },
+      // Reykjavík, Tromsø
+      hallgrim: sym([[0, 1], [1.5, 0.9], [3, 0.78], [5, 0.7], [5, 0.62], [8, 0.6], [8, 0.52], [11, 0.5], [11, 0.42], [14, 0.4], [14, 0.32], [17, 0.3], [17, 0.22], [20, 0.2], [20, 0]]),
+      arctic: (g, x, yb, h, u) => { [[0, 1, 20], [7, 0.86, 18], [13, 0.72, 16], [18, 0.58, 14]].forEach(([dx, f, w]) => { g.moveTo(x + (dx - w) * u, yb); g.lineTo(x + dx * u, yb - h * f); g.lineTo(x + (dx + w) * u, yb); g.closePath(); }); },
+      // Nairobi, Cairo, Dubai
+      kicc: sym([[0, 1], [2, 0.9], [17, 0.88], [17, 0.85], [12, 0.84], [12, 0]]),
+      minaret: sym([[0, 1], [3, 0.86], [3, 0.8], [5, 0.79], [5, 0.77], [3.2, 0.76], [3.2, 0.55], [5.5, 0.54], [5.5, 0.52], [3.6, 0.51], [4, 0]]),
+      mosque: (g, x, yb, h, u) => { g.moveTo(x - 34 * u, yb); g.lineTo(x - 34 * u, yb - h * 0.34); g.lineTo(x - 18 * u, yb - h * 0.34); g.ellipse(x, yb - h * 0.36, 18 * u, h * 0.28, 0, PI, 0); g.lineTo(x + 34 * u, yb - h * 0.34); g.lineTo(x + 34 * u, yb); g.closePath(); for (const s of [-1, 1]) { const cx = x + s * 12 * u; g.moveTo(cx - 6 * u, yb - h * 0.34); g.ellipse(cx, yb - h * 0.34, 6 * u, h * 0.12, 0, PI, 0); g.closePath(); const mx = x + s * 30 * u; g.moveTo(mx - 2.2 * u, yb); g.lineTo(mx - 2.2 * u, yb - h * 0.86); g.lineTo(mx, yb - h); g.lineTo(mx + 2.2 * u, yb - h * 0.86); g.lineTo(mx + 2.2 * u, yb); g.closePath(); } },
+      lotus: sym([[0, 1], [1, 0.9], [9, 0.88], [8, 0.84], [5, 0.8], [5, 0.1], [9, 0]]),
+      khalifa: (g, x, yb, h, u) => { const st = [[26, 0.0], [21, 0.22], [17, 0.4], [13, 0.55], [9.5, 0.68], [6.5, 0.78], [4, 0.86], [2, 0.92], [0.6, 1]], R = []; for (let i = 0; i < st.length - 1; i++) R.push([st[i][0], st[i][1]], [st[i][0], st[i + 1][1]]); R.push([0, 1]); sym(R.reverse())(g, x, yb, h, u); },
+      emirates: (g, x, yb, h, u) => { g.moveTo(x - 22 * u, yb); g.lineTo(x - 22 * u, yb - h * 0.82); g.lineTo(x - 12 * u, yb - h); g.lineTo(x - 5 * u, yb - h * 0.86); g.lineTo(x - 5 * u, yb); g.closePath(); g.moveTo(x + 5 * u, yb); g.lineTo(x + 5 * u, yb - h * 0.7); g.lineTo(x + 12 * u, yb - h * 0.84); g.lineTo(x + 19 * u, yb - h * 0.72); g.lineTo(x + 19 * u, yb); g.closePath(); },
+      // Sydney
+      sydneytower: sym([[0, 1], [0.6, 0.93], [2, 0.91], [8, 0.88], [9.5, 0.84], [8, 0.8], [2, 0.78], [2.5, 0.12], [7, 0.04], [9, 0]]),
+      opera: (g, x, yb, h, u) => { g.rect(x - 40 * u, yb - h * 0.14, 86 * u, h * 0.14); for (const [dx, w, f] of [[-34, 18, 0.62], [-22, 16, 0.5], [-6, 26, 1], [10, 24, 0.86], [24, 20, 0.7]]) { const x0 = x + dx * u, ww = w * u, y0 = yb - h * 0.12, hh = h * f; g.moveTo(x0, y0); g.quadraticCurveTo(x0 + ww * 0.05, y0 - hh * 1.05, x0 + ww * 0.62, y0 - hh); g.quadraticCurveTo(x0 + ww * 0.72, y0 - hh * 0.45, x0 + ww, y0); g.closePath(); } }
+    };
+    // stroked structures (wheels, bridges): return a line width, or 0 if the shape is filled
+    const S = {
+      wheel: (g, x, yb, h, u) => { const rr = h * 0.48, cy = yb - h * 0.52; g.arc(x, cy, rr, 0, 2 * PI); for (let i = 0; i < 16; i++) { const a = (i / 16) * 2 * PI; g.moveTo(x, cy); g.lineTo(x + rr * Math.cos(a), cy + rr * Math.sin(a)); } g.moveTo(x - rr * 0.5, yb); g.lineTo(x, cy); g.lineTo(x + rr * 0.5, yb); return 1.2 * u + 0.6; },
+      harbourbridge: (g, x, yb, h, u) => { const span = 200 * u, dk = yb - h * 0.32; g.moveTo(x - span / 2, dk + h * 0.04); g.quadraticCurveTo(x, yb - h * 1.55, x + span / 2, dk + h * 0.04); g.moveTo(x - span / 2 + 8 * u, dk + h * 0.02); g.quadraticCurveTo(x, yb - h * 1.25, x + span / 2 - 8 * u, dk + h * 0.02); g.moveTo(x - span * 0.78, dk); g.lineTo(x + span * 0.78, dk); for (let i = 1; i < 12; i++) { const t = i / 12, bx = x - span / 2 + span * t, by = dk + h * 0.04 - 4 * t * (1 - t) * h * 0.98; g.moveTo(bx, by); g.lineTo(bx, dk); } return 1.6 * u + 0.8; },
+      cantilever: (g, x, yb, h, u) => { const span = 220 * u; g.moveTo(x - span / 2, yb - h * 0.15); g.quadraticCurveTo(x, yb - h * 1.3, x + span / 2, yb - h * 0.15); for (let i = 1; i < 8; i++) { const t = i / 8, bx = x - span / 2 + span * t, by = yb - h * 0.15 - 4 * t * (1 - t) * h * 0.58; g.moveTo(bx, by); g.lineTo(bx, yb); } return 1.6 * u + 0.8; }
+    };
+    // bridge pylons that go with the stroked harbour bridge
+    M.harbourpylons = (g, x, yb, h, u) => { for (const s of [-1, 1]) for (const k of [0.5, 0.42]) { const px = x + s * 200 * u * k; g.rect(px - 5 * u, yb - h * 0.62, 10 * u, h * 0.62); } };
+    return { fill: M, stroke: S };
+  })();
+
   function WindowView(el) {
-    const cv = document.createElement('canvas'); el.prepend(cv); const g = cv.getContext('2d');
+    const cv = document.createElement('canvas'); el.prepend(cv); const main = cv.getContext('2d');
+    let g = main;
+    const refl = document.createElement('canvas'), rg = refl.getContext('2d');
+    const skyCv = document.createElement('canvas'); skyCv.width = 48; skyCv.height = 36; const sk = skyCv.getContext('2d'), skImg = sk.createImageData(48, 36);
     const hud = document.createElement('div'); hud.className = 'sp-hud'; hud.innerHTML = '<b></b><span></span>'; el.appendChild(hud);
     const look = makeLook(el, 1, 1);
     const STARS = (() => { const r = seeded(17); return Array.from({ length: 90 }, () => [r(), r() * 0.62, 0.4 + r() * 1.2, r()]); })();
-    const CLOUDS = [[0.15, 0.2, 0.34, 0.05, 0.004], [0.62, 0.32, 0.42, 0.045, 0.0028], [1.05, 0.13, 0.28, 0.035, 0.0036]];
-    let D = null, W = 0, Hh = 0, dpr = 1, dirty = true, last = 0, key = '', C = TOWN, layers = [], rows = null;
-    function resize() { const w = el.clientWidth, h = el.clientHeight; dpr = Math.min(2, devicePixelRatio || 1); W = w; Hh = h; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); key = ''; dirty = true; }
+    const CLOUDS = (() => { const r = seeded(29); return Array.from({ length: 8 }, (_, i) => { const depth = i / 7, n = 8 + Math.floor(r() * 5), puffs = []; for (let j = 0; j < n; j++) { const t = j / (n - 1), crown = Math.sin(t * PI); puffs.push([t - 0.5 + (r() - 0.5) * 0.08, -crown * (0.12 + r() * 0.16) - r() * 0.04, (0.08 + crown * 0.1 + r() * 0.05) * (j % 3 === 1 ? 1.2 : 1)]); } return { u: r() * 1.5, v: 0.12 + r() * 0.42, s: (0.14 + r() * 0.16) * (0.55 + depth * 0.7), depth, speed: 0.0012 + depth * 0.0026, puffs, a: 0.3 + depth * 0.32 }; }); })();
+    let D = null, W = 0, Hh = 0, dpr = 1, dirty = true, last = 0, key = '', C = TOWN, layers = [], rows = null, south = true, H5 = [];
+    function resize() { const w = el.clientWidth, h = el.clientHeight; dpr = Math.min(2, devicePixelRatio || 1); W = w; Hh = h; cv.width = refl.width = Math.round(w * dpr); cv.height = refl.height = Math.round(h * dpr); key = ''; dirty = true; }
     function ensure() {
       const k = state.place.id + ':' + scene + ':' + W + 'x' + Hh; if (k === key) return; key = k;
       C = compOf(scene); layers = landLayers(C); rows = null;
@@ -2092,31 +2234,44 @@ const SUN = (() => {
       }
     }
     const u1 = () => W / 1000;
-    const layerLab = (sky, mixAmt, sand) => { let c = mixLab(sky.hor, sky.ground, mixAmt); if (sand) c = mixLab(c, mixLab(SAND, sky.hor, 0.45), (1 - mixAmt) * 0.55 * (1 - D.night * 0.7)); return c; };
-    function shadeFill(lab, sx, b, up, amt) { const sun = mixLab(lab, mixLab(D.sunLab, D.accent, 0.3), up ? amt * (0.4 + b) : 0); const h = g.createLinearGradient(sx - W, 0, sx + W, 0); h.addColorStop(0, css(lab)); h.addColorStop(0.5, css(sun)); h.addColorStop(1, css(lab)); return h; }
-    function ridgePath(L, off, voff) { const a = L.span ? L.span[0] * W : -60, z = L.span ? L.span[1] * W : W + 60; g.beginPath(); g.moveTo(a, Hh + 10); for (let x = a; x <= z; x += 6) g.lineTo(x, ridgeY(L, (x - off + 400) / W) * Hh + voff); g.lineTo(z, ridgeY(L, (z - off + 400) / W) * Hh + voff); g.lineTo(z, Hh + 10); g.closePath(); }
-    function drawLayer(L, sx, sy) {
-      const { sky, up, b, night, sunLab } = D, off = look.az * L.par, voff = look.el * L.par * 0.35, lab = layerLab(sky, L.mix, L.sand);
-      ridgePath(L, off, voff); g.fillStyle = shadeFill(lab, sx, b, up, 0.22 - L.mix * 0.1); g.fill();
+    // The sky is painted from the toki color arc, like the clock's own sky: the coming toki on the side the sun rises,
+    // the passing one on the side it sets, deeper overhead, lighter at the horizon.
+    function paintSky(p) {
+      let o = 0;
+      for (let y = 0; y < 36; y++) { const v = y / 35; for (let x = 0; x < 48; x++) { const u = south ? x / 47 : 1 - x / 47, c = lut(p + (0.5 - u) * 1.15 - (v - 0.5) * 0.2), k = 1.02 + 0.08 * (1 - v); const [r, gg, b] = labToRgb(Math.min(0.98, c[0] - 0.07 * (1 - v) + 0.05 * v * v), c[1] * k, c[2] * k - 0.014 * (1 - v)); skImg.data[o++] = r; skImg.data[o++] = gg; skImg.data[o++] = b; skImg.data[o++] = 255; } }
+      sk.putImageData(skImg, 0, 0);
+      H5 = [0, 0.25, 0.5, 0.75, 1].map(x => { const u = south ? x : 1 - x, c = lut(p + (0.5 - u) * 1.15 - 0.1); return [Math.min(0.97, c[0] + 0.04), c[1] * 0.95, c[2] * 0.95]; });
+    }
+    const layerLab = (hor, mixAmt, sand) => { let c = mixLab(hor, D.sky.ground, mixAmt); if (sand) c = mixLab(c, mixLab(SAND, hor, 0.45), (1 - mixAmt) * 0.55 * (1 - D.night * 0.7)); return c; };
+    // A land or building color that follows the sky's horizon across the view, warmed on the sun's side.
+    function shade(mixAmt, sand, amt, off) {
+      const { up, b, sunLab } = D, glow = mixLab(sunLab, D.accent, 0.3), sx = D.sx, h = g.createLinearGradient(-off, 0, W - off, 0);
+      H5.forEach((hor, i) => { const x = (i / 4) * W, near = Math.exp(-(((x - sx) / (W * 0.45)) ** 2)); h.addColorStop(i / 4, css(mixLab(layerLab(hor, mixAmt, sand), glow, up ? amt * (0.4 + b) * near : 0))); });
+      return h;
+    }
+    function ridgePath(L, off, voff) { const a = L.span ? L.span[0] * W : -80, z = L.span ? L.span[1] * W : W + 80; g.beginPath(); g.moveTo(a, Hh + 10); for (let x = a; x <= z; x += 6) g.lineTo(x, ridgeY(L, (x - off + 400) / W) * Hh + voff); g.lineTo(z, ridgeY(L, (z - off + 400) / W) * Hh + voff); g.lineTo(z, Hh + 10); g.closePath(); }
+    function drawLayer(L) {
+      const { sky, up, b, night, sunLab } = D, off = look.az * L.par * PAR, voff = look.el * L.par * 0.4;
+      ridgePath(L, off, voff); g.fillStyle = shade(L.mix, L.sand, 0.22 - L.mix * 0.1, 0); g.fill();
       if (L.snow) {
         g.save(); ridgePath(L, off, voff); g.clip();
         const top = (L.base - L.amp) * Hh + voff, sn = g.createLinearGradient(0, top, 0, top + L.amp * Hh * 0.5), snow = mixLab(mixLab(SNOWC, sky.hor, 0.3 + 0.2 * L.mix), sky.ground, night * 0.65);
         sn.addColorStop(0, rgba(snow, 0.95 * L.snow)); sn.addColorStop(0.55, rgba(snow, 0.55 * L.snow)); sn.addColorStop(1, rgba(snow, 0)); g.fillStyle = sn; g.fillRect(0, top - 4, W, L.amp * Hh * 0.5 + 4); g.restore();
       }
       if (up && L.mix < 0.8) {
-        g.beginPath(); const a = L.span ? L.span[0] * W : -60, z = L.span ? L.span[1] * W : W + 60; for (let x = a; x <= z; x += 6) { const y = ridgeY(L, (x - off + 400) / W) * Hh + voff; x === a ? g.moveTo(x, y) : g.lineTo(x, y); }
-        const h = g.createLinearGradient(sx - W * 0.6, 0, sx + W * 0.6, 0), al = (0.5 - L.mix * 0.35) * (0.3 + 0.7 * b); h.addColorStop(0, rgba(sunLab, 0)); h.addColorStop(0.5, rgba(mixLab(sunLab, WHITE, 0.2), al)); h.addColorStop(1, rgba(sunLab, 0)); g.strokeStyle = h; g.lineWidth = 1.5; g.stroke();
+        g.beginPath(); const a = L.span ? L.span[0] * W : -80, z = L.span ? L.span[1] * W : W + 80; for (let x = a; x <= z; x += 6) { const y = ridgeY(L, (x - off + 400) / W) * Hh + voff; x === a ? g.moveTo(x, y) : g.lineTo(x, y); }
+        const h = g.createLinearGradient(D.sx - W * 0.6, 0, D.sx + W * 0.6, 0), al = (0.5 - L.mix * 0.35) * (0.3 + 0.7 * b); h.addColorStop(0, rgba(sunLab, 0)); h.addColorStop(0.5, rgba(mixLab(sunLab, WHITE, 0.2), al)); h.addColorStop(1, rgba(sunLab, 0)); g.strokeStyle = h; g.lineWidth = 1.5; g.stroke();
       }
       if (L.mix < 0.8) haze((L.base - L.amp) * Hh + voff);
     }
     function haze(top) { const h = g.createLinearGradient(0, top, 0, Hh); h.addColorStop(0, rgba(D.sky.hor, 0)); h.addColorStop(0.5, rgba(D.sky.hor, 0.11 * (1 - D.night * 0.6))); h.addColorStop(1, rgba(D.sky.hor, 0)); g.fillStyle = h; g.fillRect(0, top, W, Hh - top); }
 
     // natural landmarks
-    function extra(type, u, hf, yb, sx) {
-      const { sky, up, b, night } = D, off = look.az * 5, x = u * W + off, h = hf * Hh, far = mixLab(sky.hor, sky.ground, 0.28), lit = mixLab(far, mixLab(D.sunLab, D.accent, 0.3), up ? 0.18 * (0.4 + b) : 0);
+    function extra(type, u, hf, yb) {
+      const { sky, up, b, night } = D, sx = D.sx, off = look.az * 5 * PAR, x = u * W + off, h = hf * Hh;
       const snow = mixLab(mixLab(SNOWC, sky.hor, 0.32), sky.ground, night * 0.65);
       const fillSnow = (path, line) => { g.save(); path(); g.clip(); g.fillStyle = css(snow); g.beginPath(); g.moveTo(x - W, yb - h * 2); g.lineTo(x + W, yb - h * 2); for (let i = 0; i <= 24; i++) { const t = i / 24, xx = x + W * (0.5 - t) * 0.6; g.lineTo(xx, yb - h * line + Math.sin(i * 2.7) * h * 0.04 + (i % 2 ? h * 0.05 : 0)); } g.closePath(); g.fill(); g.restore(); };
-      g.fillStyle = shadeFill(far, sx, b, up, 0.15);
+      g.fillStyle = shade(0.28, false, 0.15, 0);
       if (type === 'fuji' || type === 'volcanoes') {
         const cone = (cx, ch, cw) => () => { g.beginPath(); g.moveTo(cx - cw, yb); g.quadraticCurveTo(cx - cw * 0.42, yb - ch * 0.18, cx - cw * 0.1, yb - ch); g.lineTo(cx - cw * 0.04, yb - ch * 0.985); g.lineTo(cx + cw * 0.04, yb - ch * 0.99); g.lineTo(cx + cw * 0.1, yb - ch); g.quadraticCurveTo(cx + cw * 0.42, yb - ch * 0.18, cx + cw, yb); g.closePath(); };
         const p1 = cone(x, h, h * (type === 'fuji' ? 2.8 : 2.3)); p1(); g.fill(); fillSnow(p1, type === 'fuji' ? 0.64 : 0.78);
@@ -2126,52 +2281,24 @@ const SUN = (() => {
       } else if (type === 'sugarloaf') {
         const dome = (cx, ch) => { const w = ch * 0.42; g.moveTo(cx - w, yb); g.bezierCurveTo(cx - w * 0.75, yb - ch * 0.9, cx - w * 0.35, yb - ch * 1.02, cx, yb - ch); g.bezierCurveTo(cx + w * 0.35, yb - ch * 1.02, cx + w * 0.62, yb - ch * 0.85, cx + w * 0.8, yb); };
         g.beginPath(); dome(x, h); dome(x - h * 0.55, h * 0.45); g.closePath(); g.fill();
-      } else if (type === 'peaks') {
-        g.beginPath(); g.moveTo(x - W * 0.2, yb); for (const [dx, ph] of [[-0.14, 0.55], [-0.08, 0.8], [-0.02, 0.62], [0.05, 1], [0.12, 0.5]]) { const px = x + dx * W; g.lineTo(px - W * 0.03, yb - h * ph * 0.42); g.quadraticCurveTo(px - W * 0.014, yb - h * ph * 1.03, px, yb - h * ph); g.quadraticCurveTo(px + W * 0.01, yb - h * ph * 0.98, px + W * 0.02, yb - h * ph * 0.6); } g.lineTo(x + W * 0.2, yb); g.closePath(); g.fill();
+      } else if (type === 'corcovado') {
+        // the steep granite peak above the city, then the twin peaks along the ridge to the west
+        g.beginPath(); g.moveTo(x - W * 0.24, yb); g.quadraticCurveTo(x - W * 0.2, yb - h * 0.4, x - W * 0.16, yb - h * 0.52); g.quadraticCurveTo(x - W * 0.145, yb - h * 0.66, x - W * 0.13, yb - h * 0.62); g.quadraticCurveTo(x - W * 0.115, yb - h * 0.6, x - W * 0.1, yb - h * 0.7); g.quadraticCurveTo(x - W * 0.085, yb - h * 0.62, x - W * 0.06, yb - h * 0.48);
+        g.quadraticCurveTo(x - W * 0.025, yb - h * 0.7, x - W * 0.008, yb - h * 0.97); g.lineTo(x, yb - h); g.lineTo(x + W * 0.006, yb - h * 0.97); g.quadraticCurveTo(x + W * 0.02, yb - h * 0.6, x + W * 0.07, yb - h * 0.4); g.quadraticCurveTo(x + W * 0.13, yb - h * 0.2, x + W * 0.2, yb); g.closePath(); g.fill();
       } else if (type === 'crater') {
-        g.beginPath(); g.moveTo(x - W * 0.2, yb); for (const [dx, ph] of [[-0.15, 0.55], [-0.11, 0.8], [-0.08, 1], [-0.05, 0.85], [0.02, 0.78], [0.08, 0.6], [0.16, 0.25]]) g.lineTo(x + dx * W, yb - h * ph); g.lineTo(x + W * 0.22, yb); g.closePath(); g.fill();
+        // Diamond Head from Waikiki: a steep summit on the city side, a long ragged rim falling away to the east
+        g.beginPath(); g.moveTo(x - W * 0.2, yb); for (const [dx, ph] of [[-0.16, 0.22], [-0.11, 0.42], [-0.07, 0.55], [-0.04, 0.62], [-0.01, 0.6], [0.02, 0.72], [0.05, 0.82], [0.075, 1], [0.09, 0.9], [0.12, 0.5], [0.15, 0.15]]) g.lineTo(x + dx * W, yb - h * ph); g.lineTo(x + W * 0.17, yb); g.closePath(); g.fill();
+      } else if (type === 'ngong') {
+        // the four knuckles of the Ngong Hills
+        g.beginPath(); g.moveTo(x - W * 0.16, yb); for (let i = 0; i < 4; i++) { const cx = x + (i - 1.5) * W * 0.055; g.quadraticCurveTo(cx - W * 0.025, yb - h * (0.95 - i * 0.08), cx, yb - h * (1 - i * 0.1)); g.quadraticCurveTo(cx + W * 0.02, yb - h * (0.94 - i * 0.1), cx + W * 0.028, yb - h * (0.7 - i * 0.08)); } g.lineTo(x + W * 0.16, yb); g.closePath(); g.fill();
       } else if (type === 'pyramids') {
         const stone = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.32 + night * 0.3);
         for (const [du, s] of [[0, 1], [0.075, 0.94], [0.14, 0.52]]) {
-          const px = (u + du) * W + look.az * 12, ph = h * s, hw = ph * 0.82, split = px + hw * 0.22, litRight = sx > px;
+          const px = (u + du) * W + look.az * 13 * PAR, ph = h * s, hw = ph * 0.82, split = px + hw * 0.22, litRight = sx > px;
           g.fillStyle = css(litRight ? mixLab(stone, BLACK, 0.18) : mixLab(stone, D.sunLab, up ? 0.2 * b : 0)); g.beginPath(); g.moveTo(px - hw, yb); g.lineTo(px, yb - ph); g.lineTo(split, yb); g.closePath(); g.fill();
           g.fillStyle = css(litRight ? mixLab(stone, D.sunLab, up ? 0.2 * b : 0) : mixLab(stone, BLACK, 0.18)); g.beginPath(); g.moveTo(split, yb); g.lineTo(px, yb - ph); g.lineTo(px + hw, yb); g.closePath(); g.fill();
         }
       }
-    }
-
-    // generic landmark silhouettes (filled)
-    function markPath(type, x, yb, h) {
-      const u = u1(); g.beginPath();
-      const poly = pts => { g.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]); g.closePath(); };
-      const sym = right => { const l = right.map(([dx, y]) => [x - dx, y]).reverse(); poly(l.concat(right.map(([dx, y]) => [x + dx, y]))); };
-      if (type === 'needle') sym([[0, yb - h * 1.06], [1.2 * u, yb - h * 0.93], [3 * u, yb - h * 0.92], [11 * u, yb - h * 0.885], [12 * u, yb - h * 0.85], [5 * u, yb - h * 0.81], [4 * u, yb - h * 0.79], [6 * u, yb]]);
-      else if (type === 'needle2') sym([[0, yb - h], [1 * u, yb - h * 0.84], [3 * u, yb - h * 0.8], [7 * u, yb - h * 0.79], [7 * u, yb - h * 0.76], [3.6 * u, yb - h * 0.75], [5 * u, yb - h * 0.6], [11 * u, yb - h * 0.585], [11 * u, yb - h * 0.55], [6 * u, yb - h * 0.535], [9 * u, yb - h * 0.25], [16 * u, yb]]);
-      else if (type === 'lattice') sym([[0, yb - h], [0.7 * u, yb - h * 0.86], [5 * u, yb - h * 0.86], [5 * u, yb - h * 0.83], [1.6 * u, yb - h * 0.82], [3 * u, yb - h * 0.62], [10 * u, yb - h * 0.61], [10 * u, yb - h * 0.56], [5 * u, yb - h * 0.55], [12 * u, yb - h * 0.3], [26 * u, yb]]);
-      else if (type === 'eiffel') {
-        sym([[0, yb - h], [1.2 * u, yb - h * 0.92], [3 * u, yb - h * 0.65], [8 * u, yb - h * 0.62], [8 * u, yb - h * 0.6], [5 * u, yb - h * 0.59], [11 * u, yb - h * 0.36], [17 * u, yb - h * 0.34], [17 * u, yb - h * 0.31], [14 * u, yb - h * 0.3], [26 * u, yb - h * 0.08], [36 * u, yb]]);
-        g.moveTo(x + 18 * u, yb); g.quadraticCurveTo(x + 12 * u, yb - h * 0.2, x, yb - h * 0.21); g.quadraticCurveTo(x - 12 * u, yb - h * 0.2, x - 18 * u, yb); g.closePath();
-      }
-      else if (type === 'dome') { g.moveTo(x - 30 * u, yb); g.lineTo(x - 30 * u, yb - h * 0.42); g.lineTo(x - 21 * u, yb - h * 0.42); g.lineTo(x - 21 * u, yb - h * 0.55); g.ellipse(x, yb - h * 0.55, 21 * u, h * 0.3, 0, PI, 0); g.lineTo(x + 21 * u, yb - h * 0.42); g.lineTo(x + 30 * u, yb - h * 0.42); g.lineTo(x + 30 * u, yb); g.closePath(); g.moveTo(x - 2.5 * u, yb - h * 0.84); g.lineTo(x - 2.5 * u, yb - h * 0.95); g.lineTo(x, yb - h); g.lineTo(x + 2.5 * u, yb - h * 0.95); g.lineTo(x + 2.5 * u, yb - h * 0.84); g.closePath(); }
-      else if (type === 'spire') sym([[0, yb - h], [1.2 * u, yb - h * 0.86], [5 * u, yb - h * 0.85], [5 * u, yb - h * 0.8], [9 * u, yb - h * 0.79], [9 * u, yb - h * 0.72], [13 * u, yb - h * 0.71], [13 * u, yb - h * 0.6], [17 * u, yb - h * 0.59], [17 * u, yb - h * 0.25], [24 * u, yb - h * 0.24], [24 * u, yb]]);
-      else if (type === 'taper') sym([[0, yb - h], [0.8 * u, yb - h * 0.86], [6 * u, yb - h * 0.85], [8 * u, yb - h * 0.82], [17 * u, yb - h * 0.08], [17 * u, yb]]);
-      else if (type === 'shard') { g.moveTo(x - 18 * u, yb); g.lineTo(x - 2 * u, yb - h); g.lineTo(x + 1 * u, yb - h * 0.93); g.lineTo(x + 4 * u, yb - h * 0.96); g.lineTo(x + 18 * u, yb); g.closePath(); }
-      else if (type === 'clock') sym([[0, yb - h], [1.5 * u, yb - h * 0.9], [6 * u, yb - h * 0.78], [7 * u, yb - h * 0.77], [7 * u, yb - h * 0.72], [9 * u, yb - h * 0.71], [9 * u, yb - h * 0.6], [7 * u, yb - h * 0.59], [7 * u, yb]]);
-      else if (type === 'churchspire') { sym([[0, yb - h], [5 * u, yb - h * 0.72], [6 * u, yb - h * 0.7], [6 * u, yb - h * 0.45], [22 * u, yb - h * 0.3], [24 * u, yb]]); }
-      else if (type === 'aframe') { g.moveTo(x - 30 * u, yb); g.lineTo(x, yb - h); g.lineTo(x + 30 * u, yb); g.closePath(); g.moveTo(x - 22 * u, yb); g.lineTo(x + 6 * u, yb - h * 0.8); g.lineTo(x + 34 * u, yb); g.closePath(); }
-      else if (type === 'pagoda') { let y = yb; for (let i = 0; i < 5; i++) { const bw = (14 - i * 2) * u, rw = bw * 1.75, th = (h * 0.8) / 5; g.moveTo(x - bw, y); g.lineTo(x - bw, y - th * 0.55); g.lineTo(x - rw, y - th * 0.6); g.quadraticCurveTo(x - bw * 0.6, y - th * 0.72, x - bw * 0.5, y - th); g.lineTo(x + bw * 0.5, y - th); g.quadraticCurveTo(x + bw * 0.6, y - th * 0.72, x + rw, y - th * 0.6); g.lineTo(x + bw, y - th * 0.55); g.lineTo(x + bw, y); g.closePath(); y -= th; } g.moveTo(x - 1.2 * u, y); g.lineTo(x, y - h * 0.2); g.lineTo(x + 1.2 * u, y); g.closePath(); }
-      else if (type === 'minaret') sym([[0, yb - h], [3 * u, yb - h * 0.86], [3 * u, yb - h * 0.8], [5 * u, yb - h * 0.79], [5 * u, yb - h * 0.77], [3.2 * u, yb - h * 0.76], [3.2 * u, yb - h * 0.55], [5.5 * u, yb - h * 0.54], [5.5 * u, yb - h * 0.52], [3.6 * u, yb - h * 0.51], [4 * u, yb]]);
-      else if (type === 'mosque') { g.moveTo(x - 34 * u, yb); g.lineTo(x - 34 * u, yb - h * 0.36); g.lineTo(x - 20 * u, yb - h * 0.36); g.ellipse(x, yb - h * 0.36, 20 * u, h * 0.3, 0, PI, 0); g.lineTo(x + 34 * u, yb - h * 0.36); g.lineTo(x + 34 * u, yb); g.closePath(); for (const s of [-1, 1]) { const mx = x + s * 30 * u; g.moveTo(mx - 3 * u, yb); g.lineTo(mx - 3 * u, yb - h * 0.82); g.lineTo(mx, yb - h); g.lineTo(mx + 3 * u, yb - h * 0.82); g.lineTo(mx + 3 * u, yb); g.closePath(); } }
-      else if (type === 'lotus') sym([[0, yb - h], [1 * u, yb - h * 0.9], [9 * u, yb - h * 0.88], [8 * u, yb - h * 0.84], [5 * u, yb - h * 0.8], [5 * u, yb - h * 0.1], [9 * u, yb]]);
-      else if (type === 'supertall') { const st = [[26, 0.0], [21, 0.22], [17, 0.4], [13, 0.55], [9.5, 0.68], [6.5, 0.78], [4, 0.86], [2, 0.92], [0.6, 1]]; const right = []; for (let i = 0; i < st.length - 1; i++) { right.push([st[i][0] * u, yb - h * st[i][1]], [st[i][0] * u, yb - h * st[i + 1][1]]); } right.push([0, yb - h]); sym(right.reverse()); }
-      else if (type === 'drum') sym([[0, yb - h], [2 * u, yb - h * 0.9], [17 * u, yb - h * 0.88], [17 * u, yb - h * 0.85], [12 * u, yb - h * 0.84], [12 * u, yb]]);
-      else if (type === 'box') sym([[0, yb - h * 1.02], [19 * u, yb - h * 1.02], [19 * u, yb]]);
-    }
-    function markStroke(type, x, yb, h) {
-      const u = u1(); g.beginPath();
-      if (type === 'wheel') { const rr = h * 0.48, cy = yb - h * 0.52; g.arc(x, cy, rr, 0, 2 * PI); for (let i = 0; i < 16; i++) { const a = (i / 16) * 2 * PI; g.moveTo(x, cy); g.lineTo(x + rr * Math.cos(a), cy + rr * Math.sin(a)); } g.moveTo(x - rr * 0.5, yb); g.lineTo(x, cy); g.lineTo(x + rr * 0.5, yb); return 1.2 * u + 0.6; }
-      if (type === 'bridge') { const span = 170 * u; g.moveTo(x - span / 2, yb - h * 0.25); g.quadraticCurveTo(x, yb - h * 1.6, x + span / 2, yb - h * 0.25); g.moveTo(x - span * 0.72, yb - h * 0.3); g.lineTo(x + span * 0.72, yb - h * 0.3); for (let i = 1; i < 10; i++) { const t = i / 10, bx = x - span / 2 + span * t, by = yb - h * 0.25 - 4 * t * (1 - t) * h * 0.67; g.moveTo(bx, by); g.lineTo(bx, yb - h * 0.3); } for (const s of [-0.5, 0.5]) { g.moveTo(x + s * span - 6 * u, yb); g.lineTo(x + s * span - 6 * u, yb - h * 0.5); g.moveTo(x + s * span + 6 * u, yb); g.lineTo(x + s * span + 6 * u, yb - h * 0.5); } return 1.8 * u + 0.7; }
-      return 0;
     }
     function bldPath(B, yb, s) {
       const x = B.x, w = B.w, top = yb - B.h, bot = yb + 80;
@@ -2193,19 +2320,19 @@ const SUN = (() => {
       }
       g.lineTo(x + w, bot); g.closePath();
     }
-    function drawRow(row, yb, mixAmt, off, sx) {
-      const { sky, up, b, night } = D, lab = layerLab(sky, mixAmt), s = Hh / 700;
+    function drawRow(row, yb, mixAmt, off) {
+      const { up, b, night } = D, sx = D.sx, s = Hh / 700, base = layerLab(D.sky.hor, mixAmt);
       g.save(); g.translate(off, 0);
       // side faces turned toward the middle of the view: lit when the sun is on that side
-      const sideLit = mixLab(lab, mixLab(D.sunLab, D.accent, 0.3), up ? 0.16 * (0.4 + b) : 0), sideDark = mixLab(lab, BLACK, 0.2);
+      const sideLit = mixLab(base, mixLab(D.sunLab, D.accent, 0.3), up ? 0.16 * (0.4 + b) : 0), sideDark = mixLab(base, BLACK, 0.2);
       for (const B of row) {
         if (B.roof === 'curve' || B.roof === 'temple' || B.roof === 'gable') continue;
-        const mid = B.x + B.w / 2 + off, toRight = mid < W / 2, sd = Math.min(B.w * 0.35, (Math.abs(mid - W / 2) / W) * B.w * 1.1), ex = toRight ? B.x + B.w : B.x, top = yb - B.h + (B.roof === 'step' ? B.h * 0.14 : B.roof === 'slant' ? (toRight ? 0 : B.w * 0.45) : 0);
+        const mid = B.x + B.w / 2 + off, toRight = mid < W / 2, sd = Math.min(B.w * 0.38, (Math.abs(mid - W / 2) / W) * B.w * 1.25), ex = toRight ? B.x + B.w : B.x, top = yb - B.h + (B.roof === 'step' ? B.h * 0.14 : B.roof === 'slant' ? (toRight ? 0 : B.w * 0.45) : 0);
         if (sd < 1) continue;
         g.fillStyle = css((toRight ? sx > mid : sx < mid) ? sideLit : sideDark);
         g.beginPath(); g.moveTo(ex, yb + 80); g.lineTo(ex, top); g.lineTo(ex + (toRight ? sd : -sd), top + sd * 0.3); g.lineTo(ex + (toRight ? sd : -sd), yb + 80); g.closePath(); g.fill();
       }
-      g.fillStyle = shadeFill(lab, sx - off, b, up, 0.2 - mixAmt * 0.1); g.beginPath(); for (const B of row) bldPath(B, yb, s); g.fill();
+      g.fillStyle = shade(mixAmt, false, 0.2 - mixAmt * 0.1, off); g.beginPath(); for (const B of row) bldPath(B, yb, s); g.fill();
       if (night > 0.02) {
         const lim = 0.16 + 0.34 * night;
         g.fillStyle = `rgba(255,214,150,${(0.3 + 0.6 * night).toFixed(3)})`; for (const B of row) for (const [dx, dy, q, cool] of B.win) if (q < lim && !cool) g.fillRect(B.x + dx, yb - dy - 3, 2, 3);
@@ -2213,14 +2340,17 @@ const SUN = (() => {
       }
       g.restore();
     }
-    function drawMarks(P, yb, off, sx, T) {
-      const { sky, up, b, night } = D, lab = layerLab(sky, 0.56);
-      g.save(); g.translate(off, 0); g.fillStyle = shadeFill(lab, sx - off, b, up, 0.15);
-      for (const [type, u, hm] of P.marks) {
-        const x = u * W, h = hm * Hh, lw = markStroke(type, x, yb, h);
-        if (lw) { g.strokeStyle = css(lab); g.lineWidth = lw; g.stroke(); } else { markPath(type, x, yb, h); g.fill(type === 'eiffel' ? 'evenodd' : 'nonzero'); }
+    function drawMarks(P, yb, off, T) {
+      const { sky, up, b, night } = D, u = u1();
+      g.save(); g.translate(off, 0);
+      const dark = shade(0.56, false, 0.15, off), white = mixLab(mixLab(layerLab(sky.hor, 0.4), mixLab(WHITE, sky.hor, 0.35), 0.6 * (1 - night * 0.6)), D.sunLab, up ? 0.12 * b : 0);
+      for (const [type, mu, hm, tone] of P.marks) {
+        const x = mu * W, h = hm * Hh;
+        if (MARKS.stroke[type]) { g.beginPath(); const lw = MARKS.stroke[type](g, x, yb, h, u); g.strokeStyle = css(layerLab(sky.hor, 0.56)); g.lineWidth = lw; g.stroke(); if (type === 'harbourbridge') { g.beginPath(); MARKS.fill.harbourpylons(g, x, yb, h, u); g.fillStyle = dark; g.fill(); } continue; }
+        const fn = MARKS.fill[type]; if (!fn) continue;
+        g.beginPath(); fn(g, x, yb, h, u); g.fillStyle = tone === 'light' ? css(white) : dark; g.fill(['eiffel', 'arc'].includes(type) ? 'evenodd' : 'nonzero');
       }
-      if (night > 0.02) for (const [type, u, hm] of P.marks) if (!['dome', 'wheel', 'bridge', 'pagoda', 'mosque', 'aframe', 'box'].includes(type)) { const blink = 0.55 + 0.45 * Math.sin(T * 2.4 + u * 9); g.fillStyle = `rgba(255,90,70,${(night * blink).toFixed(3)})`; g.beginPath(); g.arc(u * W, yb - hm * Hh * (type === 'needle' ? 1.06 : 1.0) - 1, 2, 0, 2 * PI); g.fill(); }
+      if (night > 0.02) for (const [type, mu, hm] of P.marks) if (['skytree', 'tokyotower', 'needle', 'kyototower', 'empire', 'owtc', 'chrysler', 'steinway', 'park432', 'khalifa', 'sydneytower', 'shard', 'usbank', 'wilshire', 'lotus', 'reunion', 'box', 'chase', 'xcrown'].includes(type)) { const blink = 0.55 + 0.45 * Math.sin(T * 2.4 + mu * 9); g.fillStyle = `rgba(255,90,70,${(night * blink).toFixed(3)})`; g.beginPath(); g.arc(mu * W, yb - hm * Hh * (type === 'needle' ? 1.06 : type === 'xcrown' ? 1.04 : 1.0) - 1, 2, 0, 2 * PI); g.fill(); }
       g.restore();
     }
     // A palm: a curved, tapering trunk and drooping fronds, each a feathered leaf.
@@ -2228,96 +2358,118 @@ const SUN = (() => {
       const tx = x + lean * h * 0.28, ty = yb - h, tw = Math.max(2, h * 0.035);
       g.fillStyle = col; g.strokeStyle = col; g.lineCap = 'round';
       g.beginPath(); g.moveTo(x - tw, yb); g.quadraticCurveTo(x + lean * h * 0.04 - tw * 0.8, yb - h * 0.55, tx - tw * 0.45, ty); g.lineTo(tx + tw * 0.45, ty); g.quadraticCurveTo(x + lean * h * 0.04 + tw * 0.8, yb - h * 0.55, x + tw, yb); g.closePath(); g.fill();
-      const fronds = [[-2.75, 0.5], [-2.25, 0.46], [-1.75, 0.38], [-1.25, 0.42], [-0.75, 0.47], [-0.3, 0.5], [-1.55, 0.3]];
-      for (const [a0, lf] of fronds) {
+      for (const [a0, lf] of [[-2.75, 0.5], [-2.25, 0.46], [-1.75, 0.38], [-1.25, 0.42], [-0.75, 0.47], [-0.3, 0.5], [-1.55, 0.3]]) {
         const a = a0 + lean * 0.12, len = h * lf, mx = tx + Math.cos(a) * len * 0.5, my = ty + Math.sin(a) * len * 0.5 - len * 0.12, ex = tx + Math.cos(a) * len, ey = ty + Math.sin(a) * len * 0.3 + len * 0.42;
-        // the rib
         g.lineWidth = Math.max(1, h * 0.012); g.beginPath(); g.moveTo(tx, ty); g.quadraticCurveTo(mx, my, ex, ey); g.stroke();
-        // leaflets hanging off the rib
         g.lineWidth = Math.max(0.8, h * 0.008);
         for (let i = 2; i <= 11; i++) {
           const t = i / 12, px = (1 - t) * (1 - t) * tx + 2 * (1 - t) * t * mx + t * t * ex, py = (1 - t) * (1 - t) * ty + 2 * (1 - t) * t * my + t * t * ey, ll = len * 0.2 * Math.sin(PI * t) + len * 0.04;
           const dx = 2 * (1 - t) * (mx - tx) + 2 * t * (ex - mx), dy = 2 * (1 - t) * (my - ty) + 2 * t * (ey - my), dl = Math.hypot(dx, dy) || 1, nx = -dy / dl, ny = dx / dl;
-          for (const sgn of [1, -1]) { g.beginPath(); g.moveTo(px, py); g.lineTo(px + (nx * sgn * 0.6 + dx / dl * 0.35) * ll, py + (ny * sgn * 0.6 + dy / dl * 0.35) * ll + ll * 0.55); g.stroke(); }
+          for (const sgn of [1, -1]) { g.beginPath(); g.moveTo(px, py); g.lineTo(px + (nx * sgn * 0.6 + (dx / dl) * 0.35) * ll, py + (ny * sgn * 0.6 + (dy / dl) * 0.35) * ll + ll * 0.55); g.stroke(); }
         }
       }
     }
-    function drawSea(yTop, yBot, sx, sy, T) {
-      const { sky, up, b, night, sunLab } = D, far = mixLab(mixLab(sky.hor, sky.zen, 0.3), BLACK, 0.1), near = mixLab(mixLab(sky.ground, sky.zen, 0.35), BLACK, 0.1);
-      let gr = g.createLinearGradient(0, yTop, 0, yBot); gr.addColorStop(0, css(far)); gr.addColorStop(1, css(near)); g.fillStyle = gr; g.fillRect(0, yTop, W, yBot - yTop);
-      if (up || D.sp.alt > -10 * rad) {
-        const a = up ? 0.25 + 0.35 * b : 0.3 * smooth(-10 * rad, 0, D.sp.alt), glowLab = mixLab(sunLab, D.accent, 0.3);
-        gr = g.createRadialGradient(sx, yTop, 0, sx, yTop, W * 0.4); gr.addColorStop(0, rgba(glowLab, a)); gr.addColorStop(1, rgba(glowLab, 0)); g.save(); g.globalCompositeOperation = 'screen'; g.fillStyle = gr; g.fillRect(0, yTop, W, yBot - yTop);
-        if (up) { g.fillStyle = rgba(mixLab(sunLab, WHITE, 0.3), 0.5 + 0.4 * b); for (let i = 0; i < 70; i++) { const t = Math.pow(i / 70, 1.5), y = yTop + 1 + (yBot - yTop) * t, spread = 4 + W * (0.02 + 0.12 * t) * (0.6 + b), jx = Math.sin(i * 12.99 + T * (1.1 + (i % 5) * 0.3)) * spread, len = 3 + 18 * t * (0.5 + 0.5 * Math.sin(i * 3.1 + T * 2)); g.globalAlpha = (1 - t * 0.7) * (0.35 + 0.65 * Math.abs(Math.sin(i * 7.3 + T * 1.7))); g.fillRect(sx + jx - len / 2, y, len, 1.2 + t); } g.globalAlpha = 1; }
+    // Clouds: puffs shaded underneath and lit on the sun's side, drifting slowly, with thin lit streaks near a low sun.
+    function drawClouds(T, hy) {
+      const { sky, up, b, night, sunLab } = D, sx = D.sx, sy = D.sy;
+      const lit = up ? mixLab(mixLab(sky.hor, WHITE, 0.35), sunLab, 0.25) : mixLab(sky.zen, WHITE, 0.1 * (1 - night)), shadeC = mixLab(sky.zen, sky.ground, 0.35);
+      for (const Cl of CLOUDS) {
+        const x = ((((Cl.u + T * Cl.speed) % 1.6) + 1.6) % 1.6 - 0.3) * W - look.az * (6 + Cl.depth * 20) * PAR, y = Cl.v * hy - look.el * (2 + Cl.depth * 5), cw = Cl.s * W;
+        const ang = Math.atan2(sy - y, sx - x), lx = Math.cos(ang), ly = Math.sin(ang), a = Cl.a * (up ? 0.62 : 0.3 * (1 - night * 0.5));
+        g.save(); g.translate(x, y); g.scale(1, 0.62);
+        for (const [px, py, pr] of Cl.puffs) { const cx = px * cw, cy = py * cw + cw * 0.06, r = pr * cw * 1.05; const gr = g.createRadialGradient(cx, cy, 0, cx, cy, r); gr.addColorStop(0, rgba(shadeC, a * 0.5)); gr.addColorStop(1, rgba(shadeC, 0)); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, r, 0, 2 * PI); g.fill(); }
+        for (const [px, py, pr] of Cl.puffs) { const cx = px * cw, cy = py * cw, r = pr * cw, hx = cx + lx * r * 0.3, hy2 = cy + ly * r * 0.3; const gr = g.createRadialGradient(hx, hy2, r * 0.05, cx, cy, r); gr.addColorStop(0, rgba(mixLab(lit, WHITE, up ? 0.2 * b : 0), a)); gr.addColorStop(0.5, rgba(lit, a * 0.6)); gr.addColorStop(1, rgba(lit, 0)); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, r, 0, 2 * PI); g.fill(); }
         g.restore();
       }
-      g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.4), 0.18 * (1 - night * 0.5)); g.lineWidth = 1;
-      for (let i = 0; i < 4; i++) { const y = yTop + (yBot - yTop) * (0.35 + i * 0.18); g.beginPath(); for (let x = 0; x <= W; x += 8) { const yy = y + Math.sin(x * 0.03 + T * 0.8 + i) * 1.2; x ? g.lineTo(x, yy) : g.moveTo(x, yy); } g.stroke(); }
+      const low = smooth(25 * rad, 2 * rad, D.sp.alt) * (D.sp.alt > -8 * rad ? 1 : 0);
+      if (low > 0.01) for (const [u0, v, w] of [[0.1, 0.78, 0.5], [0.55, 0.84, 0.42], [0.3, 0.9, 0.6]]) { const x = ((((u0 + T * 0.0015) % 1.3) + 1.3) % 1.3 - 0.15) * W - look.az * 8 * PAR, y = v * hy, ww = w * W, c = mixLab(sunLab, D.accent, 0.4), gr = g.createLinearGradient(x, 0, x + ww, 0); gr.addColorStop(0, rgba(c, 0)); gr.addColorStop(0.5, rgba(c, 0.35 * low)); gr.addColorStop(1, rgba(c, 0)); g.fillStyle = gr; g.beginPath(); g.ellipse(x + ww / 2, y, ww / 2, Math.max(1.5, Hh * 0.006), 0, 0, 2 * PI); g.fill(); }
+    }
+    // Water: the toki sky mirrored, darkened with depth, whatever stands on the shore reflected through moving ripples,
+    // a glitter path under the sun, and soft ripple lines.
+    function drawWater(yTop, yBot, T, mirror) {
+      const { sky, up, b, night, sunLab } = D, sx = D.sx, hy = Hh * 0.7;
+      g.save(); g.beginPath(); g.rect(0, yTop, W, yBot - yTop); g.clip();
+      g.fillStyle = css(mixLab(sky.hor, sky.zen, 0.2)); g.fillRect(0, yTop, W, yBot - yTop);
+      g.save(); g.translate(0, 2 * yTop); g.scale(1, -1); g.drawImage(skyCv, 0, 0, W, hy); g.restore();
+      let gr = g.createLinearGradient(0, yTop, 0, yBot); gr.addColorStop(0, rgba(mixLab(sky.ground, sky.zen, 0.25), 0.25)); gr.addColorStop(1, rgba(mixLab(sky.ground, BLACK, 0.2), 0.65)); g.fillStyle = gr; g.fillRect(0, yTop, W, yBot - yTop);
+      if (mirror) {
+        rg.setTransform(1, 0, 0, 1, 0, 0); rg.clearRect(0, 0, refl.width, refl.height); rg.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const keep = g; g = rg; g.save(); g.translate(0, 2 * yTop); g.scale(1, -1); mirror(); g.restore(); g = keep;
+        for (let y = yTop; y < yBot; y += 2) { const t = (y - yTop) / (yBot - yTop), ox = Math.sin(y * 0.35 + T * 1.6) * (0.6 + t * 3.5) + Math.sin(y * 0.11 - T * 0.9) * t * 2.2; g.globalAlpha = 0.5 * (1 - t * 0.55); g.drawImage(refl, 0, Math.round(y * dpr), refl.width, Math.round(2 * dpr), ox, y, W, 2); }
+        g.globalAlpha = 1;
+      }
+      if (up || D.sp.alt > -10 * rad) {
+        const a = up ? 0.25 + 0.35 * b : 0.3 * smooth(-10 * rad, 0, D.sp.alt), glowLab = mixLab(sunLab, D.accent, 0.3);
+        gr = g.createRadialGradient(sx, yTop, 0, sx, yTop, W * 0.42); gr.addColorStop(0, rgba(glowLab, a)); gr.addColorStop(1, rgba(glowLab, 0)); g.globalCompositeOperation = 'screen'; g.fillStyle = gr; g.fillRect(0, yTop, W, yBot - yTop);
+        if (up) { g.fillStyle = rgba(mixLab(sunLab, WHITE, 0.35), 1); for (let i = 0; i < 110; i++) { const t = Math.pow((i + 0.5) / 110, 1.4), y = yTop + 1 + (yBot - yTop) * t, spread = (6 + W * (0.015 + 0.1 * t)) * (0.5 + 0.8 * b) * (0.6 + 0.4 * Math.cos(D.sp.alt)), n1 = Math.sin(i * 12.9898 + T * (0.9 + (i % 7) * 0.21)), n2 = Math.sin(i * 78.233 + T * 1.7), len = 2 + (6 + 22 * t) * (0.4 + 0.6 * Math.abs(n2)); g.globalAlpha = (0.25 + 0.75 * Math.abs(Math.sin(i * 4.1 + T * 2.3))) * (1 - t * 0.5) * (0.5 + 0.5 * b); g.fillRect(sx + n1 * spread - len / 2, y, len, 0.8 + t * 1.6); } g.globalAlpha = 1; }
+        g.globalCompositeOperation = 'source-over';
+      }
+      for (let i = 0; i < 6; i++) { const y0 = yTop + (yBot - yTop) * (0.12 + i * 0.15), t = (y0 - yTop) / (yBot - yTop); g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.4), (0.08 + 0.1 * t) * (1 - night * 0.5)); g.lineWidth = 0.8 + t; g.beginPath(); for (let x = 0; x <= W; x += 8) { const yy = y0 + Math.sin(x * (0.02 + i * 0.004) + T * (0.6 + i * 0.1) + i) * (0.8 + t * 1.6); x ? g.lineTo(x, yy) : g.moveTo(x, yy); } g.stroke(); }
+      g.restore();
     }
     function draw(now) {
       if (!D || !W) return;
       ensure();
-      const { c, sp, up, b, sky, sunLab, night } = D, south = state.place.lat >= 0, face = south ? 180 : 0, hy = Hh * 0.7;
+      const { c, sp, up, b, sky, sunLab, night } = D, face = state.place.lat >= 0 ? 180 : 0, hy = Hh * 0.7;
+      south = state.place.lat >= 0;
       const ax = az => W / 2 + ((((az - face + 540) % 360) - 180) / 115) * W * 0.48;
-      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g = main; g.setTransform(dpr, 0, 0, dpr, 0, 0);
       const sx = ax(sp.az / rad), sy = hy - (sp.alt / (90 * rad)) * hy * 0.94, pxo = look.az, pyo = look.el, T = animOn() ? now / 1000 : 0;
-      let gr = g.createLinearGradient(0, 0, 0, hy); gr.addColorStop(0, css(sky.zen)); gr.addColorStop(1, css(sky.hor)); g.fillStyle = gr; g.fillRect(0, 0, W, Hh);
+      D.sx = sx; D.sy = sy;
+      paintSky(D.p);
+      g.imageSmoothingEnabled = true; g.drawImage(skyCv, 0, 0, W, hy + 2); g.drawImage(skyCv, 0, skyCv.height - 1, skyCv.width, 1, 0, hy, W, Hh - hy);
       const glowLab = mixLab(sunLab, D.accent, 0.3);
       if (up || sp.alt > -14 * rad) {
         const gy = up ? sy : hy, R = W * (up ? 0.22 + 0.42 * b : 0.45) * (1 + 0.04 * Math.sin(T * 0.9)), a = up ? 0.28 + 0.4 * b : 0.45 * smooth(-14 * rad, 0, sp.alt);
-        gr = g.createRadialGradient(sx, gy, 0, sx, gy, R); gr.addColorStop(0, rgba(glowLab, a)); gr.addColorStop(0.4, rgba(glowLab, a * 0.35)); gr.addColorStop(1, rgba(glowLab, 0));
+        const gr = g.createRadialGradient(sx, gy, 0, sx, gy, R); gr.addColorStop(0, rgba(glowLab, a)); gr.addColorStop(0.4, rgba(glowLab, a * 0.35)); gr.addColorStop(1, rgba(glowLab, 0));
         g.globalCompositeOperation = 'screen'; g.fillStyle = gr; g.fillRect(0, 0, W, Hh); g.globalCompositeOperation = 'source-over';
       }
-      if (night > 0.01) { g.fillStyle = '#fff'; for (const [u, v, r, a] of STARS) { g.globalAlpha = night * (0.3 + 0.65 * a) * (0.85 + 0.15 * Math.sin(T * 1.7 + a * 40)); g.beginPath(); g.arc(u * W - pxo * 3, v * Hh - pyo * 2, r, 0, 2 * PI); g.fill(); } g.globalAlpha = 1; }
+      if (night > 0.01) { g.fillStyle = '#fff'; for (const [u, v, r, a] of STARS) { g.globalAlpha = night * (0.3 + 0.65 * a) * (0.85 + 0.15 * Math.sin(T * 1.7 + a * 40)); g.beginPath(); g.arc(u * W - pxo * 3 * PAR, v * Hh - pyo * 2, r, 0, 2 * PI); g.fill(); } g.globalAlpha = 1; }
       if (c.mode === 'solar') { g.beginPath(); for (let i = 0; i <= 48; i++) { const s = sunPos(c.rise + ((c.set - c.rise) * i) / 48, state.place.lat, state.place.lng), x = ax(s.az / rad), y = hy - (s.alt / (90 * rad)) * hy * 0.94; i ? g.lineTo(x, y) : g.moveTo(x, y); } g.setLineDash([1.5, 7]); g.lineCap = 'round'; g.lineWidth = 1.6; g.strokeStyle = inkOn(mixLab(sky.hor, sky.zen, 0.5)) === '#1c1a29' ? 'rgba(28,26,41,.32)' : 'rgba(247,242,232,.32)'; g.stroke(); g.setLineDash([]); }
-      for (const [u0, v, w, h, sp2] of CLOUDS) {
-        const x = ((((u0 + T * sp2) % 1.5) + 1.5) % 1.5 - 0.25) * W - pxo * 8, y = v * Hh - pyo * 4, cw = w * W, ch = h * Hh * 2.2;
-        const lit = mixLab(mixLab(sky.hor, WHITE, 0.3), sunLab, up ? 0.3 * (1 - Math.min(1, Math.abs(x - sx) / W)) : 0);
-        for (let i = 0; i < 4; i++) { const ox = x + (i - 1.5) * cw * 0.22, oy = y + (i % 2 ? -ch * 0.12 : ch * 0.08); gr = g.createRadialGradient(ox, oy, 0, ox, oy, cw * 0.32); gr.addColorStop(0, rgba(lit, (0.22 - 0.12 * night) * (up ? 1 : 0.6))); gr.addColorStop(1, rgba(lit, 0)); g.fillStyle = gr; g.beginPath(); g.ellipse(ox, oy, cw * 0.32, ch * 0.5, 0, 0, 2 * PI); g.fill(); }
-      }
+      drawClouds(T, hy);
       // the sun: a breathing glow and slowly turning rays, tinted by the toki
       if (up) {
         const r = Math.max(7, W * (0.012 + 0.01 * b)), pulse = 1 + 0.05 * Math.sin(T * 1.55);
         g.save(); g.translate(sx, sy); g.rotate(T * 0.07); g.globalCompositeOperation = 'screen';
         const rayLab = mixLab(sunLab, D.accent, 0.45), rl = r * (5 + 7 * b) * pulse;
-        gr = g.createRadialGradient(0, 0, r, 0, 0, rl); gr.addColorStop(0, rgba(rayLab, 0.18 + 0.22 * b)); gr.addColorStop(1, rgba(rayLab, 0)); g.fillStyle = gr;
+        let gr = g.createRadialGradient(0, 0, r, 0, 0, rl); gr.addColorStop(0, rgba(rayLab, 0.18 + 0.22 * b)); gr.addColorStop(1, rgba(rayLab, 0)); g.fillStyle = gr;
         for (let i = 0; i < 16; i++) { const w = i % 2 ? 0.05 : 0.09, len = i % 2 ? 0.7 : 1; g.beginPath(); g.moveTo(0, 0); g.lineTo(rl * len * Math.cos(-w), rl * len * Math.sin(-w)); g.lineTo(rl * len * Math.cos(w), rl * len * Math.sin(w)); g.closePath(); g.fill(); g.rotate((2 * PI) / 16); }
         g.restore();
         gr = g.createRadialGradient(sx, sy, 0, sx, sy, r * 3.4 * pulse); gr.addColorStop(0, rgba(sunLab, 1)); gr.addColorStop(0.3, rgba(sunLab, 0.9)); gr.addColorStop(0.45, rgba(mixLab(sunLab, D.accent, 0.3), 0.28)); gr.addColorStop(1, rgba(sunLab, 0));
         g.fillStyle = gr; g.beginPath(); g.arc(sx, sy, r * 3.4 * pulse, 0, 2 * PI); g.fill();
         g.fillStyle = css(mixLab(sunLab, WHITE, 0.25)); g.beginPath(); g.arc(sx, sy, r, 0, 2 * PI); g.fill();
       }
-      const land = C.land, beachy = land === 'beach', extraY = beachy ? hy + 1 : Hh * 0.745;
-      for (const [type, u, hf] of C.extras || []) if (type !== 'pyramids') extra(type, u, hf, extraY, sx);
-      for (const L of layers) drawLayer(L, sx, sy);
-      for (const [type, u, hf] of C.extras || []) if (type === 'pyramids') extra(type, u, hf, Hh * 0.8, sx);
+      const land = C.land, beachy = land === 'beach', extraY = beachy ? hy + 1 : Hh * 0.745, P = C.city;
+      const farExtras = () => { for (const [type, u, hf] of C.extras || []) if (type !== 'pyramids') extra(type, u, hf, extraY); };
+      farExtras();
+      for (const L of layers) drawLayer(L);
+      for (const [type, u, hf] of C.extras || []) if (type === 'pyramids') extra(type, u, hf, Hh * 0.8);
       if (rows) {
-        const P = C.city;
-        if (beachy) { drawRow(rows.back, hy + 1, 0.42, pxo * 6, sx); }
+        if (beachy) drawRow(rows.back, hy + 1, 0.42, pxo * 6 * PAR);
         else if (land === 'harbor') {
-          const yb = Hh * 0.8;
-          drawRow(rows.back, yb, 0.5, pxo * 18, sx); drawMarks(P, yb, pxo * 18, sx, T); drawRow(rows.front, yb, 0.62, pxo * 22, sx);
-          g.save(); g.translate(0, 2 * yb); g.scale(1, -1); g.globalAlpha = 0.22; drawRow(rows.back, yb, 0.5, pxo * 18, sx); drawRow(rows.front, yb, 0.62, pxo * 22, sx); g.restore(); g.globalAlpha = 1;
-          drawSea(yb, Hh * 0.94, sx, sy, T);
-          g.fillStyle = css(layerLab(sky, 0.92)); g.fillRect(0, Hh * 0.94, W, Hh * 0.06);
+          const yb = Hh * 0.8, o1 = pxo * 18 * PAR, o2 = pxo * 24 * PAR, scenery = () => { drawRow(rows.back, yb, 0.5, o1); drawMarks(P, yb, o1, T); drawRow(rows.front, yb, 0.62, o2); };
+          scenery(); drawWater(yb, Hh * 0.94, T, scenery);
+          g.fillStyle = css(layerLab(sky.hor, 0.92)); g.fillRect(0, Hh * 0.94, W, Hh * 0.06);
         } else {
-          const yb = Hh * 0.86 + pyo * 8;
-          drawRow(rows.back, yb, 0.55, pxo * 20, sx); drawMarks(P, yb, pxo * 20, sx, T);
-          drawRow(rows.front, Hh * 0.885 + pyo * 10, 0.72, pxo * 28, sx);
+          const yb = Hh * 0.86 + pyo * 9;
+          drawRow(rows.back, yb, 0.55, pxo * 20 * PAR); drawMarks(P, yb, pxo * 20 * PAR, T);
+          drawRow(rows.front, Hh * 0.885 + pyo * 12, 0.72, pxo * 30 * PAR);
           haze(yb - P.h * Hh);
         }
       }
       if (beachy) {
-        drawSea(hy, Hh * 0.86, sx, sy, T);
-        const sand = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.25 + night * 0.55);
-        g.fillStyle = css(sand); g.beginPath(); g.moveTo(0, Hh); for (let x = 0; x <= W; x += 8) g.lineTo(x, Hh * 0.86 + Math.sin(x * 0.006 + 1) * Hh * 0.012 + pyo * 4); g.lineTo(W, Hh); g.closePath(); g.fill();
-        g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.6), 0.35 * (1 - night * 0.5)); g.lineWidth = 1.5; g.beginPath(); for (let x = 0; x <= W; x += 8) { const y = Hh * 0.86 + Math.sin(x * 0.006 + 1) * Hh * 0.012 - 2 + Math.sin(x * 0.05 + T * 1.2) * 1.2 + pyo * 4; x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
-      } else if (land === 'desert') drawLayer(NEAR_DUNE, sx, sy);
-      else if (land !== 'harbor') drawLayer(NEAR, sx, sy);
-      if (C.palms) { const col = css(mixLab(layerLab(sky, 0.95), BLACK, 0.15)); palm(W * 0.06 - pxo * 46, Hh + 2, Hh * 0.27, 0.45, col); palm(W * 0.12 - pxo * 44, Hh + 2, Hh * 0.2, 0.15, col); palm(W * 0.94 - pxo * 46, Hh + 2, Hh * 0.24, -0.4, col); }
+        const shore = Hh * 0.86, mirror = () => { farExtras(); if (rows) drawRow(rows.back, hy + 1, 0.42, pxo * 6 * PAR); };
+        drawWater(hy, shore + Hh * 0.02, T, mirror);
+        const sand = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.25 + night * 0.55), wave = x => shore + Math.sin(x * 0.006 + 1) * Hh * 0.012 + pyo * 5;
+        const wet = g.createLinearGradient(0, shore - 4, 0, shore + Hh * 0.05); wet.addColorStop(0, css(mixLab(sand, sky.zen, 0.35))); wet.addColorStop(1, css(sand));
+        g.fillStyle = wet; g.beginPath(); g.moveTo(0, Hh); for (let x = 0; x <= W; x += 8) g.lineTo(x, wave(x)); g.lineTo(W, Hh); g.closePath(); g.fill();
+        for (let k = 0; k < 2; k++) { const surge = Math.sin(T * 0.5 + k * 2.1) * Hh * 0.006; g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.65), (0.4 - k * 0.15) * (1 - night * 0.5)); g.lineWidth = 1.6 - k * 0.5; g.beginPath(); for (let x = 0; x <= W; x += 6) { const y = wave(x) - 2 + surge + k * 4 + Math.sin(x * 0.045 + T * 1.1 + k) * 1.3; x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); }
+      } else if (land === 'desert') drawLayer(NEAR_DUNE);
+      else if (land !== 'harbor') drawLayer(NEAR);
+      if (C.palms) { const col = css(mixLab(layerLab(sky.hor, 0.95), BLACK, 0.15)); palm(W * 0.06 - pxo * 80, Hh + 2, Hh * 0.27, 0.45, col); palm(W * 0.12 - pxo * 76, Hh + 2, Hh * 0.2, 0.15, col); palm(W * 0.94 - pxo * 80, Hh + 2, Hh * 0.24, -0.4, col); }
       g.font = `700 ${W < 500 ? 11 : 12.5}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`; g.textAlign = 'center'; g.fillStyle = 'rgba(247,242,232,.62)';
-      for (const az of south ? [90, 180, 270] : [270, 0, 90]) g.fillText(`${DIRK[Math.round(az / 30) % 12]} ${tr('dir' + az)}`, ax(az) - pxo * 44, Hh - 14);
-      hud.style.color = inkOn(sky.zen);
+      for (const az of south ? [90, 180, 270] : [270, 0, 90]) g.fillText(`${DIRK[Math.round(az / 30) % 12]} ${tr('dir' + az)}`, ax(az) - pxo * 70, Hh - 14);
+      hud.style.color = inkOn(mixLab(sky.zen, lut(D.p + 0.4), 0.5));
     }
     return {
       update(d) { D = d; hud.firstChild.textContent = tGlyph(d.c.idx); hud.lastChild.textContent = `${scene === 'here' ? placeName(state.place) : tr('sc_' + scene)} · ${tokiName(d.c.idx)}`; dirty = true; },
