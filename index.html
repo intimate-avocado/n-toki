@@ -765,7 +765,12 @@ const CITIES = [
   { id: 'dubai', name: 'Dubai', sub: 'United Arab Emirates', lat: 25.2048, lng: 55.2708, tz: 'Asia/Dubai' },
   { id: 'paris', name: 'Paris', sub: 'France', lat: 48.8566, lng: 2.3522, tz: 'Europe/Paris' },
   { id: 'rio', name: 'Rio de Janeiro', sub: 'Brazil', lat: -22.9068, lng: -43.1729, tz: 'America/Sao_Paulo' },
-  { id: 'capetown', name: 'Cape Town', sub: 'South Africa', lat: -33.9249, lng: 18.4241, tz: 'Africa/Johannesburg' }
+  { id: 'capetown', name: 'Cape Town', sub: 'South Africa', lat: -33.9249, lng: 18.4241, tz: 'Africa/Johannesburg' },
+  { id: 'lafayette', name: 'Lafayette', sub: 'Louisiana', lat: 30.2241, lng: -92.0198, tz: 'America/Chicago' },
+  { id: 'newport', name: 'Newport', sub: 'Rhode Island', lat: 41.4901, lng: -71.3128, tz: 'America/New_York' },
+  { id: 'whitefish', name: 'Whitefish', sub: 'Montana', lat: 48.4108, lng: -114.3377, tz: 'America/Denver' },
+  { id: 'phuquoc', name: 'Phú Quốc', sub: 'Vietnam', lat: 10.2899, lng: 103.984, tz: 'Asia/Ho_Chi_Minh' },
+  { id: 'fukuoka', name: 'Fukuoka', sub: 'Japan', lat: 33.5902, lng: 130.4017, tz: 'Asia/Tokyo' }
 ];
 
 /* ---------- colour: OKLab LUT over the 12-toki cycle ---------- */
@@ -2092,6 +2097,11 @@ SUN = (() => {
     dubai: { land: 'desert', city: { h: 0.18, dens: 0.6, style: 'towers', cx: 0.55, top: 0.62, marks: [['emirates', 0.36, 355], ['khalifa', 0.53, 828]] } },
     rio: { land: 'beach', palms: true, extras: [['corcovado', 0.24, 0.27], ['sugarloaf', 0.82, 0.2]], city: { h: 0.1, dens: 0.75, style: 'mid', top: 0.2, marks: [] } },
     capetown: { land: 'flat', extras: [['table', 0.5, 0.2]], city: { h: 0.1, dens: 0.6, style: 'mid', top: 0.2, marks: [] } },
+    lafayette: { land: 'flat', extras: [['cypress', 0.08, 0.1], ['cypress', 0.9, 0.09]], city: { h: 0.05, dens: 0.6, style: 'mid', top: 0.18, marks: [['twinspire', 0.4, 56], ['watertower', 0.68, 40]] } },
+    newport: { land: 'harbor', extras: [['sails', 0.5, 0.05]], city: { h: 0.04, dens: 0.6, style: 'houses', top: 0.16, marks: [['suspension', 0.26, 120], ['churchspire', 0.6, 45], ['gable', 0.74, 30, 'light']] } },
+    whitefish: { land: 'mountains', extras: [['pines', 0.5, 0.2]], city: { h: 0.03, dens: 0.55, style: 'houses', top: 0.12, marks: [['aframe', 0.44, 24], ['watertower', 0.62, 30]] } },
+    phuquoc: { land: 'beach', palms: true, extras: [['island', 0.78, 0.07], ['sails', 0.3, 0.04]], city: { h: 0.04, dens: 0.5, style: 'houses', top: 0.1, marks: [] } },
+    fukuoka: { land: 'harbor', city: { h: 0.12, dens: 0.75, style: 'mid', cx: 0.6, top: 0.38, marks: [['fukuokatower', 0.3, 234], ['bigdome', 0.5, 84], ['mecha', 0.66, 30, 'light'], ['hakataport', 0.82, 103, 'light']] } },
     sydney: { land: 'harbor', city: { h: 0.17, dens: 0.7, style: 'towers', cx: 0.5, top: 0.36, marks: [['sydneytower', 0.5, 309], ['harbourbridge', 0.75, 134], ['opera', 0.27, 80, 'light']] } }
   };
   const markH = P => { const mx = Math.max(1, ...P.marks.map(m => m[2])); return m => (m[2] / mx) * P.top; };
@@ -2231,6 +2241,25 @@ SUN = (() => {
       lotus: sym([[0, 1], [1, 0.9], [9, 0.88], [8, 0.84], [5, 0.8], [5, 0.1], [9, 0]]),
       khalifa: (g, x, yb, h, u) => { const st = [[26, 0.0], [21, 0.22], [17, 0.4], [13, 0.55], [9.5, 0.68], [6.5, 0.78], [4, 0.86], [2, 0.92], [0.6, 1]], R = []; for (let i = 0; i < st.length - 1; i++) R.push([st[i][0], st[i][1]], [st[i][0], st[i + 1][1]]); R.push([0, 1]); sym(R.reverse())(g, x, yb, h, u); },
       emirates: (g, x, yb, h, u) => { g.moveTo(x - 22 * u, yb); g.lineTo(x - 22 * u, yb - h * 0.82); g.lineTo(x - 12 * u, yb - h); g.lineTo(x - 5 * u, yb - h * 0.86); g.lineTo(x - 5 * u, yb); g.closePath(); g.moveTo(x + 5 * u, yb); g.lineTo(x + 5 * u, yb - h * 0.7); g.lineTo(x + 12 * u, yb - h * 0.84); g.lineTo(x + 19 * u, yb - h * 0.72); g.lineTo(x + 19 * u, yb); g.closePath(); },
+      // Lafayette, Newport, Whitefish, Fukuoka
+      twinspire: (g, x, yb, h, u) => { for (const s of [-1, 1]) { const cx = x + s * 14 * u; g.moveTo(cx - 6 * u, yb); g.lineTo(cx - 6 * u, yb - h * 0.55); g.lineTo(cx, yb - h); g.lineTo(cx + 6 * u, yb - h * 0.55); g.lineTo(cx + 6 * u, yb); g.closePath(); } g.rect(x - 10 * u, yb - h * 0.42, 20 * u, h * 0.42); g.moveTo(x - 10 * u, yb - h * 0.42); g.lineTo(x, yb - h * 0.56); g.lineTo(x + 10 * u, yb - h * 0.42); g.closePath(); },
+      watertower: (g, x, yb, h, u) => { g.moveTo(x - 7 * u, yb); g.lineTo(x - 3 * u, yb - h * 0.6); g.lineTo(x - 2 * u, yb - h * 0.6); g.lineTo(x - 2 * u, yb); g.closePath(); g.moveTo(x + 7 * u, yb); g.lineTo(x + 3 * u, yb - h * 0.6); g.lineTo(x + 2 * u, yb - h * 0.6); g.lineTo(x + 2 * u, yb); g.closePath(); g.moveTo(x - 10 * u, yb - h * 0.58); g.lineTo(x - 11 * u, yb - h * 0.85); g.quadraticCurveTo(x, yb - h * 1.08, x + 11 * u, yb - h * 0.85); g.lineTo(x + 10 * u, yb - h * 0.58); g.lineTo(x + 3 * u, yb - h * 0.52); g.lineTo(x - 3 * u, yb - h * 0.52); g.closePath(); },
+      gable: (g, x, yb, h, u) => { g.moveTo(x - 16 * u, yb); g.lineTo(x - 16 * u, yb - h * 0.55); g.lineTo(x, yb - h); g.lineTo(x + 16 * u, yb - h * 0.55); g.lineTo(x + 16 * u, yb); g.closePath(); },
+      fukuokatower: outline([[-12, 0], [-12, 0.04], [-7, 0.86], [-1.5, 0.9], [-0.6, 1], [0.6, 1], [1.5, 0.9], [7, 0.86], [12, 0.04], [12, 0]]),
+      bigdome: (g, x, yb, h, u) => { g.moveTo(x - 60 * u, yb); g.lineTo(x - 60 * u, yb - h * 0.3); g.ellipse(x, yb - h * 0.3, 60 * u, h * 0.7, 0, PI, 0); g.lineTo(x + 60 * u, yb); g.closePath(); },
+      // an original giant-robot statue on a plinth: boxy torso, pauldrons, a plain visor helmet, one arm raised
+      mecha: (g, x, yb, h, u) => {
+        const P = pts => { g.moveTo(x + pts[0][0] * u, yb - h * pts[0][1]); for (let i = 1; i < pts.length; i++) g.lineTo(x + pts[i][0] * u, yb - h * pts[i][1]); g.closePath(); };
+        P([[-16, 0], [16, 0], [14, 0.08], [-14, 0.08]]);                                   // plinth
+        P([[-9, 0.08], [-4, 0.08], [-3, 0.4], [-8, 0.42]]); P([[3, 0.08], [9, 0.08], [8, 0.42], [3, 0.4]]);   // legs
+        P([[-7, 0.4], [7, 0.4], [8, 0.5], [-8, 0.5]]);                                      // hips
+        P([[-8, 0.5], [8, 0.5], [9, 0.76], [-9, 0.76]]);                                    // torso
+        P([[-15, 0.62], [-8, 0.62], [-8, 0.78], [-16, 0.76]]); P([[8, 0.66], [15, 0.7], [16, 0.84], [8, 0.78]]);   // pauldrons
+        P([[-15, 0.42], [-10, 0.42], [-9, 0.64], [-14, 0.64]]);                              // left arm down
+        P([[11, 0.8], [16, 0.82], [15, 1.0], [11, 0.98]]); P([[10, 0.96], [17, 0.96], [17, 1.04], [10, 1.04]]);   // right arm raised, fist
+        P([[-5, 0.76], [5, 0.76], [5, 0.8], [-5, 0.8]]); P([[-5, 0.8], [5, 0.8], [5.5, 0.9], [-5.5, 0.9]]);  // neck, helmet
+      },
+      hakataport: sym([[0, 1], [1, 0.92], [4, 0.9], [4, 0.84], [9, 0.82], [9, 0.72], [5, 0.7], [5, 0.3], [11, 0.28], [11, 0]]),
       // Sydney
       sydneytower: sym([[0, 1], [0.6, 0.93], [2, 0.91], [8, 0.88], [9.5, 0.84], [8, 0.8], [2, 0.78], [2.5, 0.12], [7, 0.04], [9, 0]]),
       opera: (g, x, yb, h, u) => {
@@ -2246,6 +2275,7 @@ SUN = (() => {
     const S = {
       wheel: (g, x, yb, h, u) => { const rr = h * 0.48, cy = yb - h * 0.52; g.arc(x, cy, rr, 0, 2 * PI); for (let i = 0; i < 16; i++) { const a = (i / 16) * 2 * PI; g.moveTo(x, cy); g.lineTo(x + rr * Math.cos(a), cy + rr * Math.sin(a)); } g.moveTo(x - rr * 0.5, yb); g.lineTo(x, cy); g.lineTo(x + rr * 0.5, yb); return 1.2 * u + 0.6; },
       harbourbridge: (g, x, yb, h, u) => { const span = 200 * u, dk = yb - h * 0.32; g.moveTo(x - span / 2, dk + h * 0.04); g.quadraticCurveTo(x, yb - h * 1.55, x + span / 2, dk + h * 0.04); g.moveTo(x - span / 2 + 8 * u, dk + h * 0.02); g.quadraticCurveTo(x, yb - h * 1.25, x + span / 2 - 8 * u, dk + h * 0.02); g.moveTo(x - span * 0.78, dk); g.lineTo(x + span * 0.78, dk); for (let i = 1; i < 12; i++) { const t = i / 12, bx = x - span / 2 + span * t, by = dk + h * 0.04 - 4 * t * (1 - t) * h * 0.98; g.moveTo(bx, by); g.lineTo(bx, dk); } return 1.6 * u + 0.8; },
+      suspension: (g, x, yb, h, u) => { const span = 260 * u, dk = yb - h * 0.38; for (const s of [-1, 1]) { const px = x + s * span * 0.25; g.moveTo(px - 4 * u, yb); g.lineTo(px - 4 * u, yb - h); g.moveTo(px + 4 * u, yb); g.lineTo(px + 4 * u, yb - h); g.moveTo(px - 4 * u, yb - h * 0.95); g.lineTo(px + 4 * u, yb - h * 0.95); g.moveTo(px - 4 * u, yb - h * 0.6); g.lineTo(px + 4 * u, yb - h * 0.6); } g.moveTo(x - span / 2, dk); g.lineTo(x + span / 2, dk); g.moveTo(x - span / 2, dk - h * 0.05); g.quadraticCurveTo(x - span * 0.125, yb - h * 1.05, x - span * 0.25, yb - h); g.quadraticCurveTo(x, dk - h * 0.55 + h * 0.5, x + span * 0.25, yb - h); g.quadraticCurveTo(x + span * 0.125, yb - h * 1.05, x + span / 2, dk - h * 0.05); for (let i = 1; i < 16; i++) { const t = -0.5 + i / 16, bx = x + t * span, sag = Math.abs(t) < 0.25 ? 0.5 + 0.5 * Math.pow(t / 0.25, 2) : 1 - 0.2 * ((Math.abs(t) - 0.25) / 0.25); g.moveTo(bx, dk); g.lineTo(bx, yb - h * sag); } return 1.2 * u + 0.6; },
       cantilever: (g, x, yb, h, u) => { const span = 220 * u; g.moveTo(x - span / 2, yb - h * 0.15); g.quadraticCurveTo(x, yb - h * 1.3, x + span / 2, yb - h * 0.15); for (let i = 1; i < 8; i++) { const t = i / 8, bx = x - span / 2 + span * t, by = yb - h * 0.15 - 4 * t * (1 - t) * h * 0.58; g.moveTo(bx, by); g.lineTo(bx, yb); } return 1.6 * u + 0.8; }
     };
     // bridge pylons that go with the stroked harbour bridge
@@ -2332,6 +2362,22 @@ SUN = (() => {
       } else if (type === 'ngong') {
         // the four knuckles of the Ngong Hills
         g.beginPath(); g.moveTo(x - W * 0.16, yb); for (let i = 0; i < 4; i++) { const cx = x + (i - 1.5) * W * 0.055; g.quadraticCurveTo(cx - W * 0.025, yb - h * (0.95 - i * 0.08), cx, yb - h * (1 - i * 0.1)); g.quadraticCurveTo(cx + W * 0.02, yb - h * (0.94 - i * 0.1), cx + W * 0.028, yb - h * (0.7 - i * 0.08)); } g.lineTo(x + W * 0.16, yb); g.closePath(); g.fill();
+      } else if (type === 'cypress') {
+        // bald cypress at the water's edge: a flared trunk and a ragged crown
+        g.fillStyle = css(mixLab(layerLab(sky.hor, 0.9), BLACK, 0.12));
+        for (const [dx, sc] of [[0, 1], [0.035, 0.7], [-0.03, 0.8]]) { const cx = x + dx * W - look.az * 50 * PAR, th = h * sc * 2.2, by = Hh + 2 - look.el * 10; g.beginPath(); g.moveTo(cx - th * 0.07, by); g.lineTo(cx - th * 0.025, by - th * 0.5); g.lineTo(cx - th * 0.22, by - th * 0.62); g.lineTo(cx - th * 0.08, by - th * 0.66); g.lineTo(cx - th * 0.17, by - th * 0.8); g.lineTo(cx - th * 0.04, by - th * 0.82); g.lineTo(cx, by - th); g.lineTo(cx + th * 0.05, by - th * 0.82); g.lineTo(cx + th * 0.18, by - th * 0.79); g.lineTo(cx + th * 0.07, by - th * 0.66); g.lineTo(cx + th * 0.21, by - th * 0.6); g.lineTo(cx + th * 0.025, by - th * 0.5); g.lineTo(cx + th * 0.07, by); g.closePath(); g.fill(); }
+      } else if (type === 'pines') {
+        // a stand of conifers in front of the mountains
+        const r = seeded(77), base = Hh * 0.86 - look.el * 6, col = css(mixLab(layerLab(sky.hor, 0.78), BLACK, 0.1));
+        g.fillStyle = col; g.beginPath();
+        for (let px = -40; px < W + 40; px += 7 + r() * 9) { const th = Hh * (0.05 + r() * 0.09), cx = px - look.az * 34 * PAR, w = th * 0.32; g.moveTo(cx - w, base + 6); for (let k = 3; k >= 0; k--) { const yy = base - th * (0.25 + k * 0.22), ww = w * (0.35 + k * 0.22); g.lineTo(cx - ww, yy); g.lineTo(cx - ww * 0.35, yy - th * 0.06); } g.lineTo(cx, base - th); for (let k = 0; k <= 3; k++) { const yy = base - th * (0.25 + k * 0.22), ww = w * (0.35 + k * 0.22); g.lineTo(cx + ww * 0.35, yy - th * 0.06); g.lineTo(cx + ww, yy); } g.lineTo(cx + w, base + 6); g.closePath(); }
+        g.fill();
+      } else if (type === 'island') {
+        g.beginPath(); g.moveTo(x - W * 0.14, yb); g.quadraticCurveTo(x - W * 0.08, yb - h * 0.9, x - W * 0.02, yb - h); g.quadraticCurveTo(x + W * 0.05, yb - h * 0.85, x + W * 0.12, yb); g.closePath(); g.fill();
+      } else if (type === 'sails') {
+        // small boats on the water
+        const r = seeded(91), col = css(mixLab(layerLab(sky.hor, 0.5), WHITE, 0.55 * (1 - night))), hull = css(layerLab(sky.hor, 0.85));
+        for (let i = 0; i < 5; i++) { const bx = (0.12 + r() * 0.76) * W - look.az * (8 + i * 3) * PAR, by = yb + (0.015 + r() * 0.09) * Hh, sz = h * (0.5 + r() * 0.8), lean = r() < 0.5 ? -1 : 1; g.fillStyle = col; g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + lean * sz * 0.42, by); g.lineTo(bx + lean * sz * 0.04, by - sz); g.closePath(); g.fill(); g.fillStyle = hull; g.beginPath(); g.moveTo(bx - sz * 0.3, by + 1); g.lineTo(bx + sz * 0.5, by + 1); g.lineTo(bx + sz * 0.4, by + sz * 0.12); g.lineTo(bx - sz * 0.2, by + sz * 0.12); g.closePath(); g.fill(); }
       } else if (type === 'pyramids') {
         const stone = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.32 + night * 0.3);
         for (const [du, s] of [[0, 1], [0.075, 0.94], [0.14, 0.52]]) {
@@ -2513,7 +2559,8 @@ SUN = (() => {
         g.fillStyle = css(mixLab(sunLab, WHITE, 0.25)); g.beginPath(); g.arc(sx, sy, r, 0, 2 * PI); g.fill();
       }
       const land = C.land, beachy = land === 'beach', extraY = beachy ? hy + 1 : Hh * 0.745, P = C.city;
-      const farExtras = () => { for (const [type, u, hf] of C.extras || []) if (type !== 'pyramids') extra(type, u, hf, extraY); };
+      const LATE = ['cypress', 'pines', 'sails'];
+      const farExtras = () => { for (const [type, u, hf] of C.extras || []) if (type !== 'pyramids' && !LATE.includes(type)) extra(type, u, hf, extraY); };
       farExtras();
       for (const L of layers) drawLayer(L);
       for (const [type, u, hf] of C.extras || []) if (type === 'pyramids') extra(type, u, hf, Hh * 0.8);
@@ -2522,6 +2569,7 @@ SUN = (() => {
         else if (land === 'harbor') {
           const yb = Hh * 0.8, o1 = pxo * 18 * PAR, o2 = pxo * 24 * PAR, scenery = () => { drawRow(rows.back, yb, 0.5, o1); drawRow(rows.front, yb, 0.62, o2); drawMarks(P, yb, o2, T); };
           scenery(); drawWater(yb, Hh * 0.94, T, scenery);
+          for (const [type, u, hf] of C.extras || []) if (type === 'sails') extra(type, u, hf, yb);
           g.fillStyle = css(layerLab(sky.hor, 0.92)); g.fillRect(0, Hh * 0.94, W, Hh * 0.06);
         } else {
           const yb = Hh * 0.86 + pyo * 9, yf = Hh * 0.885 + pyo * 12;
@@ -2533,12 +2581,14 @@ SUN = (() => {
       if (beachy) {
         const shore = Hh * 0.86, mirror = () => { farExtras(); if (rows) drawRow(rows.back, hy + 1, 0.42, pxo * 6 * PAR); };
         drawWater(hy, shore + Hh * 0.02, T, mirror);
+        for (const [type, u, hf] of C.extras || []) if (type === 'sails') extra(type, u, hf, hy);
         const sand = mixLab(mixLab(SAND, sky.hor, 0.4), sky.ground, 0.25 + night * 0.55), wave = x => shore + Math.sin(x * 0.006 + 1) * Hh * 0.012 + pyo * 5;
         const wet = g.createLinearGradient(0, shore - 4, 0, shore + Hh * 0.05); wet.addColorStop(0, css(mixLab(sand, sky.zen, 0.35))); wet.addColorStop(1, css(sand));
         g.fillStyle = wet; g.beginPath(); g.moveTo(0, Hh); for (let x = 0; x <= W; x += 8) g.lineTo(x, wave(x)); g.lineTo(W, Hh); g.closePath(); g.fill();
         for (let k = 0; k < 2; k++) { const surge = Math.sin(T * 0.5 + k * 2.1) * Hh * 0.006; g.strokeStyle = rgba(mixLab(sky.hor, WHITE, 0.65), (0.4 - k * 0.15) * (1 - night * 0.5)); g.lineWidth = 1.6 - k * 0.5; g.beginPath(); for (let x = 0; x <= W; x += 6) { const y = wave(x) - 2 + surge + k * 4 + Math.sin(x * 0.045 + T * 1.1 + k) * 1.3; x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke(); }
       } else if (land === 'desert') drawLayer(NEAR_DUNE);
-      else if (land !== 'harbor') drawLayer(NEAR);
+      else if (land !== 'harbor') { for (const [type, u, hf] of C.extras || []) if (type === 'pines') extra(type, u, hf, 0); drawLayer(NEAR); }
+      for (const [type, u, hf] of C.extras || []) if (type === 'cypress') extra(type, u, hf, 0);
       if (C.palms) { const col = css(mixLab(layerLab(sky.hor, 0.95), BLACK, 0.15)); palm(W * 0.06 - pxo * 90 * PAR, Hh + 2 - pyo * 14, Hh * 0.27, 0.45, col); palm(W * 0.12 - pxo * 84 * PAR, Hh + 2 - pyo * 12, Hh * 0.2, 0.15, col); palm(W * 0.94 - pxo * 90 * PAR, Hh + 2 - pyo * 14, Hh * 0.24, -0.4, col); }
       g.font = `700 ${W < 500 ? 11 : 12.5}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`; g.textAlign = 'center'; g.fillStyle = 'rgba(247,242,232,.62)';
       for (const az of south ? [90, 180, 270] : [270, 0, 90]) g.fillText(`${DIRK[Math.round(az / 30) % 12]} ${tr('dir' + az)}`, ax(az) - pxo * 70, Hh - 14 + look.el * Hh * OVER * 0.5);
