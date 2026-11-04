@@ -51,7 +51,7 @@ It's one HTML file plus fonts, icons and a local copy of [three.js](https://thre
 - **Settings:** place, appearance (Sky, Dark, Follow the sun), labels (kanji, animal, bells), accessibility (reduce motion, larger text), language (English, 日本語, 简体中文).
 - **Time travel:** any date; play a day in 45 seconds or a year in 72.
 - **The sun's path:** today's arc of the sun, with each toki as a lantern step: as wide as the toki lasts, spanning the sun's lowest to highest point in it. The sun lights the step it is passing through; the night half floats under a glass floor.
-- **The sky outside:** the sky over your place facing the sun's side, with its land, natural landmarks and a stylized skyline, or a standard scene (mountains, beach, hills, desert).
+- **The sky outside:** the sky over your place facing the sun's side, with its land, natural landmarks and skyline, or a standard scene (mountains, beach, hills, desert). The scene is drawn in layers (sky, clouds, ridges, each line of city on its own ground with its own lights, water, the near ground), and landmarks stand roughly to scale from their real heights and widths. Three styles: Painted, Pixel (a true low-resolution palette with ordered dithering) and Mainframe (a holographic wireframe with a celestial grid and the day's toki marked along the sun's path).
 - **Screens:** by default the clock is followed by the sky outside, the sun's path, the day fan and the 72 seasons; Settings → Screens adds, removes and reorders them. On a phone, tilt to look around the sky outside. Link straight to one with `#arc`, `#window`, `#cycle` or `#year`.
 
 ## Contributing
