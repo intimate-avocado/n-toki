@@ -158,6 +158,10 @@ button{font:inherit;color:inherit}
 /* cycle dial */
 .dial-wrap{position:relative;width:min(100%,440px);aspect-ratio:1;margin:4px auto 0}
 #dial{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.fan-stage{position:absolute;inset:0}
+.fan-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.dial-wrap.fan3d #dial{opacity:0;pointer-events:none}
+.dial-wrap.fan3d .dial-center{width:44%}
 .dseg{cursor:pointer;transition:transform .35s ease;outline:none}
 .dseg .fill{transition:filter .2s}
 .dseg:hover .fill{filter:brightness(1.07)}
@@ -214,6 +218,7 @@ button{font:inherit;color:inherit}
 .sp-hud{position:absolute;left:16px;top:14px;pointer-events:none;display:flex;flex-direction:column;gap:3px}
 .sp-hud b{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1}
 .sp-hud span{font-size:13px;font-weight:700}
+.pill.tilt{position:absolute;right:12px;top:12px;z-index:2;color:#f7f2e8;background:rgba(18,16,28,.4);border-color:rgba(247,242,232,.3)}
 .sp-err{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:20px;text-align:center;color:#f7f2e8;font-size:14px}
 #arcLegend span{white-space:nowrap}
 #arcNote,#winNote{margin:4px 0 0}
@@ -407,7 +412,7 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
         <h2 data-i18n="windowTitle">The sky outside</h2>
         <div class="lens" id="winLens"></div>
         <p class="lede" data-i18n="windowLede">The sky over this place right now, facing the sun's side.</p>
-        <div class="sun-stage" id="winStage"></div>
+        <div class="sun-stage" id="winStage"><button class="pill tilt" id="tiltBtn" type="button" hidden>Tilt</button></div>
         <div class="seg-ctl" id="sunScenes" role="radiogroup" aria-label="Scenery" data-i18n-aria="sceneAria">
           <button type="button" role="radio" data-scene="here" aria-checked="true">Here</button>
           <button type="button" role="radio" data-scene="mountains" aria-checked="false">Mountains</button>
@@ -433,7 +438,8 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
           <button type="button" role="radio" data-label="en">English</button>
           <button type="button" role="radio" data-label="bell">Bells</button>
         </div>
-        <div class="dial-wrap">
+        <div class="dial-wrap" id="dialWrap">
+          <div class="fan-stage" id="fanStage"></div>
           <svg id="dial" viewBox="0 0 400 400" role="group" aria-label="The twelve toki of this cycle" data-i18n-aria="dialAria"></svg>
           <div class="dial-center" id="dialCenter" aria-live="polite"></div>
         </div>
@@ -895,7 +901,7 @@ const STR = {
     screensH: 'Screens', screensSub: 'The living clock always comes first. Add, remove and reorder the rest.', scrFixed: 'Always first',
     scrArc: "The sun's path", scrArcD: 'Lantern steps on the arc of the day', scrWindow: 'The sky outside', scrWindowD: 'Your place, its land and skyline',
     scrCycleD: 'Twelve toki at their true lengths', scrYearD: 'The year read by the sun',
-    moveUp: 'Move up', moveDown: 'Move down', addScr: 'Add', removeScr: 'Remove',
+    moveUp: 'Move up', tilt: 'Tilt to look around', moveDown: 'Move down', addScr: 'Add', removeScr: 'Remove',
     aboutT: 'About this view',
     aboutArcP: "The sun's path draws today's arc of the sun from one Rabbit to the next. Each toki is a paper lantern: as wide as that toki lasts today, and as tall as the sun climbs or sinks during it. The lantern the sun is passing through lights up. Glance at it to see the shape of the day, and why toki stretch in summer and shrink in winter.",
     aboutWinP: "The sky outside is a window facing the sun's side of the sky, with the sun where it really stands right now. The sky takes the colors of the toki around this moment, and the land and skyline are a portrait of your place, not a literal view. It is meant to be glanced at, the way you would look out of a window to read the time of day.",
@@ -957,7 +963,7 @@ const STR = {
     screensH: '画面', screensSub: '生きた時計はいつも最初。ほかの画面は追加・削除・並べ替えができます。', scrFixed: 'いつも最初',
     scrArc: '太陽の道', scrArcD: '一日の弧に浮かぶ灯りの段', scrWindow: '窓の外の空', scrWindowD: 'この土地の景色と街並み',
     scrCycleD: '本当の長さの十二刻', scrYearD: '太陽で読む一年',
-    moveUp: '上へ', moveDown: '下へ', addScr: '追加', removeScr: '外す',
+    moveUp: '上へ', tilt: '傾けて見回す', moveDown: '下へ', addScr: '追加', removeScr: '外す',
     aboutT: 'この画面について',
     aboutArcP: '太陽の道は、卯から次の卯までの今日の太陽の弧を描きます。それぞれの刻は紙の灯りで、幅はその刻の今日の長さ、高さはそのあいだに太陽が昇り降りする幅です。太陽が通っている灯りがともります。一日のかたちと、夏に刻が伸び冬に縮むわけがひと目でわかります。',
     aboutWinP: '窓の外の空は、太陽の側を向いた窓です。太陽はいま実際にある場所にあり、空はこの時の前後の刻の色に染まります。景色と街並みは写生ではなく、その土地の面影です。窓の外を見て一日の時を知るように、ふと眺めるための画面です。',
@@ -1019,7 +1025,7 @@ const STR = {
     screensH: '画面', screensSub: '活的时钟始终在最前。其余画面可添加、移除和重新排序。', scrFixed: '始终在最前',
     scrArc: '太阳的轨迹', scrArcD: '一日弧线上的灯笼台阶', scrWindow: '窗外的天空', scrWindowD: '此地的风景与天际线',
     scrCycleD: '真实长度的十二时辰', scrYearD: '用太阳读一年',
-    moveUp: '上移', moveDown: '下移', addScr: '添加', removeScr: '移除',
+    moveUp: '上移', tilt: '倾斜以环顾', moveDown: '下移', addScr: '添加', removeScr: '移除',
     aboutT: '关于此画面',
     aboutArcP: '太阳的轨迹描绘今日从一个卯时到下一个卯时的太阳弧线。每个时辰是一盏纸灯笼：宽度是该时辰今日的时长，高度是其间太阳升降的幅度。太阳经过的那盏灯笼会亮起。一眼即可看出一天的形状，以及时辰为何夏长冬短。',
     aboutWinP: '窗外的天空是一扇面向太阳一侧的窗。太阳就在它此刻真实的位置，天空染上此刻前后时辰的颜色，风景与天际线是此地的写意而非实景。就像望向窗外便知一天的时分，这是一个用来随意一瞥的画面。',
@@ -1235,6 +1241,7 @@ function updateTrack() {
   const hl = $('handLine');
   if (hl) { hl.setAttribute('x1', hx1); hl.setAttribute('y1', hy1); hl.setAttribute('x2', hx2); hl.setAttribute('y2', hy2); $('handDot').setAttribute('cx', dx); $('handDot').setAttribute('cy', dy); }
 
+  if (SUN) SUN.fanSync();
   const T = TOKI[sel], s0 = c.b[sel], s1 = c.b[sel + 1];
   const status = sel === c.idx ? tr('nowPct', Math.round(c.progress * 100)) : t < s0 ? tr('beginsIn', dur(s0 - t)) : tr('ended', dur(t - s1));
   $('dialCenter').innerHTML = `<div class="dc-k" data-mode="${glyphMode()}">${glyph(sel)}</div><div class="dc-n">${subName(sel)}</div><div class="dc-t">${tStr(s0)} – ${tStr(s1)}</div><div class="dc-s">${status}</div>`;
@@ -1480,14 +1487,14 @@ function goPage(n) { pager.scrollTo({ left: n * pager.clientWidth, behavior: red
 const curPage = () => Math.round(pager.scrollLeft / Math.max(1, pager.clientWidth));
 /* screens: the living clock first, then the person's own list, in their order */
 const SCREENS = {
-  arc: { page: 'arcPage', k: '弧', name: 'scrArc', d: 'scrArcD', tab: 'arcTab', aria: 'sunAria' },
   window: { page: 'windowPage', k: '窓', name: 'scrWindow', d: 'scrWindowD', tab: 'windowTab', aria: 'windowAria' },
+  arc: { page: 'arcPage', k: '弧', name: 'scrArc', d: 'scrArcD', tab: 'arcTab', aria: 'sunAria' },
   cycle: { page: 'cyclePage', k: '刻', name: 'fullCycle', d: 'scrCycleD', tab: 'cycle', aria: 'fullCycle' },
   year: { page: 'yearPage', k: '候', name: 'yearTitle', d: 'scrYearD', tab: 'seasons', aria: 'yearAria' }
 };
 state.screens = (() => {
   const s = store.get('ntoki.screens'), ids = Object.keys(SCREENS);
-  if (!s || !Array.isArray(s.order)) return { order: ids.slice(), off: [] };
+  if (!s || !Array.isArray(s.order)) return { order: ['window', 'arc', 'cycle', 'year'], off: [] };
   const order = s.order.filter(id => ids.includes(id)); for (const id of ids) if (!order.includes(id)) order.push(id);
   return { order, off: (s.off || []).filter(id => ids.includes(id)) };
 })();
@@ -1766,7 +1773,8 @@ $('playYearBtn').addEventListener('click', () => {
 });
 
 /* ---------- sun path page: Arc (with floating steps) and Window ---------- */
-const SUN = (() => {
+let SUN = null;
+SUN = (() => {
   const PI = Math.PI, rad = PI / 180, HORIZON = -0.833 * rad;
   const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
   const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
@@ -1866,6 +1874,14 @@ const SUN = (() => {
     };
   }
   // Hover tilts the view a little; on touch, a sideways drag does the same.
+  // phone tilt feeds every look-around view; iOS needs a tap to allow it
+  const GYRO = { on: false, az: 0, el: 0, base: null };
+  function gyroStart() {
+    if (GYRO.on) return; GYRO.on = true;
+    addEventListener('deviceorientation', e => { if (e.gamma == null) return; const land = Math.abs(window.orientation || (screen.orientation && screen.orientation.angle) || 0) === 90; const g = land ? e.beta : e.gamma, b = land ? e.gamma : e.beta; if (GYRO.base == null) GYRO.base = [g, b]; GYRO.az = clamp((g - GYRO.base[0]) / 28, -1, 1); GYRO.el = clamp((b - GYRO.base[1]) / 28, -1, 1); GYRO.base = [GYRO.base[0] * 0.995 + g * 0.005, GYRO.base[1] * 0.995 + b * 0.005]; });
+  }
+  function gyroAsk() { const D = window.DeviceOrientationEvent; if (!D) return; if (typeof D.requestPermission === 'function') D.requestPermission().then(r => { if (r === 'granted') gyroStart(); }).catch(() => {}); else gyroStart(); }
+  if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function' && 'ontouchstart' in window) gyroStart();
   function makeLook(el, azR, elR) {
     const L = { az: 0, el: 0, taz: 0, tel: 0, drag: null };
     el.addEventListener('pointermove', e => {
@@ -1876,7 +1892,7 @@ const SUN = (() => {
     el.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') L.drag = [e.clientX, e.clientY]; });
     const end = () => { L.drag = null; }; el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
     el.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') { L.taz = 0; L.tel = 0; } });
-    L.step = () => { if (reduced.matches) { L.az = L.taz; L.el = L.tel; return false; } const da = L.taz - L.az, de = L.tel - L.el; L.az += da * 0.08; L.el += de * 0.08; return Math.abs(da) + Math.abs(de) > 1e-4; };
+    L.step = () => { const taz = GYRO.on && !L.drag ? clamp(L.taz + GYRO.az * azR, -azR, azR) : L.taz, tel = GYRO.on && !L.drag ? clamp(L.tel + GYRO.el * elR, -elR, elR) : L.tel; if (reduced.matches) { L.az = taz; L.el = tel; return false; } const da = taz - L.az, de = tel - L.el; L.az += da * 0.08; L.el += de * 0.08; return Math.abs(da) + Math.abs(de) > 1e-4; };
     return L;
   }
   function sizeTo(renderer, camera, el) { const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return null; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); return [w, h]; }
@@ -1884,35 +1900,37 @@ const SUN = (() => {
 
 
   // Lantern steps: a translucent box with washi-paper fibres, a soft rim, and the sun's light scattering through it.
-  const STEP_VS = 'varying vec3 vW; varying vec3 vN; varying vec3 vP; void main(){ vP = position; vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * w; }';
-  const STEP_FS = `uniform vec3 uCol, uGlow, uRim, uSun, uSunCol, uHalf; uniform vec2 uCell; uniform float uAmt, uCur, uAlpha, uNight, uLight, uBack, uAbove, uSelf;
+  // a box with softened edges (an extruded rounded rectangle, bevelled)
+  function roundedBox(w, h, d, r) {
+    const sh = new THREE.Shape(), x = -w / 2 + r, y = -h / 2 + r, W2 = w - 2 * r, H2 = h - 2 * r;
+    sh.moveTo(x, -h / 2); sh.lineTo(x + W2, -h / 2); sh.absarc(x + W2, y, r, -PI / 2, 0, false); sh.lineTo(w / 2, y + H2); sh.absarc(x + W2, y + H2, r, 0, PI / 2, false); sh.lineTo(x, h / 2); sh.absarc(x, y + H2, r, PI / 2, PI, false); sh.lineTo(-w / 2, y); sh.absarc(x, y, r, PI, 1.5 * PI, false);
+    const g = new THREE.ExtrudeGeometry(sh, { depth: d - 2 * r, bevelEnabled: true, bevelThickness: r, bevelSize: r * 0.98, bevelSegments: 3, curveSegments: 6 }); g.translate(0, 0, -(d - 2 * r) / 2); g.computeVertexNormals(); return g;
+  }
+  const STEP_VS = 'uniform float uTime; varying vec3 vW; varying vec3 vN; varying vec3 vP; void main(){ vP = position; vec3 p = position * (1.0 + 0.012 * sin(uTime * 1.3 + position.x * 0.7)); vec4 w = modelMatrix * vec4(p, 1.0); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * w; }';
+  // Jelly steps: soft translucent gel. Color deepens where the block is thick, light wanders inside it, the surface is glossy, and only the active toki glows from within.
+  const STEP_FS = `uniform vec3 uCol, uGlow, uRim, uSun, uSunCol, uHalf; uniform float uAmt, uCur, uAlpha, uNight, uLight, uBack, uAbove, uSelf, uTime;
     varying vec3 vW; varying vec3 vN; varying vec3 vP;
-    float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-    float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h1(i), h1(i + vec2(1.0, 0.0)), f.x), mix(h1(i + vec2(0.0, 1.0)), h1(i + vec2(1.0, 1.0)), f.x), f.y); }
     void main(){
       vec3 V = normalize(cameraPosition - vW), N = normalize(vN);
-      float fr = pow(1.0 - abs(dot(N, V)), 2.0);
-      float face = step(0.5, abs(N.z));
-      vec2 uv = abs(N.z) > 0.5 ? vP.xy : (abs(N.x) > 0.5 ? vP.zy : vP.xz);
-      float fib = vn(uv * vec2(2.5, 30.0)) * 0.5 + vn(uv * vec2(22.0, 3.5) + 7.0) * 0.32 + vn(uv * 70.0) * 0.18;
-      // a paper lantern: light from inside, brightest in the middle of each face
+      float ndv = abs(dot(N, V));
+      float fr = pow(1.0 - ndv, 2.5);
       vec2 q = vP.xy / uHalf.xy;
-      float inner = 1.0 - smoothstep(0.1, 1.1, length(q * vec2(0.8, 1.0)));
-      // shoji lattice on the front and back, and a dark wooden frame at top and bottom
-      vec2 gc = abs(fract(vP.xy / uCell + 0.5) - 0.5) * uCell;
-      float lattice = face * (1.0 - smoothstep(0.007, 0.018, min(gc.x, gc.y))) * step(abs(vP.y), uHalf.y - 0.06) * step(abs(vP.x), uHalf.x - 0.03);
-      float frame = smoothstep(uHalf.y - 0.065, uHalf.y - 0.04, abs(vP.y));
-      vec3 paper = uCol * mix(1.0, 0.8, uLight * uAbove) * (0.84 + 0.26 * fib);
-      vec3 col = paper + uGlow * inner * uSelf * (0.85 + 0.5 * uCur);
+      float thick = 1.0 - smoothstep(0.0, 1.15, length(q * vec2(0.75, 1.0)));
+      vec3 deep = uCol * vec3(0.72, 0.68, 0.78);
+      vec3 col = mix(uCol * 1.08, deep, thick * 0.75);
+      float caust = 0.5 + 0.5 * sin(vP.x * 9.0 + uTime * 0.9) * sin(vP.y * 11.0 - uTime * 0.7);
+      col += uCol * caust * 0.1 * (1.0 - uBack);
+      vec3 L1 = normalize(vec3(-0.4, 0.9, 0.6)), L2 = normalize(uSun - vW);
+      float sp = pow(max(dot(reflect(-L1, N), V), 0.0), 70.0) * 0.55 + pow(max(dot(reflect(-L2, N), V), 0.0), 40.0) * 0.45 * uAmt;
+      col += vec3(1.0) * sp * (1.0 - uBack);
+      col += uRim * fr * (0.35 + 0.25 * uCur);
+      col += uGlow * thick * uSelf * (1.0 + 0.1 * sin(uTime * 2.0));
       float d = distance(vW, uSun);
       float sc = exp(-d * d / 0.9) + 0.3 * exp(-d * d / 5.0);
       col += uSunCol * sc * uAmt * (0.75 + 0.45 * uCur) * (1.0 - 0.4 * uBack);
-      col += uRim * fr * (0.22 + 0.3 * uCur);
-      col = mix(col, col * 0.5, lattice * 0.55);
-      col = mix(col, uCol * 0.3 + vec3(0.04, 0.03, 0.02), frame * 0.85);
-      float a = uAlpha * (0.9 + 0.1 * fib) + fr * 0.06 + frame * 0.25 + lattice * 0.1;
-      gl_FragColor = vec4(col, clamp(a, 0.0, 0.97));
-    }`;
+      col *= mix(1.0, 0.86, uLight * uAbove);
+      float a = uAlpha * (0.72 + 0.28 * thick) + fr * 0.2 + sp * 0.3;
+      gl_FragColor = vec4(col, clamp(a, 0.0, 0.96)); }`;
   /* Arc: the day's curve on a small stage, with each toki as a step floating on it.
      A step is as wide as its toki lasts and spans the sun's lowest to highest point during it. */
   function ArcView(el) {
@@ -1974,11 +1992,11 @@ const SUN = (() => {
         // a floating step: the part above the horizon catches the sun and casts a shadow; the night part sits under the glass
         const block = (y0, y1, above) => {
           const h = Math.max(0.1, y1 - y0), lab = above ? PAL[k] : mixLab(lift(PAL[k]), [0.3, 0, 0], 0.2);
-          const geo = new THREE.BoxGeometry(w, h, DEP);
+          const geo = roundedBox(w, h, DEP, Math.min(0.09, w * 0.25, h * 0.25));
           const cell = new THREE.Vector2(w / Math.max(1, Math.round(w / 0.34)), h / Math.max(1, Math.round(h / 0.3)));
           for (const back of [1, 0]) {   // inside faces first, then the outside, so the step reads as a lantern
             const u = { uCol: { value: setCol(new THREE.Color(), lab) }, uGlow: { value: setCol(new THREE.Color(), mixLab(lift(PAL[k]), WHITE, 0.35)) }, uRim: { value: setCol(new THREE.Color(), mixLab(lift(PAL[k]), WHITE, 0.45)) }, uHalf: { value: new THREE.Vector3(w / 2, h / 2, DEP / 2) }, uCell: { value: cell },
-              uSun: { value: new THREE.Vector3(0, -99, 0) }, uSunCol: { value: new THREE.Color() }, uAmt: { value: 0 }, uCur: { value: cur ? 1 : 0 }, uAlpha: { value: back ? 0.38 : cur ? 0.86 : 0.78 }, uNight: { value: 0 }, uLight: { value: 0 }, uBack: { value: back }, uAbove: { value: above ? 1 : 0 }, uSelf: { value: 0.16 } };
+              uSun: { value: new THREE.Vector3(0, -99, 0) }, uSunCol: { value: new THREE.Color() }, uAmt: { value: 0 }, uCur: { value: cur ? 1 : 0 }, uAlpha: { value: back ? 0.3 : cur ? 0.7 : 0.58 }, uNight: { value: 0 }, uLight: { value: 0 }, uBack: { value: back }, uAbove: { value: above ? 1 : 0 }, uSelf: { value: 0 }, uTime: { value: 0 } };
             const m = new THREE.Mesh(geo, new THREE.ShaderMaterial({ uniforms: u, vertexShader: STEP_VS, fragmentShader: STEP_FS, transparent: true, depthWrite: false, side: back ? THREE.BackSide : THREE.FrontSide }));
             m.position.set(cx, y0 + h / 2, 0); m.renderOrder = (above ? 6 : 1) + (back ? 0 : 0.1); m.castShadow = above && !back; day.add(m); stepU.push(u);
           }
@@ -2015,7 +2033,7 @@ const SUN = (() => {
         const sunCol = D.up ? mixLab(D.sunLab, D.accent, 0.3) : mixLab(D.accent, BLACK, 0.35), amt = D.up ? 0.35 + 0.85 * D.b : 0.12 + 0.12 * (1 - D.night);
         // each lantern glows on its own: softly by day, barely after dark
         // only the lantern of the active toki glows: full by day, dim after dark
-        const self = 0.3 - 0.2 * D.night;
+        const self = 0.45 - 0.3 * D.night;
         for (const u of stepU) { u.uSun.value.copy(pos); setCol(u.uSunCol.value, sunCol); u.uAmt.value = amt; u.uNight.value = D.night; u.uLight.value = light ? 1 : 0; u.uSelf.value = u.uCur.value ? self : 0; }
         for (const a of auras) a.material.opacity = a.userData.cur ? 0.34 * (light ? 0.6 : 1) * (1 - 0.6 * D.night) : 0;
         dirty = true;
@@ -2024,7 +2042,7 @@ const SUN = (() => {
         const moving = look.step();
         if (!size || force) size = sizeTo(renderer, camera, el);
         const pulse = now - lastAnim > 33 && sun.anim(now);
-        if (pulse) lastAnim = now;
+        if (pulse) { lastAnim = now; const tt = now / 1000; for (const u of stepU) u.uTime.value = tt; }
         if (!size || !(dirty || moving || force || pulse)) return;
         const tf = Math.tan((camera.fov / 2) * rad), asp = camera.aspect, dist = Math.max(5.0 / tf, (asp < 1.5 ? 8.4 : 9.0) / (tf * asp));
         const az = look.az, elv = 13 * rad + look.el, tg = new THREE.Vector3(0, asp < 1.5 ? 0.6 : 0.95, 0.6);
@@ -2038,31 +2056,33 @@ const SUN = (() => {
   /* Window: the sky facing the equator over a scene (2D canvas, no WebGL).
      Each place is a portrait of its best-known view, not a literal one: its land, natural landmarks,
      a generated skyline and simplified silhouettes of its signature buildings. */
-  const SAND = hexToLab('#D9B67E'), SNOWC = [0.97, -0.004, -0.012], PAR = 1.7;
+  const SAND = hexToLab('#D9B67E'), SNOWC = [0.97, -0.004, -0.012], PAR = 2.4, OVER = 0.1;
   // marks: [shape, x (0..1 of the view), height (fraction of the view), 'light' for white buildings]
+  // marks: [shape, x (0..1 of the view), real height in metres, 'light' for pale buildings]; `top` is the view fraction the tallest gets
   const PLACES = {
-    tokyo: { land: 'hills', calm: 0.6, extras: [['fuji', 0.86, 0.15]], city: { h: 0.2, dens: 0.95, style: 'towers', cx: 0.45, marks: [['skytree', 0.2, 0.52], ['tmg', 0.42, 0.3], ['tokyotower', 0.66, 0.28]] } },
-    kyoto: { land: 'hills', calm: 1.7, city: { h: 0.03, dens: 0.9, style: 'roofs', marks: [['pagoda', 0.27, 0.12], ['kyototower', 0.47, 0.21, 'light'], ['pagoda', 0.71, 0.18]] } },
-    sanantonio: { land: 'hills', calm: 0.8, city: { h: 0.11, dens: 0.6, style: 'mid', cx: 0.46, marks: [['alamo', 0.26, 0.05, 'light'], ['towerlife', 0.42, 0.17], ['needle', 0.64, 0.32]] } },
-    austin: { land: 'hills', calm: 1.1, city: { h: 0.12, dens: 0.65, style: 'mid', cx: 0.42, marks: [['slimslant', 0.26, 0.23], ['jenga', 0.35, 0.28], ['curvetop', 0.44, 0.28], ['frost', 0.52, 0.22], ['capitol', 0.66, 0.15, 'light'], ['uttower', 0.86, 0.14]] } },
-    houston: { land: 'flat', city: { h: 0.22, dens: 0.75, style: 'towers', marks: [['gothic', 0.36, 0.26], ['pennzoil', 0.46, 0.21], ['chase', 0.53, 0.34], ['heritage', 0.62, 0.29]] } },
-    dallas: { land: 'flat', city: { h: 0.2, dens: 0.72, style: 'towers', cx: 0.52, marks: [['reunion', 0.22, 0.24], ['box', 0.42, 0.32], ['prism', 0.51, 0.27], ['xcrown', 0.62, 0.29]] } },
-    nyc: { land: 'flat', city: { h: 0.27, dens: 1, style: 'towers', tanks: true, spread: 0.12, marks: [['steinway', 0.3, 0.5], ['empire', 0.43, 0.43], ['owtc', 0.53, 0.52], ['park432', 0.6, 0.48], ['chrysler', 0.69, 0.36]] } },
-    la: { land: 'hills', calm: 1.4, palms: true, city: { h: 0.15, dens: 0.45, style: 'mid', marks: [['usbank', 0.48, 0.3], ['wilshire', 0.56, 0.32]] } },
-    denver: { land: 'mountains', city: { h: 0.15, dens: 0.6, style: 'mid', marks: [['dfclock', 0.36, 0.18], ['register', 0.48, 0.24], ['box', 0.56, 0.27]] } },
-    honolulu: { land: 'beach', palms: true, extras: [['crater', 0.17, 0.09]], city: { h: 0.13, dens: 0.7, style: 'mid', marks: [] } },
-    cdmx: { land: 'hills', calm: 0.8, extras: [['volcanoes', 0.2, 0.15]], city: { h: 0.18, dens: 0.82, style: 'mid', marks: [['bellas', 0.4, 0.1, 'light'], ['spire', 0.5, 0.28], ['prism', 0.63, 0.34], ['angel', 0.75, 0.12]] } },
-    london: { land: 'flat', city: { h: 0.14, dens: 0.75, style: 'mid', marks: [['towerbridge', 0.15, 0.14], ['shard', 0.27, 0.4], ['wedge', 0.36, 0.28], ['gherkin', 0.41, 0.24], ['walkie', 0.47, 0.21], ['stpauls', 0.56, 0.17, 'light'], ['wheel', 0.71, 0.18], ['bigben', 0.84, 0.26]] } },
-    paris: { land: 'flat', city: { h: 0.06, dens: 0.95, style: 'mansard', marks: [['sacrecoeur', 0.16, 0.13, 'light'], ['notredame', 0.38, 0.13], ['box', 0.52, 0.2], ['invalides', 0.63, 0.14], ['eiffel', 0.77, 0.36], ['arc', 0.9, 0.08]] } },
-    reykjavik: { land: 'mountains', calm: 0.6, city: { h: 0.04, dens: 0.6, style: 'houses', marks: [['hallgrim', 0.5, 0.24, 'light']] } },
-    tromso: { land: 'mountains', city: { h: 0.035, dens: 0.5, style: 'houses', marks: [['cantilever', 0.3, 0.08], ['arctic', 0.64, 0.12, 'light']] } },
-    nairobi: { land: 'hills', calm: 0.9, extras: [['ngong', 0.82, 0.08]], city: { h: 0.2, dens: 0.6, style: 'towers', marks: [['kicc', 0.46, 0.25]] } },
-    cairo: { land: 'desert', extras: [['pyramids', 0.74, 0.13]], city: { h: 0.11, dens: 0.82, style: 'mid', cx: 0.4, marks: [['mosque', 0.2, 0.17], ['minaret', 0.34, 0.15], ['lotus', 0.52, 0.27], ['minaret', 0.6, 0.13]] } },
-    dubai: { land: 'desert', city: { h: 0.2, dens: 0.6, style: 'towers', cx: 0.55, marks: [['emirates', 0.36, 0.26], ['khalifa', 0.53, 0.62]] } },
-    rio: { land: 'beach', palms: true, extras: [['corcovado', 0.24, 0.27], ['sugarloaf', 0.82, 0.2]], city: { h: 0.1, dens: 0.75, style: 'mid', marks: [] } },
-    capetown: { land: 'flat', extras: [['table', 0.5, 0.2]], city: { h: 0.1, dens: 0.6, style: 'mid', marks: [] } },
-    sydney: { land: 'harbor', city: { h: 0.2, dens: 0.7, style: 'towers', cx: 0.5, marks: [['sydneytower', 0.5, 0.36], ['harbourbridge', 0.75, 0.14], ['opera', 0.27, 0.11, 'light']] } }
+    tokyo: { land: 'hills', calm: 0.6, extras: [['fuji', 0.86, 0.15]], city: { h: 0.17, dens: 0.95, style: 'towers', cx: 0.45, top: 0.52, marks: [['skytree', 0.2, 634], ['tmg', 0.42, 243], ['tokyotower', 0.66, 333]] } },
+    kyoto: { land: 'hills', calm: 1.7, city: { h: 0.03, dens: 0.9, style: 'roofs', top: 0.22, marks: [['pagoda', 0.27, 55], ['kyototower', 0.47, 131, 'light'], ['pagoda', 0.71, 57]] } },
+    sanantonio: { land: 'hills', calm: 0.8, city: { h: 0.1, dens: 0.6, style: 'mid', cx: 0.46, top: 0.32, marks: [['alamo', 0.26, 34, 'light'], ['towerlife', 0.42, 123], ['needle', 0.64, 229]] } },
+    austin: { land: 'hills', calm: 1.1, city: { h: 0.12, dens: 0.65, style: 'mid', cx: 0.42, top: 0.28, marks: [['slimslant', 0.26, 171], ['jenga', 0.35, 208], ['curvetop', 0.44, 208], ['frost', 0.52, 157], ['capitol', 0.66, 94, 'light'], ['uttower', 0.86, 94]] } },
+    houston: { land: 'flat', city: { h: 0.19, dens: 0.75, style: 'towers', top: 0.34, marks: [['gothic', 0.36, 238], ['pennzoil', 0.46, 159], ['chase', 0.53, 305], ['heritage', 0.62, 232]] } },
+    dallas: { land: 'flat', city: { h: 0.18, dens: 0.72, style: 'towers', cx: 0.52, top: 0.32, marks: [['reunion', 0.22, 171], ['box', 0.42, 281], ['prism', 0.51, 219], ['xcrown', 0.62, 270]] } },
+    nyc: { land: 'flat', city: { h: 0.25, dens: 1, style: 'towers', tanks: true, spread: 0.12, top: 0.52, marks: [['steinway', 0.3, 435], ['empire', 0.43, 443], ['owtc', 0.53, 541], ['park432', 0.6, 426], ['chrysler', 0.69, 319]] } },
+    la: { land: 'hills', calm: 1.4, palms: true, city: { h: 0.14, dens: 0.45, style: 'mid', top: 0.32, marks: [['usbank', 0.48, 310], ['wilshire', 0.56, 335]] } },
+    denver: { land: 'mountains', city: { h: 0.13, dens: 0.6, style: 'mid', top: 0.27, marks: [['dfclock', 0.36, 99], ['register', 0.48, 212], ['box', 0.56, 218]] } },
+    honolulu: { land: 'beach', palms: true, extras: [['crater', 0.17, 0.09]], city: { h: 0.13, dens: 0.7, style: 'mid', top: 0.2, marks: [] } },
+    cdmx: { land: 'hills', calm: 0.8, extras: [['volcanoes', 0.2, 0.15]], city: { h: 0.16, dens: 0.82, style: 'mid', top: 0.34, marks: [['bellas', 0.4, 60, 'light'], ['spire', 0.5, 225], ['prism', 0.63, 246], ['angel', 0.75, 60]] } },
+    london: { land: 'flat', city: { h: 0.12, dens: 0.75, style: 'mid', top: 0.4, marks: [['towerbridge', 0.15, 65], ['shard', 0.27, 310], ['wedge', 0.36, 225], ['gherkin', 0.41, 180], ['walkie', 0.47, 160], ['stpauls', 0.56, 111, 'light'], ['wheel', 0.71, 135], ['bigben', 0.84, 96]] } },
+    paris: { land: 'flat', city: { h: 0.06, dens: 0.95, style: 'mansard', top: 0.36, marks: [['sacrecoeur', 0.16, 83, 'light'], ['notredame', 0.38, 96], ['box', 0.52, 210], ['invalides', 0.63, 107], ['eiffel', 0.77, 330], ['arc', 0.9, 50]] } },
+    reykjavik: { land: 'mountains', calm: 0.6, city: { h: 0.04, dens: 0.6, style: 'houses', top: 0.24, marks: [['hallgrim', 0.5, 74, 'light']] } },
+    tromso: { land: 'mountains', city: { h: 0.035, dens: 0.5, style: 'houses', top: 0.12, marks: [['cantilever', 0.3, 38], ['arctic', 0.64, 35, 'light']] } },
+    nairobi: { land: 'hills', calm: 0.9, extras: [['ngong', 0.82, 0.08]], city: { h: 0.17, dens: 0.6, style: 'towers', top: 0.19, marks: [['kicc', 0.46, 105]] } },
+    cairo: { land: 'desert', extras: [['pyramids', 0.74, 0.13]], city: { h: 0.1, dens: 0.82, style: 'mid', cx: 0.4, top: 0.27, marks: [['mosque', 0.2, 60], ['minaret', 0.34, 85], ['lotus', 0.52, 187], ['minaret', 0.6, 80]] } },
+    dubai: { land: 'desert', city: { h: 0.18, dens: 0.6, style: 'towers', cx: 0.55, top: 0.62, marks: [['emirates', 0.36, 355], ['khalifa', 0.53, 828]] } },
+    rio: { land: 'beach', palms: true, extras: [['corcovado', 0.24, 0.27], ['sugarloaf', 0.82, 0.2]], city: { h: 0.1, dens: 0.75, style: 'mid', top: 0.2, marks: [] } },
+    capetown: { land: 'flat', extras: [['table', 0.5, 0.2]], city: { h: 0.1, dens: 0.6, style: 'mid', top: 0.2, marks: [] } },
+    sydney: { land: 'harbor', city: { h: 0.17, dens: 0.7, style: 'towers', cx: 0.5, top: 0.36, marks: [['sydneytower', 0.5, 309], ['harbourbridge', 0.75, 134], ['opera', 0.27, 80, 'light']] } }
   };
+  const markH = P => { const mx = Math.max(1, ...P.marks.map(m => m[2])); return m => (m[2] / mx) * P.top; };
   const TOWN = { land: 'hills', calm: 0.8, city: { h: 0.03, dens: 0.5, style: 'houses', marks: [] } };
   const STD = { mountains: { land: 'mountains' }, beach: { land: 'beach', palms: true }, hills: { land: 'hills' }, desert: { land: 'desert' } };
   const compOf = sc => (sc === 'here' ? PLACES[state.place.id] || TOWN : STD[sc] || TOWN);
@@ -2345,13 +2365,14 @@ const SUN = (() => {
       const { sky, up, b, night } = D, u = u1();
       g.save(); g.translate(off, 0);
       const dark = shade(0.56, false, 0.15, off), white = mixLab(mixLab(layerLab(sky.hor, 0.4), mixLab(WHITE, sky.hor, 0.35), 0.6 * (1 - night * 0.6)), D.sunLab, up ? 0.12 * b : 0);
-      for (const [type, mu, hm, tone] of P.marks) {
-        const x = mu * W, h = hm * Hh;
+      const hOf = markH(P);
+      for (const m of P.marks) {
+        const [type, mu, , tone] = m, x = mu * W, h = hOf(m) * Hh;
         if (MARKS.stroke[type]) { g.beginPath(); const lw = MARKS.stroke[type](g, x, yb, h, u); g.strokeStyle = css(layerLab(sky.hor, 0.56)); g.lineWidth = lw; g.stroke(); if (type === 'harbourbridge') { g.beginPath(); MARKS.fill.harbourpylons(g, x, yb, h, u); g.fillStyle = dark; g.fill(); } continue; }
         const fn = MARKS.fill[type]; if (!fn) continue;
         g.beginPath(); fn(g, x, yb, h, u); g.fillStyle = tone === 'light' ? css(white) : dark; g.fill(['eiffel', 'arc'].includes(type) ? 'evenodd' : 'nonzero');
       }
-      if (night > 0.02) for (const [type, mu, hm] of P.marks) if (['skytree', 'tokyotower', 'needle', 'kyototower', 'empire', 'owtc', 'chrysler', 'steinway', 'park432', 'khalifa', 'sydneytower', 'shard', 'usbank', 'wilshire', 'lotus', 'reunion', 'box', 'chase', 'xcrown'].includes(type)) { const blink = 0.55 + 0.45 * Math.sin(T * 2.4 + mu * 9); g.fillStyle = `rgba(255,90,70,${(night * blink).toFixed(3)})`; g.beginPath(); g.arc(mu * W, yb - hm * Hh * (type === 'needle' ? 1.06 : type === 'xcrown' ? 1.04 : 1.0) - 1, 2, 0, 2 * PI); g.fill(); }
+      if (night > 0.02) for (const m of P.marks) { const [type, mu] = m, hm = hOf(m); if (['skytree', 'tokyotower', 'needle', 'kyototower', 'empire', 'owtc', 'chrysler', 'steinway', 'park432', 'khalifa', 'sydneytower', 'shard', 'usbank', 'wilshire', 'lotus', 'reunion', 'box', 'chase', 'xcrown'].includes(type)) { const blink = 0.55 + 0.45 * Math.sin(T * 2.4 + mu * 9); g.fillStyle = `rgba(255,90,70,${(night * blink).toFixed(3)})`; g.beginPath(); g.arc(mu * W, yb - hm * Hh * (type === 'needle' ? 1.06 : type === 'xcrown' ? 1.04 : 1.0) - 1, 2, 0, 2 * PI); g.fill(); } }
       g.restore();
     }
     // A palm: a curved, tapering trunk and drooping fronds, each a feathered leaf.
@@ -2415,10 +2436,12 @@ const SUN = (() => {
       south = state.place.lat >= 0;
       const ax = az => W / 2 + ((((az - face + 540) % 360) - 180) / 115) * W * 0.48;
       g = main; g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.fillStyle = css(sky.ground); g.fillRect(0, 0, W, Hh);
+      g.translate(-look.az * W * OVER, -look.el * Hh * OVER * 0.5);
       const sx = ax(sp.az / rad), sy = hy - (sp.alt / (90 * rad)) * hy * 0.94, pxo = look.az, pyo = look.el, T = animOn() ? now / 1000 : 0;
       D.sx = sx; D.sy = sy;
       paintSky(D.p);
-      g.imageSmoothingEnabled = true; g.drawImage(skyCv, 0, 0, W, hy + 2); g.drawImage(skyCv, 0, skyCv.height - 1, skyCv.width, 1, 0, hy, W, Hh - hy);
+      g.imageSmoothingEnabled = true; g.drawImage(skyCv, -W * 0.15, -Hh * 0.1, W * 1.3, hy * 1.1 + 2); g.drawImage(skyCv, 0, skyCv.height - 1, skyCv.width, 1, -W * 0.15, hy, W * 1.3, Hh * 1.1 - hy);
       const glowLab = mixLab(sunLab, D.accent, 0.3);
       if (up || sp.alt > -14 * rad) {
         const gy = up ? sy : hy, R = W * (up ? 0.22 + 0.42 * b : 0.45) * (1 + 0.04 * Math.sin(T * 0.9)), a = up ? 0.28 + 0.4 * b : 0.45 * smooth(-14 * rad, 0, sp.alt);
@@ -2469,7 +2492,7 @@ const SUN = (() => {
       else if (land !== 'harbor') drawLayer(NEAR);
       if (C.palms) { const col = css(mixLab(layerLab(sky.hor, 0.95), BLACK, 0.15)); palm(W * 0.06 - pxo * 80, Hh + 2, Hh * 0.27, 0.45, col); palm(W * 0.12 - pxo * 76, Hh + 2, Hh * 0.2, 0.15, col); palm(W * 0.94 - pxo * 80, Hh + 2, Hh * 0.24, -0.4, col); }
       g.font = `700 ${W < 500 ? 11 : 12.5}px ${getComputedStyle(document.documentElement).getPropertyValue('--f-display')}`; g.textAlign = 'center'; g.fillStyle = 'rgba(247,242,232,.62)';
-      for (const az of south ? [90, 180, 270] : [270, 0, 90]) g.fillText(`${DIRK[Math.round(az / 30) % 12]} ${tr('dir' + az)}`, ax(az) - pxo * 70, Hh - 14);
+      for (const az of south ? [90, 180, 270] : [270, 0, 90]) g.fillText(`${DIRK[Math.round(az / 30) % 12]} ${tr('dir' + az)}`, ax(az) - pxo * 70, Hh - 14 + look.el * Hh * OVER * 0.5);
       hud.style.color = inkOn(mixLab(sky.zen, lut(D.p + 0.4), 0.5));
     }
     return {
@@ -2484,10 +2507,74 @@ const SUN = (() => {
     };
   }
 
+  /* Fan: the twelve toki as a three-dimensional folding fan, in place of the flat ring. Same geometry as the ring
+     (angles from the day's real toki lengths), tilted toward the viewer; the selected toki lifts, the current one
+     glows, a hand and the sun mark now. Taps hit the ribs directly. */
+  function FanView(el) {
+    texInit();
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1)); renderer.setClearColor(0, 0); el.prepend(renderer.domElement);
+    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+    const RO = 1.74, RI = 1.2, TH = 0.14;
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x303040, 0.9));
+    const key = new THREE.DirectionalLight(0xffffff, 0.7); key.position.set(-2, 4, 3); scene.add(key);
+    const ribs = new THREE.Group(); scene.add(ribs);
+    const hand = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.02, RO - RI + 0.3), new THREE.MeshBasicMaterial({ color: 0xf7f2e8 })); scene.add(hand);
+    const sun = makeSun(scene), look = makeLook(el, 10 * rad, 6 * rad);
+    let size = null, dirty = true, meshes = [], c = null, raycaster = new THREE.Raycaster(), ptr = new THREE.Vector2(), down = null, onPick = null;
+    const ang = t => ((t - c.noon) / (c.b[12] - c.b[0])) * 2 * PI;
+    function wedge(a1, a2) {
+      const sh = new THREE.Shape(), n = 14;
+      // the shape's y becomes world -z after rotateX(-90°), so noon (angle 0) sits on the far side, at the top of the view
+      for (let i = 0; i <= n; i++) { const a = a1 + ((a2 - a1) * i) / n, x = RO * Math.sin(a), y = RO * Math.cos(a); i ? sh.lineTo(x, y) : sh.moveTo(x, y); }
+      for (let i = n; i >= 0; i--) { const a = a1 + ((a2 - a1) * i) / n; sh.lineTo(RI * Math.sin(a), RI * Math.cos(a)); }
+      sh.closePath();
+      const g = new THREE.ExtrudeGeometry(sh, { depth: TH, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.015, bevelSegments: 2, curveSegments: 4 });
+      g.rotateX(-PI / 2); g.translate(0, -TH / 2, 0); return g;
+    }
+    function build(C) {
+      c = C; clearGroup(ribs); meshes = [];
+      for (let i = 0; i < 12; i++) {
+        const a1 = ang(c.b[i]) + 0.013, a2 = ang(c.b[i + 1]) - 0.013, m = new THREE.Mesh(wedge(a1, a2), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x000000, roughness: 0.55, metalness: 0.05 }));
+        setCol(m.material.color, PAL[i]); m.userData = { i, am: (a1 + a2) / 2 }; ribs.add(m); meshes.push(m);
+      }
+      dirty = true;
+    }
+    function update(C, sel, t) {
+      if (!c || C !== c) build(C);
+      for (const m of meshes) {
+        const { i, am } = m.userData, lift = i === sel ? 0.16 : 0, out = i === sel ? 0.06 : 0;
+        m.position.set(Math.sin(am) * out, lift, -Math.cos(am) * out);
+        setCol(m.material.emissive, i === c.idx ? mixLab(PAL[i], BLACK, 0.55) : i === sel ? mixLab(PAL[i], BLACK, 0.8) : [0, 0, 0]);
+      }
+      const a = ang(t), r = (RO + RI) / 2;
+      hand.position.set(Math.sin(a) * r, TH / 2 + 0.03, -Math.cos(a) * r); hand.rotation.y = -a;
+      sun.set(new THREE.Vector3(Math.sin(a) * (RO + 0.22), 0.1, -Math.cos(a) * (RO + 0.22)), compute(), 0.55);
+      dirty = true;
+    }
+    function render(force) {
+      const moving = look.step();
+      if (!size || force) size = sizeTo(renderer, camera, el);
+      if (!size || !(dirty || moving || force)) return;
+      const tf = Math.tan((camera.fov / 2) * rad), asp = camera.aspect, dist = Math.max(2.15 / tf, 2.15 / (tf * asp)) * 1.02;
+      const az = look.az, elv = 52 * rad + look.el;
+      camera.position.set(dist * Math.cos(elv) * Math.sin(az), dist * Math.sin(elv), dist * Math.cos(elv) * Math.cos(az)); camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera); dirty = false;
+      const v = new THREE.Vector3(0, 0, 0).project(camera), dc = $('dialCenter'); if (dc) { dc.style.left = (((v.x + 1) / 2) * 100).toFixed(2) + '%'; dc.style.top = (((1 - v.y) / 2) * 100).toFixed(2) + '%'; }
+    }
+    el.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+    el.addEventListener('pointerup', e => {
+      if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 8) { down = null; return; } down = null;
+      const r = el.getBoundingClientRect(); ptr.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      raycaster.setFromCamera(ptr, camera); const hit = raycaster.intersectObjects(meshes)[0]; if (hit && onPick) onPick(hit.object.userData.i);
+    });
+    return { update, render, resize() { size = null; dirty = true; }, pick(fn) { onPick = fn; } };
+  }
+
   /* page wiring: Arc and Window are separate screens, each with its own stage */
   const PAGES = {
     arc: { page: 'arcPage', stage: 'arcStage', make: ArcView, needs3d: true },
-    window: { page: 'windowPage', stage: 'winStage', make: WindowView, needs3d: false }
+    window: { page: 'windowPage', stage: 'winStage', make: WindowView, needs3d: false },
+    fan: { page: 'cyclePage', stage: 'fanStage', make: FanView, needs3d: true }
   };
   let scene = ['here', 'mountains', 'beach', 'hills', 'desert'].includes(store.get('ntoki.sunScene')) ? store.get('ntoki.sunScene') : 'here';
   let D = null, key = '';
@@ -2500,7 +2587,10 @@ const SUN = (() => {
     try { P.view = P.make(box); } catch (e) { P.view = null; box.innerHTML = `<p class="sp-err">${tr('sunNo3d')}</p>`; }
     return P.view;
   }
-  function refresh(id) { const P = PAGES[id], V = ensure(id); if (V && D) { V.update(D, P.key !== key); P.key = key; } }
+  function refresh(id) {
+    if (id === 'fan') { const V = ensure('fan'); if (V && state.cyc) { V.pick(i => { state.sel = state.sel === i || i === state.cyc.idx ? null : i; updateTrack(); }); V.update(state.cyc, state.sel == null ? state.cyc.idx : state.sel, state.cyc.t); $('dialWrap').classList.add('fan3d'); } return; }
+    const P = PAGES[id], V = ensure(id); if (V && D) { V.update(D, P.key !== key); P.key = key; }
+  }
   function writeText() {
     if (!D) return;
     const c = D.c, d = ((Math.round(D.sp.az / rad / 30) % 12) + 12) % 12, a = Math.abs(deg(D.sp.alt));
@@ -2517,12 +2607,13 @@ const SUN = (() => {
   }
   document.querySelectorAll('#sunScenes button').forEach(b => b.addEventListener('click', () => { scene = b.dataset.scene; store.set('ntoki.sunScene', scene); PAGES.window.key = ''; refresh('window'); writeText(); }));
   const io = new IntersectionObserver(es => es.forEach(e => {
-    const id = e.target.id === 'arcPage' ? 'arc' : 'window', P = PAGES[id], was = P.visible; P.visible = e.isIntersecting;
+    const id = e.target.id === 'arcPage' ? 'arc' : e.target.id === 'cyclePage' ? 'fan' : 'window', P = PAGES[id], was = P.visible; P.visible = e.isIntersecting;
     if (P.visible && !was) { update(); const V = ensure(id); if (V) V.resize(); }
   }), { root: $('pager'), threshold: 0.01 });
-  io.observe($('arcPage')); io.observe($('windowPage'));
+  io.observe($('arcPage')); io.observe($('windowPage')); io.observe($('cyclePage'));
+  { const tb = $('tiltBtn'); if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function' && 'ontouchstart' in window) { tb.hidden = false; tb.textContent = tr('tilt'); tb.addEventListener('click', () => { gyroAsk(); tb.hidden = true; }); } }
   const ro = new ResizeObserver(() => { for (const id in PAGES) if (PAGES[id].view) PAGES[id].view.resize(); });
-  ro.observe($('arcStage')); ro.observe($('winStage'));
+  ro.observe($('arcStage')); ro.observe($('winStage')); ro.observe($('fanStage'));
   function update() {
     if (!state.cyc) return;
     D = compute();
@@ -2532,7 +2623,8 @@ const SUN = (() => {
   }
   function frame(ts) { if (document.hidden) return; for (const id in PAGES) { const P = PAGES[id]; if (P.visible && P.view) P.view.render(false, ts); } }
   function show() { update(); }
-  return { update, frame, show };
+  function fanSync() { if (PAGES.fan.visible) refresh('fan'); }
+  return { update, frame, show, fanSync };
 })();
 
 /* ---------- tick ---------- */

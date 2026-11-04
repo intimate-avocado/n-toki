@@ -47,12 +47,12 @@ It's one HTML file plus fonts, icons and a local copy of [three.js](https://thre
 ## Using it
 
 - **Living clock:** the sky changes with the sun; the current toki's kanji sits in a seal ring; the micro-season reads underneath.
-- **Day ring:** twelve toki at their true lengths, read facing south. **Year ring:** the 72 seasons.
+- **Day fan:** twelve toki at their true lengths as a tilted three-dimensional ring, read facing south; the current toki lifts and glows. **Year ring:** the 72 seasons.
 - **Settings:** place, appearance (Sky, Dark, Follow the sun), labels (kanji, animal, bells), accessibility (reduce motion, larger text), language (English, 日本語, 简体中文).
 - **Time travel:** any date; play a day in 45 seconds or a year in 72.
 - **The sun's path:** today's arc of the sun, with each toki as a lantern step: as wide as the toki lasts, spanning the sun's lowest to highest point in it. The sun lights the step it is passing through; the night half floats under a glass floor.
 - **The sky outside:** the sky over your place facing the sun's side, with its land, natural landmarks and a stylized skyline, or a standard scene (mountains, beach, hills, desert).
-- **Screens:** Settings → Screens adds, removes and reorders every view after the living clock. Link straight to one with `#arc`, `#window`, `#cycle` or `#year`.
+- **Screens:** by default the clock is followed by the sky outside, the sun's path, the day fan and the 72 seasons; Settings → Screens adds, removes and reorders them. On a phone, tilt to look around the sky outside. Link straight to one with `#arc`, `#window`, `#cycle` or `#year`.
 
 ## Contributing
 
