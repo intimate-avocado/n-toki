@@ -43,6 +43,7 @@ It's one HTML file plus fonts, icons and a local copy of [three.js](https://thre
 - **Phone:** open the live link, then *Add to Home Screen* (iPhone) or *Install app* (Android).
 - **Windows window:** `desktop/Open N-Toki (online).bat` opens it with no browser bars.
 - **Live wallpaper:** add `wallpaper.html` or `wallpaper-dark.html` to [Lively Wallpaper](https://github.com/rocksdanister/lively) (free, open source).
+- **The sky outside as a wallpaper:** add `https://intimate-avocado.github.io/n-toki/?wall=window&place=austin` to Lively as a web page. Use any city id for `place` (`tokyo`, `newport`, `fukuoka`, …), add `&style=pixel` for Pixel, or `&scene=mountains` (or `beach`, `hills`, `desert`) for a standard scene. `?wall` alone gives the living clock.
 
 ## Using it
 

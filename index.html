@@ -296,6 +296,9 @@ a.btn{text-decoration:none;display:inline-block}
 .yc-n{font-size:clamp(13px,3.6vw,15px);line-height:1.3;margin:4px 0 2px;text-wrap:balance}
 .kc-k{float:none;display:block;font-size:44px;letter-spacing:.06em;margin:2px 0 8px}
 
+/* the sky outside as a desktop wallpaper (index.html?wall=window): the window fills the screen, nothing else shows */
+.app.wallwin #winStage{position:fixed;inset:0;width:100vw;height:100vh;max-width:none;aspect-ratio:auto;border-radius:0;box-shadow:none;z-index:60}
+.app.wallwin #tiltBtn{display:none}
 /* wallpaper mode: sky + companion only, sized for a desktop */
 .app.wall .bar-top,.app.wall .bar-bottom,.app.wall .hint{display:none}
 .app.wall .pager{overflow:hidden}
@@ -828,6 +831,8 @@ const store = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 };
+// wallpaper links can carry the window's style and scenery: ?style=pixel&scene=mountains (read before the views start)
+{ const q = new URLSearchParams(location.search); if (['painted', 'pixel'].includes(q.get('style'))) store.set('ntoki.sunStyle', q.get('style')); if (['here', 'mountains', 'beach', 'hills', 'desert'].includes(q.get('scene'))) store.set('ntoki.sunScene', q.get('scene')); }
 const deviceTz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (e) { return 'UTC'; } })();
 const state = {
   place: store.get('ntoki.place') || CITIES[0],
@@ -2611,6 +2616,7 @@ SUN = (() => {
     return { fill: M, stroke: S, foot: FOOT, pair: { harbourbridge: 'harbourpylons', pell: 'pelltowers' }, evenodd: new Set(['eiffel', 'arc', 'chasedallas', 'grandearche', 'frame', 'museumfuture', 'swfc', 'cctv']) };
   })();
 
+  const WALLWIN = /[?&]wall=window/.test(location.search);   // as a desktop wallpaper: a gentler frame rate
   let MT = 0;   // scene time, for the few landmarks that move (wheels, radar)
   const hsh = (a, b) => { const s = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return s - Math.floor(s); };
   const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
@@ -3450,7 +3456,7 @@ SUN = (() => {
       update(d) { if (!D || Math.abs(d.p - D.p) > 0.004) palAt = -1e9; D = d; hud.firstChild.textContent = tGlyph(d.c.idx); hud.lastChild.textContent = `${scene === 'here' ? placeName(state.place) : tr('sc_' + scene)} · ${tokiName(d.c.idx)}`; dirty = true; },
       render(force, now) {
         if (!W || force || styleKey !== wstyle) resize();
-        const moving = look.step(), drift = animOn() && now - last > (PIX ? 90 : 50);
+        const moving = look.step(), drift = animOn() && now - last > (WALLWIN ? 100 : PIX ? 90 : 50);
         if (!(dirty || moving || drift || force)) return;
         last = now; draw(now); dirty = false;
       },
@@ -3600,14 +3606,18 @@ function tick() {
 }
 
 if (window.NTOKI_MODE === 'wall' || /[?&]wall/.test(location.search)) $('app').classList.add('wall');
+// wallpaper links can carry their place: ?wall=window&place=austin
+{ const q = new URLSearchParams(location.search), c = CITIES.find(x => x.id === q.get('place'));
+  if (c) setPlace(c);
+  if (q.get('wall') === 'window') { $('app').classList.add('wallwin'); state.screens.off = state.screens.off.filter(x => x !== 'window'); } }
 applyA11y();
 applyStatic();
 setReveal(null);
 applyScreens();
 tick();
 onPage();
-// open a screen by name: #arc, #window, #cycle or #year
-{ const i = visiblePages().indexOf(location.hash.slice(1)); if (i > 0) requestAnimationFrame(() => pager.scrollTo({ left: i * pager.clientWidth, behavior: 'auto' })); }
+// open a screen by name: #arc, #window, #cycle or #year (the window wallpaper always opens on the window)
+{ const i = visiblePages().indexOf($('app').classList.contains('wallwin') ? 'window' : location.hash.slice(1)); if (i > 0) requestAnimationFrame(() => pager.scrollTo({ left: i * pager.clientWidth, behavior: 'auto' })); }
 (() => {
   const wall = $('app').classList.contains('wall');
   const opens = (store.get('ntoki.opens') || 0) + 1; store.set('ntoki.opens', opens);
