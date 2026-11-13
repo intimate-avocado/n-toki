@@ -174,6 +174,16 @@ kō start     = the instant λ crosses 315° + 5°·k  (solve by bisection on th
 - After sunset only, one quiet line: "The sun has set. The day asks nothing more of you."
 - **Wallpaper mode:** sky and companion only, sized for a desktop, no controls.
 
+### 5.1 Bells (felt, opt-in)
+
+- **Modes:** Off (default) · Daylight bells (Rabbit through Rooster: 6, 5, 4, 9, 8, 7, 6) · All twelve. Set in Settings; stored on the device.
+- **When:** each bell sounds at its toki's center, not its start: Rabbit exactly at sunrise, Horse at the sun's height, Rooster at sunset, Rat at the middle of the night; the others evenly between (cₖ in Section 3.1).
+- **Pattern:** as Edo's time bells did, three light *sute-gane* (捨て鐘) strokes call attention, then one stroke per count. As vibration: three 35 ms taps 120 ms apart, a 900 ms rest, then *n* strokes of 240 ms, 600 ms apart (Horse: 9, about 7.6 s). Lamps and other devices should reuse this rhythm.
+- **Where it is felt:** the Vibration API where the device allows it (most Android phones). Everywhere, the seal ripples once per stroke; with reduced motion it glows instead of expanding. iPhone, iPad and most computers cannot vibrate from a web page; native apps (V3) close that gap.
+- **No pull:** bells ring only while N-Toki is open on screen. A bell that falls while the page is hidden or asleep is skipped, never rung late. Nothing rings during time travel or playback.
+- Kept meetups ring their toki's bell as their window opens (when bells are on).
+- The Learn sheet offers "Feel this bell" for any toki, and Settings offers "Try the bell now."
+
 ---
 
 ## 6. Cycle dial
@@ -260,7 +270,17 @@ A standing invitation such as "Tea · Sheep toki · every Sunday." The link stor
 
 Share an image of the current sky: the gradient, the companion, the toki, and the kō line ("霜始降 · First frost"), with a small N-Toki mark and link. It's for sharing culture, not for collecting likes.
 
-### 11.4 Not in V2 (moved to V3)
+### 11.4 As built (V2.6)
+
+- **Link:** `…/n-toki/#meet=` followed by base64url JSON: `v` (1), `k` (toki 0–11), `t` (what, ≤ 80 chars), `p` (where, optional, ≤ 80), then either `s`/`e` (start and end, Unix seconds) with optional `x` (exact time), or `w` (weekday 0–6, weekly). Links are about 150 characters. Text from a link is always shown as text, never as HTML; malformed links show a clear message.
+- **Which day a toki belongs to:** the toki day runs sunrise to sunrise, so "Saturday · Rat" is Saturday night even after the clock passes midnight. Exact clock times are read on the day the chosen toki falls on.
+- **Weekly:** the weekday is read in each person's own place; each person's window comes from their own sky. A first-time visitor who has not set a place is offered "Use my location" on the card.
+- **Recipient view:** a band in the toki's colors with its kanji, name and bell; the window in the device's own time zone ("your time"); tags for weekly, exact time and "happening now"; the place. Buttons: Keep it (stores on this device only), Add to calendar, Copy link; kept meetups add Share (the system share sheet, or copy where there is none) and Remove.
+- **Calendar:** an .ics file made on the device. One-off: one event. Weekly: the next eight windows for this person's sky, each at its true length.
+- **Entry points:** the Meet button in the top bar; "Meet in this toki" on the cycle dial and the companion card. A first-time visitor who arrives through a link sees the invitation first and the welcome after.
+- Kept meetups live in local storage only; one-off meetups are dropped a day after they end.
+
+### 11.5 Not in V2 (moved to V3)
 
 Accounts, friend lists, messaging, shared bells, gatherings, presence.
 

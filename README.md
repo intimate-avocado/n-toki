@@ -22,6 +22,8 @@ The equal hour is what made time countable, and anything countable can be sold. 
 
 **Nothing leaves your device.** The page makes no network requests after it loads: fonts ship with the app, sunrise and sunset are calculated locally, and your location (if you share it) is used on-device and never transmitted. It works offline once installed. Deleting it deletes everything.
 
+Meetup invitations live entirely in their link, after the `#`, which browsers never send to a server. A link carries no location unless you type a place into it.
+
 ## How the sun math works
 
 `engine/ntoki-engine.js` is a dependency-free module anyone can build on:
@@ -53,6 +55,8 @@ It's one HTML file plus fonts, icons and a local copy of [three.js](https://thre
 - **Time travel:** any date; play a day in 45 seconds or a year in 72.
 - **The sun's path:** today's arc of the sun, with each toki as a lantern step: as wide as the toki lasts, spanning the sun's lowest to highest point in it. The sun lights the step it is passing through; the night half floats under a glass floor.
 - **The sky outside:** the sky over your place, seen from a real spot facing the equator (south in the north, north in the south), with its land, natural landmarks and skyline, or a standard scene (mountains, beach, hills, desert). The scene is built from layers (sky, clouds, ridges, each line of city on its own ground with its own lights, water, the near ground), and landmarks stand roughly to scale from their real heights and widths. Each layer is its own image, drawn once and shifted on its own as you tilt. Two styles: Painted, and Pixel (a true low-resolution palette with ordered dithering, hard edges and crisp type).
+- **Meetups:** the Meet button (or "Meet in this toki" on the dial) makes an invitation for a toki on a given day, or every week. Whoever opens the link sees the window in their own time zone, with no account; weekly meetups follow each person's own sky. Keep it on your device, add it to your calendar, or share it on.
+- **Bells:** off by default. Turn on daylight bells or all twelve in Settings. Each rings at the middle of its toki the way Edo's time bells did: three light taps, then one stroke per count (nine at the sun's height, six at sunrise and sunset). Phones that allow it vibrate; the seal pulses everywhere. Bells ring only while N-Toki is open on screen and never ring late.
 - **Screens:** by default the clock is followed by the sky outside, the sun's path, the day fan and the 72 seasons; Settings → Screens adds, removes and reorders them. On a phone, tilt to look around the sky outside. Link straight to one with `#arc`, `#window`, `#cycle` or `#year`.
 
 ## Contributing

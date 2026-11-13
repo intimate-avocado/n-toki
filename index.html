@@ -74,6 +74,10 @@ button{font:inherit;color:inherit}
 .mark small{font-family:var(--f-body);font-weight:400;font-size:10px;letter-spacing:.2em;opacity:.6;margin-left:6px}
 .pill{display:inline-flex;align-items:center;gap:6px;font:500 13px/1 var(--f-body);background:color-mix(in srgb,currentColor 9%,transparent);border:1px solid color-mix(in srgb,currentColor 24%,transparent);border-radius:999px;padding:8px 13px;cursor:pointer;white-space:nowrap;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .pill:hover{background:color-mix(in srgb,currentColor 15%,transparent)}
+.bar-top .pill{flex-shrink:0}
+.bar-top .mark{flex-shrink:1000}
+.bar-top #cityBtn{flex-shrink:1;min-width:44px}
+#cityLbl{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .pill svg{width:14px;height:14px;flex:none}
 :focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:6px}
 .pill:focus-visible{border-radius:999px}
@@ -324,7 +328,7 @@ a.btn{text-decoration:none;display:inline-block}
 .cities button small{color:var(--paper-muted);font-size:11px}
 .cities button[aria-pressed="true"]{border-color:var(--paper-ink);box-shadow:inset 0 0 0 1px var(--paper-ink)}
 .field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--paper-muted);min-width:0}
-.field input,.field select{font:15px var(--f-body);padding:9px 10px;border-radius:9px;border:1px solid var(--paper-line);background:var(--field-bg);color:var(--paper-ink);min-width:0;width:100%}
+.field input,.field select{box-sizing:border-box;font:15px var(--f-body);padding:9px 10px;border-radius:9px;border:1px solid var(--paper-line);background:var(--field-bg);color:var(--paper-ink);min-width:0;width:100%}
 .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .fields .wide{grid-column:1/-1}
 .tt-out{font-family:var(--f-display);font-size:26px;margin:4px 0 2px}
@@ -336,6 +340,60 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
 .cd-meta dd{margin:0}
 .note{color:var(--paper-muted);font-size:12px;margin-top:10px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* bells: the seal ripples once per stroke; the dots in a sheet light one by one */
+.bell-ripple{position:absolute;inset:0;border-radius:50%;border:2px solid currentColor;pointer-events:none;animation:bellRing 1.5s cubic-bezier(.2,.6,.3,1) forwards}
+.bell-ripple.s{border-width:1px;animation-duration:.8s}
+.bell-ripple.still{animation-name:bellGlow}
+@keyframes bellRing{from{transform:scale(1);opacity:.75}to{transform:scale(1.42);opacity:0}}
+@keyframes bellGlow{from{opacity:.85}to{opacity:0}}
+html.dark .bell-ripple{border-color:var(--accent)}
+.bell-try{align-items:center;gap:12px}
+.bell-dots{display:inline-flex;align-items:center;gap:6px;min-height:14px}
+.bell-dots i{width:11px;height:11px;border-radius:50%;background:var(--paper-line);transition:background .15s,transform .15s}
+.bell-dots i.s{width:6px;height:6px}
+.bell-dots i.sp{width:4px;background:none}
+.bell-dots i.on{background:var(--shu);transform:scale(1.2)}
+
+/* meetups */
+.meet-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.meet-row{width:100%;display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;text-align:left;padding:8px 12px 8px 8px;border-radius:12px;border:1px solid var(--paper-line);background:var(--btn-bg);color:var(--paper-ink);cursor:pointer;font:inherit}
+.meet-chip,.tp-k{display:grid;place-items:center;font-family:var(--f-display);font-weight:700;line-height:1}
+.meet-chip{width:44px;height:44px;font-size:22px;border-radius:10px}
+.mr-t{display:flex;flex-direction:column;min-width:0}
+.mr-t b{font-weight:500;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mr-t small{color:var(--paper-muted);font-size:12px;line-height:1.4}
+.meet-err{color:var(--shu);margin:0 0 10px}
+.toki-pick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.toki-pick button{display:flex;align-items:center;gap:8px;min-width:0;padding:6px 8px 6px 6px;border-radius:10px;border:1px solid var(--paper-line);background:var(--btn-bg);color:var(--paper-ink);cursor:pointer;text-align:left;font:inherit}
+.toki-pick button[aria-pressed="true"]{border-color:var(--paper-ink);box-shadow:inset 0 0 0 1px var(--paper-ink)}
+.toki-pick button:disabled{opacity:.38;cursor:default}
+.tp-k{flex:none;width:30px;height:30px;font-size:17px;border-radius:8px}
+.tp-n{display:flex;flex-direction:column;min-width:0;font-size:13px;font-weight:500;line-height:1.25;overflow:hidden}
+.tp-n small{font-family:var(--f-mono);font-size:11px;font-weight:400;color:var(--paper-muted);white-space:nowrap}
+.checks{display:grid;gap:6px;margin-top:14px}
+.check{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--paper-line);border-radius:10px;background:var(--btn-bg);color:var(--paper-ink);cursor:pointer;font-size:15px;font-weight:500}
+.check input{grid-row:span 2;width:18px;height:18px;margin:2px 0 0;accent-color:var(--paper-ink)}
+.check small{color:var(--paper-muted);font-size:12px;font-weight:400}
+.check.off{opacity:.45;cursor:default}
+.mn-where{margin-top:12px}
+.mn-preview{font-size:14px;margin-top:12px;min-height:1.5em}
+.mn-preview b{font-weight:500}
+.meet-band{display:flex;align-items:center;gap:16px;border-radius:14px;padding:16px 18px;margin:36px 0 14px}
+.meet-band .k{font-family:var(--f-display);font-weight:700;font-size:54px;line-height:1}
+.meet-band .n{display:block;font-family:var(--f-display);font-weight:500;font-size:21px;line-height:1.15}
+.meet-band .r{display:block;font-size:13px;opacity:.85;margin-top:3px}
+.meet-when{font-family:var(--f-display);font-size:19px;line-height:1.35;margin:4px 0 8px}
+.meet-when small{display:inline-block;white-space:nowrap;font-family:var(--f-body);font-size:12px;color:var(--paper-muted);margin-left:6px}
+.meet-when small.lead{margin:0 6px 0 0}
+.meet-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:13px}
+.meet-meta:empty{display:none}
+.meet-tag{font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid var(--paper-line);color:var(--paper-muted)}
+.meet-tag.on{border-color:var(--shu);color:var(--shu)}
+.meet-place{display:inline-flex;align-items:center;gap:5px}
+.meet-place svg{width:13px;height:13px;flex:none}
+.mc-msg{word-break:break-all}
+.mc-msg:empty{display:none}
 
 @media (max-width:420px){
   .pill .lbl-long{display:none}
@@ -360,6 +418,9 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
     </button>
     <button class="pill" id="cityBtn" type="button" aria-haspopup="dialog">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14.5s4.5-4.2 4.5-7.8a4.5 4.5 0 0 0-9 0c0 3.6 4.5 7.8 4.5 7.8z"/><circle cx="8" cy="6.7" r="1.6"/></svg><span id="cityLbl">Tokyo</span>
+    </button>
+    <button class="pill" id="meetBtn" type="button" aria-haspopup="dialog" aria-label="Meetups" data-i18n-aria="meetAria">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.9" cy="8" r="3.9"/><circle cx="10.1" cy="8" r="3.9"/></svg><span class="lbl-long" data-i18n="meet">Meet</span>
     </button>
     <button class="pill" id="settingsBtn" type="button" aria-haspopup="dialog" aria-label="Settings" data-i18n-aria="settings">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.3"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/></svg><span class="lbl-long" data-i18n="settings">Settings</span>
@@ -505,6 +566,7 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
   <p id="lnLife"></p>
   <h4 data-i18n="lnBellT">Its bell</h4>
   <p id="lnBell"></p>
+  <div class="row-btns bell-try"><button class="btn" type="button" id="lnFeel" data-i18n="bFeel">Feel this bell</button><span class="bell-dots" id="lnDots" aria-hidden="true"></span></div>
   <p class="note" id="lnBells"></p>
   <p class="note" data-i18n="cdNote"></p>
 </div>
@@ -516,7 +578,7 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
   <p class="sub" id="cdSub">U no koku · 卯の刻</p>
   <p id="cdDesc"></p>
   <dl class="cd-meta" id="cdMeta"></dl>
-  <div class="row-btns"><button class="btn" type="button" id="cdLearn" data-i18n="learn">Learn about this toki</button></div>
+  <div class="row-btns"><button class="btn" type="button" id="cdLearn" data-i18n="learn">Learn about this toki</button><button class="btn" type="button" id="cdMeet" data-i18n="meetIn">Meet in this toki</button></div>
   <p class="note" data-i18n="cdNote">N-Toki is a modern system inspired by Edo-period timekeeping. Like the original, each toki is centered on a moment of the sun, calculated for where you are.</p>
 </div>
 
@@ -579,6 +641,11 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
     <button type="button" role="radio" data-label="en">Animal</button>
     <button type="button" role="radio" data-label="bell">Bells</button>
   </div>
+  <h4 data-i18n="bellsH">Bells</h4>
+  <p class="sub" data-i18n="bellsSub"></p>
+  <ul class="themes" id="bellList"></ul>
+  <div class="row-btns bell-try"><button class="btn" type="button" id="bellTry" data-i18n="bTry">Try the bell now</button><span class="bell-dots" id="bellDots" aria-hidden="true"></span></div>
+  <p class="note" id="bellNote"></p>
   <h4 data-i18n="screensH">Screens</h4>
   <p class="sub" data-i18n="screensSub">The living clock always comes first. Add, remove and reorder the rest.</p>
   <ul class="screens" id="screenList"></ul>
@@ -617,6 +684,53 @@ input[type=range]{width:100%;accent-color:var(--paper-ink)}
   <p>N-Toki is free and open source because a timekeeper should be auditable, and because the alternative is selling you back the day you already earned.</p>
   <p class="lore-end"><strong lang="zh">时间不会用尽。时间流经我们。</strong><br><em>Time doesn't run out. It flows through us.</em></p>
   <p class="note">A modern system inspired by Edo-period timekeeping. Micro-season names after Shibukawa Shunkai (1685). Sparked by a post from @ReiOfJapan7.</p>
+</div>
+
+<div class="sheet" id="sheetMeet" role="dialog" aria-modal="true" aria-labelledby="meetTitle" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <h3 id="meetTitle" data-i18n="meetTitle">Meetups</h3>
+  <p class="sub" data-i18n="meetSub"></p>
+  <p class="note meet-err" id="meetErr" data-i18n="meetBad" hidden></p>
+  <ul class="meet-list" id="meetList"></ul>
+  <p class="note" id="meetNone" data-i18n="meetNone" hidden></p>
+  <div class="row-btns"><button class="btn primary" type="button" id="meetNewBtn" data-i18n="meetNew">New meetup</button></div>
+</div>
+
+<div class="sheet" id="sheetMeetNew" role="dialog" aria-modal="true" aria-labelledby="mnTitle" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <h3 id="mnTitle" data-i18n="meetNewTitle">A new meetup</h3>
+  <p class="sub" data-i18n="meetNewSub"></p>
+  <form id="meetForm" novalidate>
+    <div class="fields">
+      <label class="field wide"><span data-i18n="meetWhat">What</span><input id="mnWhat" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
+      <label class="field wide"><span data-i18n="meetDay">Day</span><input type="date" id="mnDate" required></label>
+    </div>
+    <h4 id="mnTokiH" data-i18n="meetToki">Toki</h4>
+    <div class="toki-pick" id="mnToki" role="group" aria-labelledby="mnTokiH"></div>
+    <div class="checks">
+      <label class="check"><input type="checkbox" id="mnExact"><span data-i18n="meetExact">Exact time</span><small data-i18n="meetExactD"></small></label>
+      <div class="fields" id="mnExactF" hidden>
+        <label class="field"><span data-i18n="meetFrom">From</span><input type="time" id="mnFrom"></label>
+        <label class="field"><span data-i18n="meetTo">To</span><input type="time" id="mnTo"></label>
+      </div>
+      <label class="check"><input type="checkbox" id="mnWeekly"><span data-i18n="meetWeekly">Every week</span><small data-i18n="meetWeeklyD"></small></label>
+    </div>
+    <div class="fields mn-where"><label class="field wide"><span data-i18n="meetWhere">Where (optional)</span><input id="mnWhere" maxlength="80" autocomplete="off" enterkeyhint="done"></label></div>
+    <p class="note" data-i18n="meetWhereNote"></p>
+    <div class="mn-preview" id="mnPreview" aria-live="polite"></div>
+    <div class="row-btns"><button class="btn primary" type="submit" id="mnSubmit" data-i18n="meetCreate">Make the invitation</button></div>
+  </form>
+</div>
+
+<div class="sheet" id="sheetMeetCard" role="dialog" aria-modal="true" aria-labelledby="mcTitle" hidden>
+  <button class="close" type="button" data-close data-i18n="close">Close</button>
+  <div class="meet-band" id="mcBand"></div>
+  <h3 id="mcTitle"></h3>
+  <div class="meet-when" id="mcWhen"></div>
+  <div class="meet-meta" id="mcMeta"></div>
+  <p class="note" id="mcNote"></p>
+  <div class="row-btns" id="mcBtns"></div>
+  <p class="note mc-msg" id="mcMsg" role="status"></p>
 </div>
 
 <div class="sheet" id="sheetWelcome" role="dialog" aria-modal="true" aria-labelledby="wTitle" hidden>
@@ -1000,7 +1114,30 @@ const STR = {
     stepsNote: (k, n, a, b, lo, hi) => `Now: ${k} ${n}, ${a} – ${b}, the sun between ${lo} and ${hi}.`,
     sunWhyT: 'Why winter toki are short',
     sunWhyP: 'Daylight is always six toki, so a short, low arc means short toki. In winter the sun rises late, climbs only partway and sets early. In summer the arc is long and high, and each daylight toki stretches with it.',
-    dir0: 'north', dir90: 'east', dir180: 'south', dir270: 'west', sunNo3d: 'This view needs 3D graphics, which are turned off in this browser. Try Window.'
+    dir0: 'north', dir90: 'east', dir180: 'south', dir270: 'west', sunNo3d: 'This view needs 3D graphics, which are turned off in this browser. Try Window.',
+    meet: 'Meet', meetAria: 'Meetups', meetTitle: 'Meetups',
+    meetSub: 'Plan by the sun. An invitation lives entirely in its link: no account, nothing stored on a server.',
+    meetNew: 'New meetup', meetNone: 'No meetups yet. Pick a toki and send it to someone.',
+    meetNewTitle: 'A new meetup', meetNewSub: 'Choose a day and a toki. Whoever opens the link sees the window in their own time.',
+    meetWhat: 'What', meetWhatPh: 'Coffee', meetDay: 'Day', meetToki: 'Toki',
+    meetExact: 'Exact time', meetExactD: 'For appointments that need a minute, not a window', meetFrom: 'From', meetTo: 'To',
+    meetWeekly: 'Every week', meetWeeklyD: 'Each person gets the window for their own sky',
+    meetWhere: 'Where (optional)', meetWherePh: 'The café on Elm Street', meetWhereNote: 'No location goes into the link unless you type one here.',
+    meetCreate: 'Make the invitation', meetShare: 'Share', meetCopy: 'Copy link', meetCopied: 'Link copied', meetCopyFail: 'Copy this link:', meetCal: 'Add to calendar',
+    meetKeep: 'Keep it', meetKept: 'Kept on this device', meetRemove: 'Remove',
+    meetYourTime: 'your time', meetExactLbl: 'Exact time', meetEvery: d => `Every ${d}`, meetNext: 'Next',
+    meetSky: n => `Windows follow the sky over ${n}.`, meetPassed: 'Passed',
+    meetWindowNote: 'A toki is a window, not a minute. Arrive whenever it suits you inside it.',
+    meetIntro: 'N-Toki reads the day by the sun: six toki of daylight and six of night. This meetup sits in one of them.',
+    meetIn: 'Meet in this toki', meetUntitled: 'Meetup', meetBad: 'This invitation link is incomplete or damaged.',
+    meetShareText: (t, k, d) => `${t} · ${k} · ${d}. Open it to see the window in your own time:`,
+    meetPast: 'This meetup has passed.', meetNowOn: 'Happening now', meetRang: t => `${t} has begun.`,
+    bellsH: 'Bells', bellsSub: "Each bell rings at the middle of its toki: three light taps to call attention, as Edo's time bells did with their sute-gane, then one stroke for each count. Nine at the sun's height, six at sunrise and sunset.",
+    bOff: 'Off', bOffD: 'Silent. The default.', bDay: 'Daylight bells', bDayD: 'Sunrise to sunset: six, five, four, nine, eight, seven, six', bAll: 'All twelve', bAllD: 'Day and night, as the temple bells rang',
+    bTry: 'Try the bell now', bFeel: 'Feel this bell',
+    bNoteVib: "Bells ring while N-Toki is open on your screen. Phones that allow it vibrate with each stroke, and the seal pulses with it. Kept meetups ring their toki's bell as they begin.",
+    bNoteNoVib: "This device can't vibrate from a web page (iPhone, iPad and most computers), so the seal pulses with each stroke instead. Bells ring while N-Toki is open on your screen. Kept meetups ring their toki's bell as they begin.",
+    bellRang: (b, n) => `${b} · ${n}`
   },
   ja: {
     hint: '長押しで時計の時刻 · スワイプでほかの画面', clockTime: '時刻', hideClock: '時刻を隠す', cycle: '巡り', clock: '時計', travel: '時の旅', language: '言語',
@@ -1062,7 +1199,30 @@ const STR = {
     stepsNote: (k, n, a, b, lo, hi) => `いまは${n}、${a}〜${b}。太陽は${lo}から${hi}のあいだ。`,
     sunWhyT: '冬の刻が短いわけ',
     sunWhyP: '昼はいつも六つの刻。弧が低く短ければ、刻も短くなります。冬の太陽は遅く昇り、高くは上がらず、早く沈みます。夏は弧が長く高く、昼の刻もそれに合わせて伸びます。',
-    dir0: '北', dir90: '東', dir180: '南', dir270: '西', sunNo3d: 'この表示には3D描画が必要ですが、このブラウザでは無効です。「窓」をお試しください。'
+    dir0: '北', dir90: '東', dir180: '南', dir270: '西', sunNo3d: 'この表示には3D描画が必要ですが、このブラウザでは無効です。「窓」をお試しください。',
+    meet: '待ち合わせ', meetAria: '待ち合わせ', meetTitle: '待ち合わせ',
+    meetSub: '太陽で約束を。招待はリンクの中だけにあります。アカウントは不要で、サーバーには何も保存されません。',
+    meetNew: '新しい待ち合わせ', meetNone: 'まだ待ち合わせはありません。刻を選んで、誰かに送ってみましょう。',
+    meetNewTitle: '新しい待ち合わせ', meetNewSub: '日と刻を選びます。リンクを開いた人には、その人の時刻で表示されます。',
+    meetWhat: '内容', meetWhatPh: 'お茶', meetDay: '日', meetToki: '刻',
+    meetExact: '時刻を指定', meetExactD: '幅ではなく、分単位で決める約束に', meetFrom: '開始', meetTo: '終了',
+    meetWeekly: '毎週', meetWeeklyD: 'それぞれが自分の空に合わせた刻で受け取ります',
+    meetWhere: '場所（任意）', meetWherePh: '駅前の喫茶店', meetWhereNote: 'ここに入力しない限り、リンクに場所は含まれません。',
+    meetCreate: '招待をつくる', meetShare: '共有', meetCopy: 'リンクをコピー', meetCopied: 'コピーしました', meetCopyFail: 'このリンクをコピーしてください：', meetCal: 'カレンダーに追加',
+    meetKeep: '保存する', meetKept: 'この端末に保存しました', meetRemove: '削除',
+    meetYourTime: 'あなたの時刻', meetExactLbl: '時刻指定', meetEvery: d => `毎週${d}`, meetNext: '次回',
+    meetSky: n => `刻は${n}の空に合わせて計算しています。`, meetPassed: '過ぎました',
+    meetWindowNote: '刻は一点ではなく、幅のある時間です。その中の都合のよいときにどうぞ。',
+    meetIntro: 'N-Toki は太陽で一日を読みます。昼に六つ、夜に六つの刻。この待ち合わせはそのひとつにあります。',
+    meetIn: 'この刻に会う', meetUntitled: '待ち合わせ', meetBad: 'この招待リンクは不完全か、壊れています。',
+    meetShareText: (t, k, d) => `${t} · ${k} · ${d}。開くと、あなたの時刻で表示されます：`,
+    meetPast: 'この待ち合わせは終わりました。', meetNowOn: 'いま、この刻です', meetRang: t => `${t}が始まりました。`,
+    bellsH: '鐘', bellsSub: '鐘は各刻のまんなかで鳴ります。江戸の時の鐘のように、まず注意をひく捨て鐘を三つ軽く打ち、続いて数だけ打ちます。南中に九つ、日の出と日の入りに六つ。',
+    bOff: '鳴らさない', bOffD: '静か。初期設定です。', bDay: '昼の鐘', bDayD: '日の出から日の入りまで：六・五・四・九・八・七・六', bAll: '十二の鐘すべて', bAllD: '昼も夜も、寺の鐘のように',
+    bTry: 'いま鐘を試す', bFeel: 'この鐘を感じる',
+    bNoteVib: '鐘は N-Toki が画面に開いているあいだ鳴ります。対応するスマートフォンでは打つたびに振動し、印も合わせて脈打ちます。保存した待ち合わせは、始まるときにその刻の鐘を鳴らします。',
+    bNoteNoVib: 'この端末はウェブページから振動できません（iPhone、iPad、多くのパソコン）。代わりに、打つたびに印が脈打ちます。鐘は N-Toki が画面に開いているあいだ鳴ります。保存した待ち合わせは、始まるときにその刻の鐘を鳴らします。',
+    bellRang: (b, n) => `${b} · ${n}`
   },
   zh: {
     hint: '长按查看钟表时间 · 滑动查看更多画面', clockTime: '钟表时间', hideClock: '隐藏钟表时间', cycle: '周期', clock: '时钟', travel: '穿越', language: '语言',
@@ -1124,7 +1284,30 @@ const STR = {
     stepsNote: (k, n, a, b, lo, hi) => `现在是${n}，${a}–${b}，太阳高度在${lo}到${hi}之间。`,
     sunWhyT: '冬季的时辰为何较短',
     sunWhyP: '白昼总是六个时辰。弧线又低又短，时辰也就短。冬天太阳升得晚、升得低、落得早；夏天弧线又长又高，白昼的每个时辰也随之拉长。',
-    dir0: '北', dir90: '东', dir180: '南', dir270: '西', sunNo3d: '此视图需要3D图形，但此浏览器已将其关闭。请试试“窗景”。'
+    dir0: '北', dir90: '东', dir180: '南', dir270: '西', sunNo3d: '此视图需要3D图形，但此浏览器已将其关闭。请试试“窗景”。',
+    meet: '约见', meetAria: '约见', meetTitle: '约见',
+    meetSub: '按太阳来约。邀请只存在于链接之中：无需账号，服务器上不保存任何内容。',
+    meetNew: '新约见', meetNone: '还没有约见。选一个时辰，发给某人吧。',
+    meetNewTitle: '新约见', meetNewSub: '选一天和一个时辰。打开链接的人会看到按其本地时间显示的时段。',
+    meetWhat: '做什么', meetWhatPh: '喝茶', meetDay: '日期', meetToki: '时辰',
+    meetExact: '精确时间', meetExactD: '用于需要准时到分钟、而非一段时间的约定', meetFrom: '开始', meetTo: '结束',
+    meetWeekly: '每周', meetWeeklyD: '每个人都按自己头顶的天空得到时段',
+    meetWhere: '地点（可选）', meetWherePh: '街角的咖啡馆', meetWhereNote: '除非在此填写，链接中不会包含任何地点。',
+    meetCreate: '生成邀请', meetShare: '分享', meetCopy: '复制链接', meetCopied: '已复制链接', meetCopyFail: '请复制此链接：', meetCal: '加入日历',
+    meetKeep: '保存', meetKept: '已保存在此设备', meetRemove: '删除',
+    meetYourTime: '你的时间', meetExactLbl: '精确时间', meetEvery: d => `每${d}`, meetNext: '下次',
+    meetSky: n => `时段按${n}的天空计算。`, meetPassed: '已过',
+    meetWindowNote: '时辰是一段时间，而不是一个时刻。在其中任何合适的时候到来即可。',
+    meetIntro: 'N-Toki 按太阳读一天：白天六个时辰，夜晚六个。这次约见就在其中之一。',
+    meetIn: '在这个时辰约见', meetUntitled: '约见', meetBad: '此邀请链接不完整或已损坏。',
+    meetShareText: (t, k, d) => `${t} · ${k} · ${d}。打开即可按你的时间查看：`,
+    meetPast: '这次约见已经结束。', meetNowOn: '正在此时辰', meetRang: t => `${t}开始了。`,
+    bellsH: '钟声', bellsSub: '每个时辰的正中敲钟：先像江户的报时钟那样轻敲三下“舍钟”以引起注意，再按数敲响。日中九响，日出与日落六响。',
+    bOff: '关闭', bOffD: '静音。默认设置。', bDay: '白昼之钟', bDayD: '日出到日落：六、五、四、九、八、七、六', bAll: '十二时辰全部', bAllD: '昼夜皆鸣，如寺院钟声',
+    bTry: '现在试一下', bFeel: '感受这声钟',
+    bNoteVib: '钟声只在 N-Toki 打开于屏幕上时响起。支持的手机每敲一下振动一次，印章也随之脉动。已保存的约见在开始时会敲响该时辰的钟。',
+    bNoteNoVib: '此设备无法从网页振动（iPhone、iPad 及大多数电脑），因此改为每敲一下印章脉动一次。钟声只在 N-Toki 打开于屏幕上时响起。已保存的约见在开始时会敲响该时辰的钟。',
+    bellRang: (b, n) => `${b} · ${n}`
   }
 };
 function pickLang() {
@@ -1342,8 +1525,9 @@ function updateTrack() {
     const meta = state.lang === 'en' ? `${T.r} no koku · <span lang="ja">${T.k}の刻</span>` : tokiReading(sel);
     $('dialInfo').innerHTML = `<div class="di-meta">${meta} · ${dur(s1 - s0)}</div>
       <div class="di-anchor">${placeInDay(c, sel)}</div>
-      <div class="row-btns di-btns"><button class="pill" type="button" id="learnBtn">${tr('learn')}</button>${sel !== c.idx ? `<button class="pill" type="button" id="backCur">${tr('showCurrent')}</button>` : ''}</div>`;
+      <div class="row-btns di-btns"><button class="pill" type="button" id="learnBtn">${tr('learn')}</button><button class="pill" type="button" id="meetHereBtn">${tr('meetIn')}</button>${sel !== c.idx ? `<button class="pill" type="button" id="backCur">${tr('showCurrent')}</button>` : ''}</div>`;
     $('learnBtn').addEventListener('click', () => openLearn(sel));
+    $('meetHereBtn').addEventListener('click', () => openMeetNew(sel));
     const bc = $('backCur'); if (bc) bc.addEventListener('click', () => { state.sel = null; updateTrack(); $('d' + state.cyc.idx).focus({ preventScroll: true }); });
   }
 }
@@ -1697,22 +1881,27 @@ function loop(ts) {
 /* ---------- sheets ---------- */
 let lastFocus = null;
 const sheetOpen = () => !$('scrim').hidden;
-function openSheet(id) {
-  closeSheets();
-  lastFocus = document.activeElement;
-  $('scrim').hidden = false; $(id).hidden = false;
-  const f = $(id).querySelector('button:not([data-close]),input,select') || $(id).querySelector('button');
+function openSheet(id, focusEl) {
+  const keep = sheetOpen() ? lastFocus : document.activeElement;
+  closeSheets(true);
+  lastFocus = keep;
+  $('scrim').hidden = false; $(id).hidden = false; $(id).scrollTop = 0;
+  const f = focusEl || $(id).querySelector('button:not([data-close]),input,select') || $(id).querySelector('button');
   f && f.focus({ preventScroll: true });
 }
-function closeSheets() {
+function closeSheets(quiet) {
   const was = sheetOpen();
-  ['sheetCompanion', 'sheetCity', 'sheetTravel', 'sheetLang', 'sheetKo', 'sheetWelcome', 'sheetAbout'].forEach(s => ($(s).hidden = true));
+  document.querySelectorAll('.sheet').forEach(el => (el.hidden = true));
   $('scrim').hidden = true;
-  if (was && lastFocus) lastFocus.focus({ preventScroll: true });
+  if (was && !quiet && lastFocus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
 }
-$('scrim').addEventListener('click', closeSheets);
-document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeSheets));
-addEventListener('keydown', e => { if (e.key === 'Escape' && sheetOpen()) closeSheets(); });
+function dismiss() {
+  closeSheets();
+  if (state.welcomeLater) { state.welcomeLater = false; setTimeout(() => openSheet('sheetWelcome'), 350); }
+}
+$('scrim').addEventListener('click', dismiss);
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', dismiss));
+addEventListener('keydown', e => { if (e.key === 'Escape' && sheetOpen()) dismiss(); });
 
 /* companion */
 function placeInDay(c, i = c.idx) {
@@ -1732,6 +1921,7 @@ function openLearn(i) {
   $('lnWhyT').textContent = tr('lnWhyT', tokiAnimal(i)); $('lnWhy').textContent = L[0]; $('lnLife').textContent = L[1];
   $('lnBell').innerHTML = state.lang === 'en' ? `${T.bell} Bell · <span lang="ja">${T.bj}</span> (${T.br}). ${tr('lnBellMid')}` : `${bellLine(i)}。${tr('lnBellMid')}`;
   $('lnBells').textContent = tr('whyP1') + ' ' + tr('whyP2');
+  $('lnFeel').dataset.i = i; $('lnDots').innerHTML = '';
   openSheet('sheetLearn');
 }
 $('seal').addEventListener('click', () => {
@@ -1743,6 +1933,7 @@ $('seal').addEventListener('click', () => {
   $('cdDesc').textContent = tokiDesc(i);
   $('cdMeta').innerHTML = `<dt>${tr('place')}</dt><dd>${placeInDay(state.cyc)}</dd>`;
   $('cdLearn').onclick = () => openLearn(i);
+  $('cdMeet').onclick = () => openMeetNew(i);
   openSheet('sheetCompanion');
 });
 
@@ -1788,7 +1979,7 @@ function openSettings() {
   $('langList').innerHTML = LANGS.map(([k, n]) => `<li><button type="button" data-lang="${k}" lang="${k}" aria-pressed="${state.lang === k}">${n}</button></li>`).join('');
   $('langList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { setLang(b.dataset.lang); openSettings(); }));
   $('placeLbl2').textContent = placeName(state.place);
-  renderThemes(); renderA11y();
+  renderThemes(); renderA11y(); renderBells(); $('bellDots').innerHTML = '';
   document.querySelectorAll('.seg-ctl button[data-label]').forEach(b => b.setAttribute('aria-checked', b.dataset.label === state.label ? 'true' : 'false'));
   renderScreens();
   openSheet('sheetLang');
@@ -1870,6 +2061,348 @@ $('playYearBtn').addEventListener('click', () => {
   };
   requestAnimationFrame(step);
 });
+
+/* ---------- bells: a felt count at the middle of each toki ---------- */
+// As Edo's time bells did: three light sute-gane strokes to call attention, a rest, then one stroke per count.
+// Off by default. They ring only while the page is open and on screen, never late, never during time travel.
+const BELL_MODES = [['off', 'bOff', 'bOffD'], ['day', 'bDay', 'bDayD'], ['all', 'bAll', 'bAllD']];
+state.bells = BELL_MODES.some(m => m[0] === store.get('ntoki.bells')) ? store.get('ntoki.bells') : 'off';
+const canVibrate = typeof navigator.vibrate === 'function';
+const BELL = { tap: 35, tapGap: 120, rest: 900, stroke: 240, gap: 600 };
+function bellPattern(n) {
+  const p = [BELL.tap, BELL.tapGap, BELL.tap, BELL.tapGap, BELL.tap, BELL.rest];
+  for (let j = 0; j < n; j++) { p.push(BELL.stroke); if (j < n - 1) p.push(BELL.gap); }
+  return p;
+}
+const bellLabel = i => (state.lang === 'ja' ? TOKI[i].bj : state.lang === 'zh' ? `${CN[bellNum(i)]}响` : `${TOKI[i].bell} Bell`);
+// Bells sit on the true centers: Rabbit on sunrise, Rooster on sunset, the others evenly between.
+const bellAt = (c, k) => (k <= 6 ? c.rise + k * c.dayToki : c.set + (k - 6) * c.nightToki);
+let bellTimers = [], bellDotsEl = null;
+function strike(small) {
+  const seal = $('seal');
+  const r = document.createElement('span');
+  r.className = 'bell-ripple' + (small ? ' s' : '') + (reduced.matches ? ' still' : '');
+  r.setAttribute('aria-hidden', 'true');
+  seal.appendChild(r);
+  r.addEventListener('animationend', () => r.remove());
+  setTimeout(() => r.remove(), 2500);
+}
+function ringBell(i, dots) {
+  const n = bellNum(i), pat = bellPattern(n);
+  bellTimers.forEach(clearTimeout); bellTimers = [];
+  if (bellDotsEl) bellDotsEl.innerHTML = '';
+  try { if (canVibrate) navigator.vibrate(pat); } catch (e) {}
+  // The same rhythm, seen: the seal ripples, and the dots beside a Try button light one by one.
+  bellDotsEl = dots || null;
+  if (dots) dots.innerHTML = '<i class="s"></i><i class="s"></i><i class="s"></i><i class="sp"></i>' + '<i></i>'.repeat(n);
+  const marks = dots ? [...dots.querySelectorAll('i:not(.sp)')] : [];
+  let t = 0;
+  for (let j = 0; j < pat.length; j += 2) {
+    const k = j / 2;
+    bellTimers.push(setTimeout(() => { strike(k < 3); if (marks[k]) marks[k].classList.add('on'); }, t));
+    t += pat[j] + (pat[j + 1] || 0);
+  }
+  bellTimers.push(setTimeout(() => { if (dots) dots.querySelectorAll('i').forEach(x => x.classList.remove('on')); }, t + 1800));
+}
+let bellSeen = null;
+function bellCheck() {
+  const now = Date.now(), prev = bellSeen;
+  bellSeen = now;
+  // Only a bell that falls between two checks a moment apart rings: nothing rings late after the page was hidden or asleep.
+  if (prev == null || now <= prev || now - prev > 5000) return;
+  if (state.bells === 'off' || document.hidden || state.override != null || state.playing || !state.cyc) return;
+  for (const m of MEETS) {
+    const w = meetWin(m, state.place, prev);
+    if (w && w.s > prev && w.s <= now) { ringBell(w.k); $('live').textContent = tr('meetRang', meetTitle(m)); return; }
+  }
+  for (let k = 0; k < 12; k++) {
+    if (state.bells === 'day' && k > 6) continue;
+    const t = bellAt(state.cyc, k);
+    if (t > prev && t <= now) { ringBell(k); $('live').textContent = tr('bellRang', bellLabel(k), tokiName(k)); return; }
+  }
+}
+function renderBells() {
+  $('bellList').innerHTML = BELL_MODES.map(([k, n, d]) => `<li><button type="button" data-bells="${k}" aria-pressed="${state.bells === k}">${tr(n)}<small>${tr(d)}</small></button></li>`).join('');
+  $('bellList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    state.bells = b.dataset.bells; store.set('ntoki.bells', state.bells);
+    renderBells(); $('bellList').querySelector(`[data-bells="${state.bells}"]`).focus();
+  }));
+  $('bellNote').textContent = tr(canVibrate ? 'bNoteVib' : 'bNoteNoVib');
+}
+$('bellTry').addEventListener('click', () => ringBell(state.cyc.idx, $('bellDots')));
+$('lnFeel').addEventListener('click', () => ringBell(+$('lnFeel').dataset.i || 0, $('lnDots')));
+
+/* ---------- meetups: invitations that live entirely in their link ---------- */
+// The invitation sits after the # in its link, which browsers never send to a server. Nothing is stored anywhere
+// except, if the person chooses to keep it, in this device's own storage.
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+const MEET_BASE = /^https?:$/.test(location.protocol) ? location.origin + location.pathname : 'https://intimate-avocado.github.io/n-toki/';
+function b64uEnc(str) { let bin = ''; for (const b of new TextEncoder().encode(str)) bin += String.fromCharCode(b); return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function b64uDec(str) { const b = str.replace(/-/g, '+').replace(/_/g, '/'); const bin = atob(b + '==='.slice((b.length + 3) % 4)); return new TextDecoder().decode(Uint8Array.from(bin, ch => ch.charCodeAt(0))); }
+const clip = (v, n) => String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, n);
+// A meetup: { t: what, p: where, k: toki } plus either { s, e } (one window, absolute times; x: exact clock times)
+// or { w: weekday } (every week, each person's window worked out for their own sky).
+function cleanMeet(o) {
+  if (!o || typeof o !== 'object' || !Number.isInteger(o.k) || o.k < 0 || o.k > 11) return null;
+  const m = { k: o.k, t: clip(o.t, 80), p: clip(o.p, 80) };
+  if (o.w != null) {
+    if (!Number.isInteger(o.w) || o.w < 0 || o.w > 6) return null;
+    m.w = o.w;
+  } else {
+    const s = Math.round(+o.s / 1000) * 1000, e = Math.round(+o.e / 1000) * 1000;
+    if (!isFinite(s) || !isFinite(e) || e <= s || e - s > 12 * 3600e3 || s < Date.UTC(2000, 0, 1) || s > Date.UTC(2200, 0, 1)) return null;
+    m.s = s; m.e = e;
+    if (o.x) m.x = 1;
+  }
+  return m;
+}
+function meetCode(m) {
+  const o = { v: 1, k: m.k };
+  if (m.t) o.t = m.t;
+  if (m.p) o.p = m.p;
+  if (m.w != null) o.w = m.w; else { o.s = m.s / 1000; o.e = m.e / 1000; if (m.x) o.x = 1; }
+  return b64uEnc(JSON.stringify(o));
+}
+function meetDecode(code) {
+  try { const o = JSON.parse(b64uDec(code)); if (o.v !== 1) return null; if (o.s != null) { o.s *= 1000; o.e *= 1000; } return cleanMeet(o); } catch (e) { return null; }
+}
+const meetLink = m => `${MEET_BASE}#meet=${meetCode(m)}`;
+function meetId(m) { let h = 2166136261; for (const ch of meetCode(m)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
+const meetTitle = m => m.t || tr('meetUntitled');
+let MEETS = (() => { const a = store.get('ntoki.meets'); return Array.isArray(a) ? a.map(cleanMeet).filter(Boolean) : []; })();
+function saveMeets() { const cut = Date.now() - 864e5; MEETS = MEETS.filter(m => m.w != null || m.e > cut); store.set('ntoki.meets', MEETS); }
+const isKept = m => { const id = meetId(m); return MEETS.some(x => meetId(x) === id); };
+
+// Calendar days are read in the place's own time zone. A toki belongs to the day whose daylight it follows,
+// so "Saturday, Rat" is Saturday night even after the clock passes midnight (a toki day runs sunrise to sunrise).
+const dayOf = (ms, tz) => { const p = NT.partsOf(ms, tz); return [p.year, p.month, p.day]; };
+const addDays = ([y, m, d], n) => { const u = new Date(Date.UTC(y, m - 1, d + n)); return [u.getUTCFullYear(), u.getUTCMonth() + 1, u.getUTCDate()]; };
+const weekdayOf = ([y, m, d]) => new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+const ymdStr = ([y, m, d]) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+function tokiOn(day, k, place) { const c = NT.cycle(NT.zoned(day[0], day[1], day[2], 720, place.tz), place); return { s: c.b[k], e: c.b[k + 1], k }; }
+// The meetup's first window that has not ended by `after`. Weekly meetups use this person's own sky.
+function meetWin(m, place, after) {
+  if (m.w == null) return { s: m.s, e: m.e, k: m.k };
+  let day = addDays(dayOf(after, place.tz), -1);
+  for (let i = 0; i < 9; i++, day = addDays(day, 1)) {
+    if (weekdayOf(day) !== m.w) continue;
+    const w = tokiOn(day, m.k, place);
+    if (w.e > after) return w;
+  }
+  return null;
+}
+function meetWins(m, place, n) {
+  if (m.w == null) return [meetWin(m, place, 0)];
+  const out = []; let after = Date.now();
+  while (out.length < n) { const w = meetWin(m, place, after); if (!w) break; out.push(w); after = w.e; }
+  return out;
+}
+
+// Times on a meetup card are shown in this device's own time zone: "your time".
+const devFmts = {};
+const devFmt = opts => { const key = state.lang + JSON.stringify(opts); return devFmts[key] || (devFmts[key] = new Intl.DateTimeFormat(LOCALE[state.lang], opts)); };
+const WHEN = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+function whenStr(s, e) { const f = devFmt(WHEN); try { return f.formatRange(s, e); } catch (x) { return `${f.format(s)} – ${devFmt({ hour: 'numeric', minute: '2-digit' }).format(e)}`; } }
+const wdName = w => devFmt({ weekday: 'long', timeZone: 'UTC' }).format(Date.UTC(2026, 0, 4 + w, 12));   // 4 Jan 2026 was a Sunday
+const inkFor = x => (lut(x)[0] > 0.62 ? '#1c1a29' : '#f7f2e8');
+const PIN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 14.5s4.5-4.2 4.5-7.8a4.5 4.5 0 0 0-9 0c0 3.6 4.5 7.8 4.5 7.8z"/><circle cx="8" cy="6.7" r="1.6"/></svg>';
+
+/* the list */
+function renderMeetList() {
+  saveMeets();
+  const now = Date.now();
+  const rows = MEETS.map(m => ({ m, w: meetWin(m, state.place, now) || meetWin(m, state.place, 0) })).sort((a, b) => a.w.s - b.w.s);
+  $('meetNone').hidden = rows.length > 0;
+  $('meetList').innerHTML = rows.map(({ m, w }) => {
+    const sub = [m.w != null ? tr('meetEvery', wdName(m.w)) : '', tr('tokiWin', tokiName(m.k)), whenStr(w.s, w.e)].filter(Boolean).join(' · ');
+    return `<li><button type="button" class="meet-row" data-id="${meetId(m)}"><span class="meet-chip" style="background:${css(m.k + 0.5)};color:${inkFor(m.k + 0.5)}" lang="ja">${TOKI[m.k].k}</span><span class="mr-t"><b>${esc(meetTitle(m))}</b><small>${esc(sub)}</small>${m.p ? `<small>${esc(m.p)}</small>` : ''}</span></button></li>`;
+  }).join('');
+  $('meetList').querySelectorAll('button').forEach(b => b.addEventListener('click', () => openMeetCard(MEETS.find(m => meetId(m) === b.dataset.id))));
+}
+function openMeets(bad) { $('meetErr').hidden = !bad; renderMeetList(); openSheet('sheetMeet'); }
+$('meetBtn').addEventListener('click', () => openMeets());
+$('meetNewBtn').addEventListener('click', () => openMeetNew());
+
+/* making one */
+const mn = { k: null };
+function mnDay() { const [y, m, d] = ($('mnDate').value || '').split('-').map(Number); return y ? [y, m, d] : dayOf(Date.now(), state.place.tz); }
+const hhmm = ms => { const p = NT.partsOf(ms, state.place.tz); return `${String(p.hour).padStart(2, '0')}:${String(p.minute).padStart(2, '0')}`; };
+function openMeetNew(k) {
+  const now = Date.now(), today = dayOf(now, state.place.tz);
+  if (k == null) k = (NT.cycle(now, state.place).idx + 1) % 12;
+  let day = today;
+  for (let i = 0; i < 3 && tokiOn(day, k, state.place).e <= now; i++) day = addDays(day, 1);
+  mn.k = k;
+  $('mnWhat').value = ''; $('mnWhere').value = '';
+  $('mnWhat').placeholder = tr('meetWhatPh'); $('mnWhere').placeholder = tr('meetWherePh');
+  $('mnDate').value = ymdStr(day); $('mnDate').min = ymdStr(addDays(today, -1));
+  $('mnExact').checked = false; $('mnWeekly').checked = false; syncChecks();
+  renderPicker(); syncExactTimes();
+  openSheet('sheetMeetNew', $('mnToki').querySelector('[aria-pressed="true"]'));
+}
+function renderPicker() {
+  const day = mnDay(), now = Date.now(), weekly = $('mnWeekly').checked;
+  const c = NT.cycle(NT.zoned(day[0], day[1], day[2], 720, state.place.tz), state.place);
+  if (mn.k != null && !weekly && c.b[mn.k + 1] <= now) mn.k = null;
+  $('mnToki').innerHTML = TOKI.map((T, k) => {
+    const ended = !weekly && c.b[k + 1] <= now;
+    return `<button type="button" data-k="${k}" aria-pressed="${k === mn.k}"${ended ? ' disabled' : ''}><span class="tp-k" style="background:${css(k + 0.5)};color:${inkFor(k + 0.5)}" lang="ja">${T.k}</span><span class="tp-n">${esc(tokiName(k))}<small>${ended ? esc(tr('meetPassed')) : tStr(c.b[k])}</small></span></button>`;
+  }).join('');
+  $('mnToki').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    mn.k = +b.dataset.k; renderPicker(); syncExactTimes();
+    const again = $('mnToki').querySelector(`[data-k="${mn.k}"]`); if (again) again.focus();
+  }));
+  mnPreview();
+}
+function syncChecks() {
+  const weekly = $('mnWeekly').checked;
+  if (weekly) $('mnExact').checked = false;
+  $('mnExact').disabled = weekly;
+  $('mnExact').closest('.check').classList.toggle('off', weekly);
+  $('mnExactF').hidden = !$('mnExact').checked;
+}
+function syncExactTimes() {
+  if (mn.k == null) return;
+  const w = tokiOn(mnDay(), mn.k, state.place);
+  $('mnFrom').value = hhmm(w.s); $('mnTo').value = hhmm(w.e);
+}
+// The window being made, in absolute time. Exact clock times are read on the day the chosen toki falls on.
+function mnWindow() {
+  if (mn.k == null) return null;
+  const tz = state.place.tz, w = tokiOn(mnDay(), mn.k, state.place);
+  if (!$('mnExact').checked) return w;
+  const mins = v => { const [h, m] = (v || '').split(':').map(Number); return h >= 0 && m >= 0 ? h * 60 + m : null; };
+  const f = mins($('mnFrom').value), t = mins($('mnTo').value);
+  if (f == null || t == null) return null;
+  const at = (d, x) => NT.zoned(d[0], d[1], d[2], x, tz), d0 = dayOf(w.s, tz), mid = (w.s + w.e) / 2;
+  const s = [at(addDays(d0, -1), f), at(d0, f), at(addDays(d0, 1), f)].sort((a, b) => Math.abs(a - mid) - Math.abs(b - mid))[0];
+  let e = at(dayOf(s, tz), t); if (e <= s) e = at(addDays(dayOf(s, tz), 1), t);
+  return { s, e, k: NT.cycle(s, state.place).idx, x: 1 };
+}
+function mnPreview() {
+  const w = mnWindow(), el = $('mnPreview'), weekly = $('mnWeekly').checked;
+  const past = w && !weekly && w.e <= Date.now();
+  $('mnSubmit').disabled = !w || past;
+  if (!w) { el.textContent = ''; return; }
+  const range = `${fmt(w.s, { weekday: 'short', month: 'short', day: 'numeric' })} · ${tStr(w.s)} – ${tStr(w.e)}`;
+  el.innerHTML = `<b>${esc(tr('tokiWin', tokiName(w.k)))}</b> · ${esc(weekly ? `${tr('meetEvery', wdName(weekdayOf(mnDay())))} · ${tr('meetNext')} ${range}` : range)}${past ? ` · ${esc(tr('meetPassed'))}` : ''}`;
+}
+$('mnDate').addEventListener('change', () => { renderPicker(); syncExactTimes(); mnPreview(); });
+$('mnExact').addEventListener('change', () => { syncChecks(); syncExactTimes(); mnPreview(); });
+$('mnWeekly').addEventListener('change', () => { syncChecks(); renderPicker(); syncExactTimes(); mnPreview(); });
+$('mnFrom').addEventListener('input', mnPreview);
+$('mnTo').addEventListener('input', mnPreview);
+$('meetForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const w = mnWindow(), weekly = $('mnWeekly').checked;
+  if (!w || (!weekly && w.e <= Date.now())) return;
+  const base = { t: $('mnWhat').value, p: $('mnWhere').value, k: w.k };
+  const m = cleanMeet(weekly ? { ...base, w: weekdayOf(mnDay()) } : { ...base, s: w.s, e: w.e, x: w.x });
+  if (!m) return;
+  if (!isKept(m)) { MEETS.push(m); saveMeets(); }
+  openMeetCard(m);
+});
+
+/* the card: what someone sees when they open an invitation, and what you see for your own */
+let cardMeet = null, cardFromLink = false;
+function openMeetCard(m, fromLink = false) {
+  if (!m) return;
+  cardMeet = m; cardFromLink = fromLink;
+  $('mcMsg').textContent = '';
+  renderMeetCard();
+  openSheet('sheetMeetCard', $('mcBtns').querySelector('button'));
+}
+function renderMeetCard() {
+  const m = cardMeet, T = TOKI[m.k], now = Date.now(), weekly = m.w != null, kept = isKept(m);
+  const w = meetWin(m, state.place, now) || meetWin(m, state.place, 0), past = !weekly && now >= m.e, on = w && now >= w.s && now < w.e;
+  const band = $('mcBand');
+  band.style.background = `linear-gradient(100deg, ${css(m.k)}, ${css(m.k + 0.5)} 55%, ${css(m.k + 1)})`;
+  band.style.color = inkFor(m.k + 0.5);
+  const reading = state.lang === 'en' ? `${T.r} no koku · ` : '';
+  band.innerHTML = `<span class="k" lang="ja">${T.k}</span><span><span class="n">${esc(tr('tokiWin', tokiName(m.k)))}</span><span class="r">${esc(reading)}${esc(bellLabel(m.k))}</span></span>`;
+  $('mcTitle').textContent = meetTitle(m);
+  $('mcWhen').innerHTML = w ? `${weekly ? `<small class="lead">${esc(tr('meetNext'))}</small>` : ''}${esc(whenStr(w.s, w.e))}<small>${esc(tr('meetYourTime'))}</small>` : '';
+  const tags = [];
+  if (weekly) tags.push(`<span class="meet-tag">${esc(tr('meetEvery', wdName(m.w)))}</span>`);
+  if (m.x) tags.push(`<span class="meet-tag">${esc(tr('meetExactLbl'))}</span>`);
+  if (on) tags.push(`<span class="meet-tag on">${esc(tr('meetNowOn'))}</span>`);
+  if (m.p) tags.push(`<span class="meet-place">${PIN}${esc(m.p)}</span>`);
+  $('mcMeta').innerHTML = tags.join('');
+  $('mcNote').textContent = [past ? tr('meetPast') : '', weekly ? tr('meetSky', placeName(state.place)) : '', m.x || past ? '' : tr('meetWindowNote'), cardFromLink && !store.get('ntoki.seen') ? tr('meetIntro') : ''].filter(Boolean).join(' ');
+  const B = [];
+  if (!kept && !past) B.push(['keep', 'meetKeep', true]);
+  if (kept && !past) B.push(['share', 'meetShare', true]);
+  if (!past) B.push(['cal', 'meetCal'], ['copy', 'meetCopy']);
+  if (weekly && !store.get('ntoki.place')) B.push(['geo', 'myLoc']);
+  if (kept) B.push(['remove', 'meetRemove']);
+  $('mcBtns').innerHTML = B.map(([a, k, primary]) => `<button class="btn${primary ? ' primary' : ''}" type="button" data-act="${a}">${esc(tr(k))}</button>`).join('');
+  $('mcBtns').querySelectorAll('button').forEach(b => b.addEventListener('click', () => meetAct(b.dataset.act)));
+}
+async function meetAct(a) {
+  const m = cardMeet, msg = $('mcMsg');
+  if (a === 'keep') { if (!isKept(m)) { MEETS.push(m); saveMeets(); } renderMeetCard(); msg.textContent = tr('meetKept'); const s = $('mcBtns').querySelector('[data-act="share"]'); if (s) s.focus(); }
+  else if (a === 'share') shareMeet(m);
+  else if (a === 'copy') { const url = meetLink(m); msg.textContent = (await copyText(url)) ? tr('meetCopied') : `${tr('meetCopyFail')} ${url}`; }
+  else if (a === 'cal') downloadIcs(m);
+  else if (a === 'geo') locate(() => { renderMeetCard(); }, msg);
+  else if (a === 'remove') { const id = meetId(m); MEETS = MEETS.filter(x => meetId(x) !== id); saveMeets(); openMeets(); }
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove(); return ok;
+}
+async function shareMeet(m) {
+  const url = meetLink(m);
+  const day = m.w != null ? tr('meetEvery', wdName(m.w)) : devFmt({ weekday: 'long', month: 'short', day: 'numeric' }).format(m.s);
+  const text = tr('meetShareText', meetTitle(m), tr('tokiWin', tokiName(m.k)), day);
+  if (navigator.share) {
+    try { await navigator.share({ title: meetTitle(m), text, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  $('mcMsg').textContent = (await copyText(`${text} ${url}`)) ? tr('meetCopied') : `${tr('meetCopyFail')} ${url}`;
+}
+
+/* calendar: an .ics file made on the device. Weekly meetups add their next eight windows for this sky. */
+const icsEsc = v => String(v).replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/([,;])/g, '\\$1');
+const icsTime = ms => new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+function icsFold(line) {
+  const enc = new TextEncoder(); let out = '', n = 0;
+  for (const ch of line) { const b = enc.encode(ch).length; if (n + b > 74) { out += '\r\n '; n = 1; } out += ch; n += b; }
+  return out;
+}
+function meetIcs(m) {
+  const id = meetId(m), stamp = icsTime(Date.now()), url = meetLink(m), weekly = m.w != null;
+  const summary = `${meetTitle(m)} · ${tr('tokiWin', tokiName(m.k))}`;
+  const desc = [m.x ? tr('meetExactLbl') : tr('meetWindowNote'), weekly ? tr('meetSky', placeName(state.place)) : '', url].filter(Boolean).join('\n');
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//N-Toki//Meetups//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+  for (const w of meetWins(m, state.place, 8)) {
+    L.push('BEGIN:VEVENT', `UID:${id}-${icsTime(w.s)}@n-toki`, `DTSTAMP:${stamp}`, `DTSTART:${icsTime(w.s)}`, `DTEND:${icsTime(w.e)}`, `SUMMARY:${icsEsc(summary)}`, `DESCRIPTION:${icsEsc(desc)}`, `URL:${url}`);
+    if (m.p) L.push(`LOCATION:${icsEsc(m.p)}`);
+    L.push('END:VEVENT');
+  }
+  L.push('END:VCALENDAR');
+  return L.map(icsFold).join('\r\n') + '\r\n';
+}
+function downloadIcs(m) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([meetIcs(m)], { type: 'text/calendar;charset=utf-8' }));
+  a.download = (meetTitle(m).replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '') || 'meetup') + '.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+
+/* opening an invitation link */
+function takeMeetHash() {
+  if (!location.hash.startsWith('#meet=')) return false;
+  const m = meetDecode(location.hash.slice(6));
+  history.replaceState(null, '', location.pathname + location.search);
+  if (m) openMeetCard(m, true); else openMeets(true);
+  return true;
+}
+addEventListener('hashchange', takeMeetHash);
 
 /* ---------- sun path page: Arc (with floating steps) and Window ---------- */
 let SUN = null;
@@ -3603,6 +4136,7 @@ function tick() {
   $('app').classList.toggle('previewing', prev);
   $('previewLbl').textContent = tStr(t);
   if (!$('sheetTravel').hidden) updateTravelOut();
+  if (state.override == null && !state.playing) bellCheck();
 }
 
 if (window.NTOKI_MODE === 'wall' || /[?&]wall/.test(location.search)) $('app').classList.add('wall');
@@ -3622,7 +4156,8 @@ onPage();
   const wall = $('app').classList.contains('wall');
   const opens = (store.get('ntoki.opens') || 0) + 1; store.set('ntoki.opens', opens);
   if (opens > 6) $('hint').hidden = true;
-  if (!wall && !store.get('ntoki.seen')) setTimeout(() => openSheet('sheetWelcome'), 600);
+  const invited = !wall && takeMeetHash();
+  if (!wall && !store.get('ntoki.seen')) { if (invited) state.welcomeLater = true; else setTimeout(() => openSheet('sheetWelcome'), 600); }
 })();
 drawSky(0);
 requestAnimationFrame(loop);
