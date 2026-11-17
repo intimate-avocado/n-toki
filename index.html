@@ -1767,7 +1767,8 @@ const SCREENS = {
 };
 state.screens = (() => {
   const s = store.get('ntoki.screens'), ids = Object.keys(SCREENS);
-  if (!s || !Array.isArray(s.order)) return { order: ['window', 'arc', 'cycle', 'year'], off: [] };
+  // Default: the clock, the sky outside and the day fan. The sun's path (3D) and the 72 seasons wait in Settings → Screens.
+  if (!s || !Array.isArray(s.order)) return { order: ['window', 'cycle', 'arc', 'year'], off: ['arc', 'year'] };
   const order = s.order.filter(id => ids.includes(id)); for (const id of ids) if (!order.includes(id)) order.push(id);
   return { order, off: (s.off || []).filter(id => ids.includes(id)) };
 })();
